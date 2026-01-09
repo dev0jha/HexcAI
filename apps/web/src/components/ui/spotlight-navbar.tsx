@@ -5,6 +5,7 @@ import { animate } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/core/theme-toggle";
+import Link from "next/link";
 
 export interface NavItem {
     label: string;
@@ -20,11 +21,11 @@ export interface SpotlightNavbarProps {
 
 export function SpotlightNavbar({
     items = [
-        { label: "Home", href: "#home" },
+        { label: "Home", href: "/" },
         { label: "About", href: "#about" },
         { label: "Discover", href: "#discover" },
         { label: "Pricing", href: "#pricing" },
-        { label: "Login", href: "#login" },
+        { label: "Login", href: "/signin" },
     ],
     className,
     onItemClick,
@@ -133,16 +134,14 @@ export function SpotlightNavbar({
                         <li key={idx} className="relative h-full flex items-center justify-center">
                             {item.label === "Login" ? (
                                 <div onMouseMove={(e) => e.stopPropagation()}>
-                                    <Button
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            onItemClick?.(item, idx);
-                                        }}
-                                        size="sm"
-                                        className="mx-1 sm:mx-2 relative z-20 shadow-none text-xs sm:text-sm px-2 sm:px-4"
-                                    >
-                                        {item.label}
-                                    </Button>
+                                    <Link href={item.href}>
+                                        <Button
+                                            size="sm"
+                                            className="mx-1 sm:mx-2 relative z-20 shadow-none text-xs sm:text-sm px-2 sm:px-4"
+                                        >
+                                            {item.label}
+                                        </Button>
+                                    </Link>
                                 </div>
                             ) : (
                                 <a
