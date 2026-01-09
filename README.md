@@ -1,135 +1,261 @@
-# Turborepo starter
+# HireXAI – Product Requirements Document (PRD)
 
-This Turborepo starter is maintained by the Turborepo core team.
+**Product Name:** HireXAI  
+**Tagline:** Hire Smarter. Hire by Code.  
+**Product Type:** AI-powered developer evaluation & hiring platform  
+**Scope:** Frontend-first (Next.js 14 – App Router)  
+**Last Updated:** 2026  
 
-## Using this example
+---
 
-Run the following command:
+## 1. Product Overview
 
-```sh
-npx create-turbo@latest
-```
+HireXAI is a modern hiring platform that evaluates developers based on their **real GitHub code**, not resumes.  
+Using AI, HireXAI generates a **Developer Score** and allows recruiters to **discover and contact top developers**, only with developer consent.
 
-## What's inside?
+The platform is built with a **developer-first, privacy-first** approach.
 
-This Turborepo includes the following packages/apps:
+---
 
-### Apps and Packages
+## 2. Problem Statement
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Problems with Traditional Hiring
+- Resumes don’t reflect real coding skills
+- GitHub profiles are ignored or misjudged
+- Recruiters spend excessive time screening
+- Developers struggle to stand out authentically
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### HireXAI Solves This By:
+- Using real GitHub repositories
+- Generating transparent, AI-based scores
+- Enabling ethical, consent-based recruiter outreach
 
-### Utilities
+---
 
-This Turborepo has some additional tools already setup for you:
+## 3. Goals & Objectives
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+### Primary Goals
+- Evaluate developers using real code
+- Provide a clear, explainable Developer Score
+- Enable faster, smarter hiring
 
-### Build
+### Success Metrics
+- Clear value understood within 5 seconds
+- Recruiters can identify top developers easily
+- Developers feel safe and in control
 
-To build all apps and packages, run the following command:
+---
 
-```
-cd my-turborepo
+## 4. Target Users
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+### 👨‍💻 Developers
+- Students, professionals, open-source contributors
+- Want skill-based visibility
+- Want recruiter outreach without spam
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
+### 🧑‍💼 Recruiters
+- Hiring managers, founders, HR teams
+- Want fast, reliable technical signals
+- Want to see code before contacting
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### 🛠️ Admin (Platform Owner)
+- Moderates users
+- Maintains trust & quality
+- Manages platform rules
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+---
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+## 5. Core Features
 
-### Develop
+### 5.1 GitHub Repository Analysis (UI Scope)
 
-To develop all apps and packages, run the following command:
+**Frontend Capabilities**
+- Input GitHub repository URL
+- Show analysis progress
+- Display AI-generated insights
 
-```
-cd my-turborepo
+**Displayed Metrics**
+- Code Quality
+- Architecture & Structure
+- Security Practices
+- Documentation
+- Git Activity
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+---
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+### 5.2 Developer Score System
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+**Score Range:** 0 – 100
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+| Category | Weight |
+|--------|--------|
+| Code Quality | 30% |
+| Architecture | 20% |
+| Security | 20% |
+| Git Practices | 15% |
+| Documentation | 15% |
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+**Score Labels**
+- 90–100 → Excellent
+- 80–89 → Strong
+- 60–79 → Average
+- <60 → Needs Improvement
 
-### Remote Caching
+---
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+### 5.3 Developer Visibility & Consent
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+Developers control whether recruiters can see and contact them.
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+**UI Features**
+- “Open to Recruiters” toggle
+- Add contact info (email / LinkedIn)
+- Visibility badge
 
-```
-cd my-turborepo
+**Rules**
+- Only developers with score ≥ 80 are visible
+- Opt-in required
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
+---
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
+### 5.4 Recruiter Discover Experience
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+Recruiters can:
+- Browse high-scoring developers
+- Filter by score & tech stack
+- View public developer profiles
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+**Contact Flow**
+- Click “Contact Developer”
+- Write message in modal
+- Request sent for approval
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+---
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
+### 5.5 Contact Requests (Developer Inbox)
 
-## Useful Links
+Developers can:
+- View recruiter messages
+- Accept or reject requests
+- Share contact info only after acceptance
 
-Learn more about the power of Turborepo:
+---
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+## 6. User Flows
+
+### Developer Flow
+1. Sign up / Login
+2. Analyze GitHub repository
+3. View Developer Score
+4. Enable recruiter visibility
+5. Receive & manage contact requests
+
+### Recruiter Flow
+1. Sign up / Login
+2. Discover top developers
+3. Filter candidates
+4. Send contact request
+5. Await developer approval
+
+---
+
+## 7. Landing Page Content
+
+### Sections
+1. Hero (Headline, subheadline, CTAs)
+2. Problem statement
+3. How it works
+4. Developer Score explanation
+5. For Developers
+6. For Recruiters
+7. Trust signals
+8. FAQ
+9. Final CTA
+
+---
+
+## 8. Frontend Folder Structure (Next.js 14)
+
+```txt
+hirexai/
+├── app/
+│   ├── page.tsx              # Landing page (/)
+│   ├── layout.tsx
+│   ├── globals.css
+│
+│   ├── pricing/
+│   │   └── page.tsx
+│
+│   ├── about/
+│   │   └── page.tsx
+│
+│   ├── (auth)/
+│   │   ├── login/
+│   │   │   └── page.tsx
+│   │   ├── register/
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│
+│   ├── dashboard/
+│   │   ├── page.tsx
+│   │   ├── analyze/
+│   │   │   └── page.tsx
+│   │   ├── results/
+│   │   │   └── page.tsx
+│   │   ├── requests/
+│   │   │   └── page.tsx
+│   │   └── settings/
+│   │       └── page.tsx
+│
+│   ├── recruiter/
+│   │   ├── discover/
+│   │   │   └── page.tsx
+│   │   ├── candidates/
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│
+│   ├── profile/
+│   │   └── [username]/
+│   │       └── page.tsx
+│
+│   └── not-found.tsx
+│
+├── components/
+│   ├── ui/                  # shadcn/ui
+│   ├── layout/              # Navbar, Footer, Sidebar
+│   ├── developer/           # Score, visibility, inbox
+│   ├── recruiter/           # Cards, filters, modals
+│   ├── analysis/            # Score breakdown UI
+│   └── shared/              # Loader, EmptyState
+│
+├── hooks/
+│   ├── useFilters.ts
+│   ├── useContactModal.ts
+│   └── useVisibility.ts
+│
+├── store/                   # Frontend state (Zustand)
+│   ├── user.store.ts
+│   ├── analysis.store.ts
+│   └── recruiter.store.ts
+│
+├── data/                    # Mock data
+│   ├── mockDevelopers.ts
+│   ├── mockAnalysis.ts
+│   └── mockRequests.ts
+│
+├── types/
+│   ├── user.ts
+│   ├── developer.ts
+│   ├── recruiter.ts
+│   └── analysis.ts
+│
+├── utils/
+│   ├── formatScore.ts
+│   ├── constants.ts
+│   └── cn.ts
+│
+├── public/
+│   ├── images/
+│   └── icons/
+│
+└── README.md
