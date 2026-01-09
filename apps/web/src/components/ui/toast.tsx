@@ -1,19 +1,19 @@
-"use client";
+"use client"
 
-import { Toast } from "@base-ui/react/toast";
+import { Toast } from "@base-ui/react/toast"
 import {
   CircleAlertIcon,
   CircleCheckIcon,
   InfoIcon,
   LoaderCircleIcon,
   TriangleAlertIcon,
-} from "lucide-react";
+} from "lucide-react"
 
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
 
-const toastManager = Toast.createToastManager();
-const anchoredToastManager = Toast.createToastManager();
+const toastManager = Toast.createToastManager()
+const anchoredToastManager = Toast.createToastManager()
 
 const TOAST_ICONS = {
   error: CircleAlertIcon,
@@ -21,7 +21,7 @@ const TOAST_ICONS = {
   loading: LoaderCircleIcon,
   success: CircleCheckIcon,
   warning: TriangleAlertIcon,
-} as const;
+} as const
 
 type ToastPosition =
   | "top-left"
@@ -29,28 +29,24 @@ type ToastPosition =
   | "top-right"
   | "bottom-left"
   | "bottom-center"
-  | "bottom-right";
+  | "bottom-right"
 
 interface ToastProviderProps extends Toast.Provider.Props {
-  position?: ToastPosition;
+  position?: ToastPosition
 }
 
-function ToastProvider({
-  children,
-  position = "bottom-right",
-  ...props
-}: ToastProviderProps) {
+function ToastProvider({ children, position = "bottom-right", ...props }: ToastProviderProps) {
   return (
     <Toast.Provider toastManager={toastManager} {...props}>
       {children}
       <Toasts position={position} />
     </Toast.Provider>
-  );
+  )
 }
 
 function Toasts({ position = "bottom-right" }: { position: ToastPosition }) {
-  const { toasts } = Toast.useToastManager();
-  const isTop = position.startsWith("top");
+  const { toasts } = Toast.useToastManager()
+  const isTop = position.startsWith("top")
 
   return (
     <Toast.Portal data-slot="toast-portal">
@@ -63,15 +59,13 @@ function Toasts({ position = "bottom-right" }: { position: ToastPosition }) {
           // Horizontal positioning
           "data-[position*=left]:left-(--toast-inset)",
           "data-[position*=right]:right-(--toast-inset)",
-          "data-[position*=center]:-translate-x-1/2 data-[position*=center]:left-1/2",
+          "data-[position*=center]:-translate-x-1/2 data-[position*=center]:left-1/2"
         )}
         data-position={position}
         data-slot="toast-viewport"
       >
-        {toasts.map((toast) => {
-          const Icon = toast.type
-            ? TOAST_ICONS[toast.type as keyof typeof TOAST_ICONS]
-            : null;
+        {toasts.map(toast => {
+          const Icon = toast.type ? TOAST_ICONS[toast.type as keyof typeof TOAST_ICONS] : null
 
           return (
             <Toast.Root
@@ -114,7 +108,7 @@ function Toasts({ position = "bottom-right" }: { position: ToastPosition }) {
                 "data-expanded:data-ending-style:data-[swipe-direction=left]:transform-[translateX(calc(var(--toast-swipe-movement-x)-100%-var(--toast-inset)))_translateY(var(--toast-calc-offset-y))]",
                 "data-expanded:data-ending-style:data-[swipe-direction=right]:transform-[translateX(calc(var(--toast-swipe-movement-x)+100%+var(--toast-inset)))_translateY(var(--toast-calc-offset-y))]",
                 "data-expanded:data-ending-style:data-[swipe-direction=up]:transform-[translateY(calc(var(--toast-swipe-movement-y)-100%-var(--toast-inset)))]",
-                "data-expanded:data-ending-style:data-[swipe-direction=down]:transform-[translateY(calc(var(--toast-swipe-movement-y)+100%+var(--toast-inset)))]",
+                "data-expanded:data-ending-style:data-[swipe-direction=down]:transform-[translateY(calc(var(--toast-swipe-movement-y)+100%+var(--toast-inset)))]"
               )}
               data-position={position}
               key={toast.id}
@@ -139,10 +133,7 @@ function Toasts({ position = "bottom-right" }: { position: ToastPosition }) {
                   )}
 
                   <div className="flex flex-col gap-0.5">
-                    <Toast.Title
-                      className="font-medium"
-                      data-slot="toast-title"
-                    />
+                    <Toast.Title className="font-medium" data-slot="toast-title" />
                     <Toast.Description
                       className="text-muted-foreground"
                       data-slot="toast-description"
@@ -150,20 +141,17 @@ function Toasts({ position = "bottom-right" }: { position: ToastPosition }) {
                   </div>
                 </div>
                 {toast.actionProps && (
-                  <Toast.Action
-                    className={buttonVariants({ size: "xs" })}
-                    data-slot="toast-action"
-                  >
+                  <Toast.Action className={buttonVariants({ size: "xs" })} data-slot="toast-action">
                     {toast.actionProps.children}
                   </Toast.Action>
                 )}
               </Toast.Content>
             </Toast.Root>
-          );
+          )
         })}
       </Toast.Viewport>
     </Toast.Portal>
-  );
+  )
 }
 
 function AnchoredToastProvider({ children, ...props }: Toast.Provider.Props) {
@@ -172,28 +160,22 @@ function AnchoredToastProvider({ children, ...props }: Toast.Provider.Props) {
       {children}
       <AnchoredToasts />
     </Toast.Provider>
-  );
+  )
 }
 
 function AnchoredToasts() {
-  const { toasts } = Toast.useToastManager();
+  const { toasts } = Toast.useToastManager()
 
   return (
     <Toast.Portal data-slot="toast-portal-anchored">
-      <Toast.Viewport
-        className="outline-none"
-        data-slot="toast-viewport-anchored"
-      >
-        {toasts.map((toast) => {
-          const Icon = toast.type
-            ? TOAST_ICONS[toast.type as keyof typeof TOAST_ICONS]
-            : null;
-          const tooltipStyle =
-            (toast.data as { tooltipStyle?: boolean })?.tooltipStyle ?? false;
-          const positionerProps = toast.positionerProps;
+      <Toast.Viewport className="outline-none" data-slot="toast-viewport-anchored">
+        {toasts.map(toast => {
+          const Icon = toast.type ? TOAST_ICONS[toast.type as keyof typeof TOAST_ICONS] : null
+          const tooltipStyle = (toast.data as { tooltipStyle?: boolean })?.tooltipStyle ?? false
+          const positionerProps = toast.positionerProps
 
           if (!positionerProps?.anchor) {
-            return null;
+            return null
           }
 
           return (
@@ -209,7 +191,7 @@ function AnchoredToasts() {
                   "relative text-balance border bg-popover bg-clip-padding text-popover-foreground text-xs transition-[scale,opacity] before:pointer-events-none before:absolute before:inset-0 before:shadow-[0_1px_--theme(--color-black/4%)] data-ending-style:scale-98 data-starting-style:scale-98 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:bg-clip-border dark:before:shadow-[0_-1px_--theme(--color-white/8%)]",
                   tooltipStyle
                     ? "rounded-md shadow-black/5 shadow-md before:rounded-[calc(var(--radius-md)-1px)]"
-                    : "rounded-lg shadow-lg before:rounded-[calc(var(--radius-lg)-1px)]",
+                    : "rounded-lg shadow-lg before:rounded-[calc(var(--radius-lg)-1px)]"
                 )}
                 data-slot="toast-popup"
                 toast={toast}
@@ -231,10 +213,7 @@ function AnchoredToasts() {
                       )}
 
                       <div className="flex flex-col gap-0.5">
-                        <Toast.Title
-                          className="font-medium"
-                          data-slot="toast-title"
-                        />
+                        <Toast.Title className="font-medium" data-slot="toast-title" />
                         <Toast.Description
                           className="text-muted-foreground"
                           data-slot="toast-description"
@@ -253,11 +232,11 @@ function AnchoredToasts() {
                 )}
               </Toast.Root>
             </Toast.Positioner>
-          );
+          )
         })}
       </Toast.Viewport>
     </Toast.Portal>
-  );
+  )
 }
 
 export {
@@ -266,4 +245,4 @@ export {
   toastManager,
   AnchoredToastProvider,
   anchoredToastManager,
-};
+}

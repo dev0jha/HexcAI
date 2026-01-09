@@ -1,6 +1,5 @@
-import  {Navbar} from '@/components/core/Navbar'
-import React from 'react'
-import {HeroSection} from '@/components/core/Hero'
+import { Navbar } from "@/components/core/Navbar"
+import { HeroSection } from "@/components/core/Hero"
 
 export default function page() {
   return (
@@ -8,6 +7,5 @@ export default function page() {
       <Navbar />
       <HeroSection />
     </div>
-    
   )
 }

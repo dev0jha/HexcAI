@@ -5,7 +5,16 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Code2, LayoutDashboard, Search, Inbox, Settings, LogOut, ChevronLeft, ChevronRight } from "lucide-react"
+import {
+  Code2,
+  LayoutDashboard,
+  Search,
+  Inbox,
+  Settings,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react"
 import { useState } from "react"
 
 const navItems = [
@@ -23,7 +32,7 @@ export function DashboardSidebar() {
     <aside
       className={cn(
         "hidden md:block fixed left-0 top-0 z-40 h-screen border-r border-border bg-sidebar transition-all duration-300",
-        collapsed ? "w-16" : "w-64",
+        collapsed ? "w-16" : "w-64"
       )}
     >
       <div className="flex h-full flex-col">
@@ -35,7 +44,9 @@ export function DashboardSidebar() {
             {!collapsed && (
               <>
                 <span className="font-bold">HireXAI</span>
-                <span className="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">AI</span>
+                <span className="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">
+                  AI
+                </span>
               </>
             )}
           </Link>
@@ -50,7 +61,7 @@ export function DashboardSidebar() {
         </div>
 
         <nav className="flex-1 space-y-1 p-2">
-          {navItems.map((item) => (
+          {navItems.map(item => (
             <Link key={item.href} href={item.href}>
               <Button
                 variant={pathname === item.href ? "secondary" : "ghost"}
@@ -76,7 +87,7 @@ export function DashboardSidebar() {
               </div>
             )}
             {!collapsed && (
-              <Button variant="ghost" size="icon" className="h-8 w-8" >
+              <Button variant="ghost" size="icon" className="h-8 w-8">
                 <Link href="/">
                   <LogOut className="h-4 w-4" />
                 </Link>

@@ -26,7 +26,7 @@ export default function ThemeToggle() {
       <Button
         variant="ghost"
         size="icon"
-        className={cn("relative h-9 w-9 " )}
+        className={cn("relative h-9 w-9 ")}
         aria-label="Toggle theme"
         disabled
       >

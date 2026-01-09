@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import { Slider as SliderPrimitive } from "@base-ui/react/slider";
-import * as React from "react";
+import { Slider as SliderPrimitive } from "@base-ui/react/slider"
+import * as React from "react"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 function Slider({
   className,
@@ -16,13 +16,13 @@ function Slider({
 }: SliderPrimitive.Root.Props) {
   const _values = React.useMemo(() => {
     if (value !== undefined) {
-      return Array.isArray(value) ? value : [value];
+      return Array.isArray(value) ? value : [value]
     }
     if (defaultValue !== undefined) {
-      return Array.isArray(defaultValue) ? defaultValue : [defaultValue];
+      return Array.isArray(defaultValue) ? defaultValue : [defaultValue]
     }
-    return [min];
-  }, [value, defaultValue, min]);
+    return [min]
+  }, [value, defaultValue, min])
 
   return (
     <SliderPrimitive.Root
@@ -38,7 +38,7 @@ function Slider({
       <SliderPrimitive.Control
         className={cn(
           "flex touch-none select-none data-disabled:pointer-events-none data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=horizontal]:w-full data-[orientation=horizontal]:min-w-44 data-[orientation=vertical]:flex-col data-disabled:opacity-64",
-          className,
+          className
         )}
         data-slot="slider-control"
       >
@@ -60,7 +60,7 @@ function Slider({
         </SliderPrimitive.Track>
       </SliderPrimitive.Control>
     </SliderPrimitive.Root>
-  );
+  )
 }
 
 function SliderValue({ className, ...props }: SliderPrimitive.Value.Props) {
@@ -70,7 +70,7 @@ function SliderValue({ className, ...props }: SliderPrimitive.Value.Props) {
       data-slot="slider-value"
       {...props}
     />
-  );
+  )
 }
 
-export { Slider, SliderValue };
+export { Slider, SliderValue }

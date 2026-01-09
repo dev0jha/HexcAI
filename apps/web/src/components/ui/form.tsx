@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import { Form as FormPrimitive } from "@base-ui/react/form";
+import { Form as FormPrimitive } from "@base-ui/react/form"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 function Form({ className, ...props }: FormPrimitive.Props) {
   return (
@@ -11,7 +11,7 @@ function Form({ className, ...props }: FormPrimitive.Props) {
       data-slot="form"
       {...props}
     />
-  );
+  )
 }
 
-export { Form };
+export { Form }

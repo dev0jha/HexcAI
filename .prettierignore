@@ -1,0 +1,33 @@
+**/.next
+build/
+dist
+
+node_modules/
+target/
+coverage/
+snapshot/
+generated/
+pnpm-lock.yaml
+
+__generated__/
+/benchmark/large-monorepo
+/cli/dist-cross*
+/docs/public/schema.json
+/packages/eslint-plugin-turbo/__tests__/fixtures/
+/packages/turbo-codemod/templates/
+/docs/components/pages/pack-home/benchmark-data/data.json
+
+# Examples have their own formatting setup
+/examples/
+
+# Integration test fixtures
+/turborepo-tests/
+
+# crates (test fixtures)
+/crates/
+
+# generators
+*.hbs
+
+# TOML files (formatted by taplo)
+*.toml

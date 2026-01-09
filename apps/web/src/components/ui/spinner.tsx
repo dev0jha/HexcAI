@@ -1,10 +1,7 @@
-import { cn } from "@coss/ui/lib/utils";
-import { Loader2Icon } from "lucide-react";
+import { cn } from "@coss/ui/lib/utils"
+import { Loader2Icon } from "lucide-react"
 
-function Spinner({
-  className,
-  ...props
-}: React.ComponentProps<typeof Loader2Icon>) {
+function Spinner({ className, ...props }: React.ComponentProps<typeof Loader2Icon>) {
   return (
     <Loader2Icon
       aria-label="Loading"
@@ -12,7 +9,7 @@ function Spinner({
       role="status"
       {...props}
     />
-  );
+  )
 }
 
-export { Spinner };
+export { Spinner }

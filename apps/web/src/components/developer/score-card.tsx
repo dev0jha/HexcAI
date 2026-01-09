@@ -44,7 +44,9 @@ export function ScoreCard({ score, showBreakdown, breakdown }: ScoreCardProps) {
           {Object.entries(breakdown).map(([key, value]) => (
             <div key={key} className="space-y-1">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground capitalize">{key.replace(/([A-Z])/g, " $1").trim()}</span>
+                <span className="text-muted-foreground capitalize">
+                  {key.replace(/([A-Z])/g, " $1").trim()}
+                </span>
                 <span className="font-medium">{value}</span>
               </div>
               <Progress value={value} className="h-1.5" />

@@ -17,14 +17,22 @@ export function Navbar() {
               <Code2 className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold">DevScore</span>
-            <span className="rounded bg-primary/20 px-1.5 py-0.5 text-xs font-medium text-primary">AI</span>
+            <span className="rounded bg-primary/20 px-1.5 py-0.5 text-xs font-medium text-primary">
+              AI
+            </span>
           </Link>
 
           <div className="hidden items-center gap-8 md:flex">
-            <Link href="/pricing" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            <Link
+              href="/pricing"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
               Pricing
             </Link>
-            <Link href="/about" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            <Link
+              href="/about"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
               About
             </Link>
           </div>

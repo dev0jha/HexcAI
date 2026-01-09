@@ -13,18 +13,20 @@ import { Check, X, Building2, Mail, Clock } from "lucide-react"
 export default function RequestsPage() {
   const [requests, setRequests] = useState<ContactRequest[]>(mockContactRequests)
 
-  const pendingRequests = requests.filter((r) => r.status === "pending")
-  const acceptedRequests = requests.filter((r) => r.status === "accepted")
-  const rejectedRequests = requests.filter((r) => r.status === "rejected")
+  const pendingRequests = requests.filter(r => r.status === "pending")
+  const acceptedRequests = requests.filter(r => r.status === "accepted")
+  const rejectedRequests = requests.filter(r => r.status === "rejected")
 
   function handleAccept(id: string) {
-    setRequests((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status: "accepted", recruiterEmail: "revealed@email.com" } : r)),
+    setRequests(prev =>
+      prev.map(r =>
+        r.id === id ? { ...r, status: "accepted", recruiterEmail: "revealed@email.com" } : r
+      )
     )
   }
 
   function handleReject(id: string) {
-    setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: "rejected" } : r)))
+    setRequests(prev => prev.map(r => (r.id === id ? { ...r, status: "rejected" } : r)))
   }
 
   function RequestCard({ request }: { request: ContactRequest }) {
@@ -33,11 +35,14 @@ export default function RequestsPage() {
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
             <Avatar className="h-12 w-12">
-              <AvatarImage src="/recruiter-portrait-male-professional.jpg" alt={request.recruiterName} />
+              <AvatarImage
+                src="/recruiter-portrait-male-professional.jpg"
+                alt={request.recruiterName}
+              />
               <AvatarFallback>
                 {request.recruiterName
                   .split(" ")
-                  .map((n) => n[0])
+                  .map(n => n[0])
                   .join("")}
               </AvatarFallback>
             </Avatar>
@@ -51,7 +56,11 @@ export default function RequestsPage() {
           </div>
           <Badge
             variant={
-              request.status === "accepted" ? "default" : request.status === "rejected" ? "destructive" : "secondary"
+              request.status === "accepted"
+                ? "default"
+                : request.status === "rejected"
+                  ? "destructive"
+                  : "secondary"
             }
           >
             {request.status}
@@ -62,10 +71,10 @@ export default function RequestsPage() {
 
         <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
           <Clock className="h-3 w-3" />
-          {new Date(request.createdAt).toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'short', 
-            day: 'numeric' 
+          {new Date(request.createdAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
           })}
         </div>
 
@@ -75,7 +84,11 @@ export default function RequestsPage() {
               <Check className="h-4 w-4" />
               Accept
             </Button>
-            <Button variant="outline" onClick={() => handleReject(request.id)} className="gap-2 bg-transparent w-full sm:w-auto">
+            <Button
+              variant="outline"
+              onClick={() => handleReject(request.id)}
+              className="gap-2 bg-transparent w-full sm:w-auto"
+            >
               <X className="h-4 w-4" />
               Decline
             </Button>
@@ -97,64 +110,70 @@ export default function RequestsPage() {
       <div className="space-y-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold font-poppins">Contact Requests</h1>
-          <p className="text-muted-foreground mt-1 font-poppins">Manage contact requests from recruiters</p>
+          <p className="text-muted-foreground mt-1 font-poppins">
+            Manage contact requests from recruiters
+          </p>
         </div>
 
         <Tabs defaultValue="pending" className="w-full">
           <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="pending" className="gap-2 flex-1 sm:flex-none">
-            Pending
-            {pendingRequests.length > 0 && (
-              <Badge variant="secondary" className="ml-1 h-5 w-5 rounded-full p-0 text-xs">
-                {pendingRequests.length}
-              </Badge>
-            )}
+              Pending
+              {pendingRequests.length > 0 && (
+                <Badge variant="secondary" className="ml-1 h-5 w-5 rounded-full p-0 text-xs">
+                  {pendingRequests.length}
+                </Badge>
+              )}
             </TabsTrigger>
-            <TabsTrigger value="accepted" className="flex-1 sm:flex-none">Accepted</TabsTrigger>
-            <TabsTrigger value="rejected" className="flex-1 sm:flex-none">Declined</TabsTrigger>
-        </TabsList>
+            <TabsTrigger value="accepted" className="flex-1 sm:flex-none">
+              Accepted
+            </TabsTrigger>
+            <TabsTrigger value="rejected" className="flex-1 sm:flex-none">
+              Declined
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="pending" className="mt-6">
-          {pendingRequests.length === 0 ? (
-            <Card className="p-8 text-center">
-              <p className="text-muted-foreground">No pending requests</p>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {pendingRequests.map((request) => (
-                <RequestCard key={request.id} request={request} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
+          <TabsContent value="pending" className="mt-6">
+            {pendingRequests.length === 0 ? (
+              <Card className="p-8 text-center">
+                <p className="text-muted-foreground">No pending requests</p>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {pendingRequests.map(request => (
+                  <RequestCard key={request.id} request={request} />
+                ))}
+              </div>
+            )}
+          </TabsContent>
 
-        <TabsContent value="accepted" className="mt-6">
-          {acceptedRequests.length === 0 ? (
-            <Card className="p-8 text-center">
-              <p className="text-muted-foreground">No accepted requests</p>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {acceptedRequests.map((request) => (
-                <RequestCard key={request.id} request={request} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
+          <TabsContent value="accepted" className="mt-6">
+            {acceptedRequests.length === 0 ? (
+              <Card className="p-8 text-center">
+                <p className="text-muted-foreground">No accepted requests</p>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {acceptedRequests.map(request => (
+                  <RequestCard key={request.id} request={request} />
+                ))}
+              </div>
+            )}
+          </TabsContent>
 
-        <TabsContent value="rejected" className="mt-6">
-          {rejectedRequests.length === 0 ? (
-            <Card className="p-8 text-center">
-              <p className="text-muted-foreground">No declined requests</p>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {rejectedRequests.map((request) => (
-                <RequestCard key={request.id} request={request} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
+          <TabsContent value="rejected" className="mt-6">
+            {rejectedRequests.length === 0 ? (
+              <Card className="p-8 text-center">
+                <p className="text-muted-foreground">No declined requests</p>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {rejectedRequests.map(request => (
+                  <RequestCard key={request.id} request={request} />
+                ))}
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
       </div>
     </div>

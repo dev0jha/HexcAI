@@ -40,7 +40,12 @@ export function VisibilityToggle({ initialValue, score }: VisibilityToggleProps)
             </p>
           </div>
         </div>
-        <Switch id="visibility" checked={isOpen && canBeVisible} onCheckedChange={setIsOpen} disabled={!canBeVisible} />
+        <Switch
+          id="visibility"
+          checked={isOpen && canBeVisible}
+          onCheckedChange={setIsOpen}
+          disabled={!canBeVisible}
+        />
       </div>
 
       {!canBeVisible && (

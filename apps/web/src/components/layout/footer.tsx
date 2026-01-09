@@ -12,9 +12,13 @@ export function Footer() {
                 <Code2 className="h-5 w-5 text-primary-foreground" />
               </div>
               <span className="text-xl font-bold">DevScore</span>
-              <span className="rounded bg-primary/20 px-1.5 py-0.5 text-xs font-medium text-primary">AI</span>
+              <span className="rounded bg-primary/20 px-1.5 py-0.5 text-xs font-medium text-primary">
+                AI
+              </span>
             </Link>
-            <p className="text-sm text-muted-foreground">AI-powered developer evaluation. Real code, real skills.</p>
+            <p className="text-sm text-muted-foreground">
+              AI-powered developer evaluation. Real code, real skills.
+            </p>
             <div className="flex gap-4">
               <a
                 href="#"
@@ -23,7 +27,11 @@ export function Footer() {
               >
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground transition-colors hover:text-foreground" aria-label="GitHub">
+              <a
+                href="#"
+                className="text-muted-foreground transition-colors hover:text-foreground"
+                aria-label="GitHub"
+              >
                 <Github className="h-5 w-5" />
               </a>
               <a

@@ -4,7 +4,7 @@
 **Tagline:** Hire Smarter. Hire by Code.  
 **Product Type:** AI-powered developer evaluation & hiring platform  
 **Scope:** Frontend-first (Next.js 14 – App Router)  
-**Last Updated:** 2026  
+**Last Updated:** 2026
 
 ---
 
@@ -20,12 +20,14 @@ The platform is built with a **developer-first, privacy-first** approach.
 ## 2. Problem Statement
 
 ### Problems with Traditional Hiring
+
 - Resumes don’t reflect real coding skills
 - GitHub profiles are ignored or misjudged
 - Recruiters spend excessive time screening
 - Developers struggle to stand out authentically
 
 ### HireXAI Solves This By:
+
 - Using real GitHub repositories
 - Generating transparent, AI-based scores
 - Enabling ethical, consent-based recruiter outreach
@@ -35,11 +37,13 @@ The platform is built with a **developer-first, privacy-first** approach.
 ## 3. Goals & Objectives
 
 ### Primary Goals
+
 - Evaluate developers using real code
 - Provide a clear, explainable Developer Score
 - Enable faster, smarter hiring
 
 ### Success Metrics
+
 - Clear value understood within 5 seconds
 - Recruiters can identify top developers easily
 - Developers feel safe and in control
@@ -49,16 +53,19 @@ The platform is built with a **developer-first, privacy-first** approach.
 ## 4. Target Users
 
 ### 👨‍💻 Developers
+
 - Students, professionals, open-source contributors
 - Want skill-based visibility
 - Want recruiter outreach without spam
 
 ### 🧑‍💼 Recruiters
+
 - Hiring managers, founders, HR teams
 - Want fast, reliable technical signals
 - Want to see code before contacting
 
 ### 🛠️ Admin (Platform Owner)
+
 - Moderates users
 - Maintains trust & quality
 - Manages platform rules
@@ -70,11 +77,13 @@ The platform is built with a **developer-first, privacy-first** approach.
 ### 5.1 GitHub Repository Analysis (UI Scope)
 
 **Frontend Capabilities**
+
 - Input GitHub repository URL
 - Show analysis progress
 - Display AI-generated insights
 
 **Displayed Metrics**
+
 - Code Quality
 - Architecture & Structure
 - Security Practices
@@ -87,15 +96,16 @@ The platform is built with a **developer-first, privacy-first** approach.
 
 **Score Range:** 0 – 100
 
-| Category | Weight |
-|--------|--------|
-| Code Quality | 30% |
-| Architecture | 20% |
-| Security | 20% |
-| Git Practices | 15% |
-| Documentation | 15% |
+| Category      | Weight |
+| ------------- | ------ |
+| Code Quality  | 30%    |
+| Architecture  | 20%    |
+| Security      | 20%    |
+| Git Practices | 15%    |
+| Documentation | 15%    |
 
 **Score Labels**
+
 - 90–100 → Excellent
 - 80–89 → Strong
 - 60–79 → Average
@@ -108,11 +118,13 @@ The platform is built with a **developer-first, privacy-first** approach.
 Developers control whether recruiters can see and contact them.
 
 **UI Features**
+
 - “Open to Recruiters” toggle
 - Add contact info (email / LinkedIn)
 - Visibility badge
 
 **Rules**
+
 - Only developers with score ≥ 80 are visible
 - Opt-in required
 
@@ -121,11 +133,13 @@ Developers control whether recruiters can see and contact them.
 ### 5.4 Recruiter Discover Experience
 
 Recruiters can:
+
 - Browse high-scoring developers
 - Filter by score & tech stack
 - View public developer profiles
 
 **Contact Flow**
+
 - Click “Contact Developer”
 - Write message in modal
 - Request sent for approval
@@ -135,6 +149,7 @@ Recruiters can:
 ### 5.5 Contact Requests (Developer Inbox)
 
 Developers can:
+
 - View recruiter messages
 - Accept or reject requests
 - Share contact info only after acceptance
@@ -144,6 +159,7 @@ Developers can:
 ## 6. User Flows
 
 ### Developer Flow
+
 1. Sign up / Login
 2. Analyze GitHub repository
 3. View Developer Score
@@ -151,6 +167,7 @@ Developers can:
 5. Receive & manage contact requests
 
 ### Recruiter Flow
+
 1. Sign up / Login
 2. Discover top developers
 3. Filter candidates
@@ -162,6 +179,7 @@ Developers can:
 ## 7. Landing Page Content
 
 ### Sections
+
 1. Hero (Headline, subheadline, CTAs)
 2. Problem statement
 3. How it works
@@ -259,3 +277,4 @@ hirexai/
 │   └── icons/
 │
 └── README.md
+```
