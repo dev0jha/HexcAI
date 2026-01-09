@@ -117,18 +117,18 @@ export function SpotlightNavbar({
     };
 
     return (
-        <div className={cn("relative flex justify-center pt-10", className)}>
+        <div className={cn("relative flex justify-center pt-6 sm:pt-10 px-2 sm:px-0", className)}>
             <nav
                 ref={navRef}
                 className={cn(
-                    "relative h-11 rounded-full transition-all duration-300 overflow-hidden bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-black/10 dark:border-white/10"
+                    "relative h-11 sm:h-12 rounded-full transition-all duration-300 overflow-x-auto overflow-y-hidden bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-black/10 dark:border-white/10 scrollbar-hide max-w-full"
                 )}
                 style={{
                     '--spotlight-color': isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)',
                     '--ambience-color': isDark ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,0.8)',
                 } as React.CSSProperties}
             >
-                <ul className="relative flex items-center h-full px-2 gap-0 z-[10]">
+                <ul className="relative flex items-center h-full px-1.5 sm:px-3 gap-0 z-[10] whitespace-nowrap">
                     {items.map((item, idx) => (
                         <li key={idx} className="relative h-full flex items-center justify-center">
                             {item.label === "Login" ? (
@@ -139,7 +139,7 @@ export function SpotlightNavbar({
                                             onItemClick?.(item, idx);
                                         }}
                                         size="sm"
-                                        className="mx-2 relative z-20 shadow-none"
+                                        className="mx-1 sm:mx-2 relative z-20 shadow-none text-xs sm:text-sm px-2 sm:px-4"
                                     >
                                         {item.label}
                                     </Button>
@@ -153,7 +153,7 @@ export function SpotlightNavbar({
                                         handleItemClick(item, idx);
                                     }}
                                     className={cn(
-                                        "px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-full",
+                                        "px-2 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium transition-colors duration-200 rounded-full",
                                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:focus-visible:ring-white/30",
                                         activeIndex === idx
                                             ? "text-black dark:text-white"
@@ -165,9 +165,9 @@ export function SpotlightNavbar({
                             )}
                         </li>
                     ))}
-                    <li className="relative h-full flex items-center justify-center ml-1">
+                    <li className="relative h-full flex items-center justify-center ml-0 sm:ml-1">
                         <div 
-                            className="relative z-20 [&_button]:shadow-none"
+                            className="relative z-20 [&_button]:shadow-none scale-75 sm:scale-100"
                             onMouseMove={(e) => e.stopPropagation()}
                         >
                             <ThemeToggle />
