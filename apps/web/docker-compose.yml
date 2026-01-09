@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: hirexai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hirexai
+      POSTGRES_PASSWORD: hirexai_password
+      POSTGRES_DB: hirexai_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
