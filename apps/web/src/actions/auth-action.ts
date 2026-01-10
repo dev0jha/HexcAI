@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function SignInUser(form: FormData) {
   try{
@@ -33,6 +34,8 @@ export async function SignUpUser(form: FormData) {
           password: form.get("password") as string,
         },
       });
+      redirect('/dashboard');
+      console.log("SignUp Result:", result);
       return result;
   } catch (error) {
     throw new Error("Failed to sign up. Check your internet connection and try again.");

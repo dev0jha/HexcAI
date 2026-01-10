@@ -13,9 +13,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Code2, Menu, X, Settings, LogOut, User, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
+import { useSession } from "@/lib/auth-client"
 
 export function DashboardHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const {data: session , error} = useSession()
   const { theme, setTheme } = useTheme()
 
   return (
@@ -45,7 +47,7 @@ export function DashboardHeader() {
                 <AvatarImage src="/developer-portrait-male-asian.jpg" alt="Alex Chen" />
                 <AvatarFallback>AC</AvatarFallback>
               </Avatar>
-              <span className="hidden sm:inline">Alex Chen</span>
+              <span className="hidden sm:inline">{session?.user.name}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
