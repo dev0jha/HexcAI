@@ -9,8 +9,8 @@ import { Code2, Search, Users, LogOut, ChevronLeft, ChevronRight } from "lucide-
 import { useState } from "react"
 
 const navItems = [
-  { href: "/recruiter/discover", label: "Discover", icon: Search },
-  { href: "/recruiter/candidates", label: "My Candidates", icon: Users },
+  { href: "/recuriter/discover", label: "Discover", icon: Search },
+  { href: "/recuriter/candidates", label: "My Candidates", icon: Users },
 ]
 
 export function RecruiterSidebar() {
@@ -32,10 +32,8 @@ export function RecruiterSidebar() {
             </div>
             {!collapsed && (
               <>
-                <span className="font-bold">DevScore</span>
-                <span className="rounded bg-primary/20 px-1.5 py-0.5 text-xs font-medium text-primary">
-                  AI
-                </span>
+                <span className="font-bold">HireXAI</span>
+                <span className="rounded bg-primary/20 px-1.5 py-0.5 text-xs font-medium text-primary">AI</span>
               </>
             )}
           </Link>

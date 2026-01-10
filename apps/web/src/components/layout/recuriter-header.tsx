@@ -11,10 +11,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Code2, Menu, X, Settings, LogOut, Building2 } from "lucide-react"
+import { Code2, Menu, X, Settings, LogOut, Building2, User, Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
 
 export function RecruiterHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { theme, setTheme } = useTheme()
+  const isDark = theme === "dark"
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md md:left-64">
@@ -32,7 +35,8 @@ export function RecruiterHeader() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <Code2 className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-bold">DevScore</span>
+            <span className="font-bold">HireXAI</span>
+            <span className="rounded bg-primary/20 px-1.5 py-0.5 text-xs font-medium text-primary">AI</span>
           </Link>
         </div>
 
@@ -55,7 +59,11 @@ export function RecruiterHeader() {
               <Settings className="h-4 w-4" />
               Settings
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+           
+          <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="flex items-center gap-2 cursor-pointer">
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              {theme === "dark" ? "Light Mode" : "Dark Mode"}
+            </DropdownMenuItem>            <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link href="/" className="flex items-center gap-2 text-destructive">
                 <LogOut className="h-4 w-4" />
@@ -69,12 +77,12 @@ export function RecruiterHeader() {
       {mobileMenuOpen && (
         <div className="border-t border-border p-4 md:hidden">
           <nav className="space-y-2">
-            <Link href="/recruiter/discover" onClick={() => setMobileMenuOpen(false)}>
+            <Link href="/recuriter/discover" onClick={() => setMobileMenuOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">
                 Discover
               </Button>
             </Link>
-            <Link href="/recruiter/candidates" onClick={() => setMobileMenuOpen(false)}>
+            <Link href="/recuriter/candidates" onClick={() => setMobileMenuOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">
                 My Candidates
               </Button>
