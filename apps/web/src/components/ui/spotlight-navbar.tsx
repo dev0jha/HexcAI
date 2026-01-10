@@ -21,7 +21,6 @@ export function SpotlightNavbar({
   items = [
     { label: "Home", href: "#home" },
     { label: "About", href: "#about" },
-    { label: "Discover", href: "#discover" },
     { label: "Pricing", href: "#pricing" },
     { label: "Login", href: "/signin" },
   ],
