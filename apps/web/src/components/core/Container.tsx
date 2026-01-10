@@ -8,5 +8,5 @@ export default function Container({
   children: React.ReactNode
   className?: string
 }) {
-  return <div className={cn("max-w-5xl mx-auto container", className)}>{children}</div>
+  return <div className={cn("max-w-6xl mx-auto", className)}>{children}</div>
 }

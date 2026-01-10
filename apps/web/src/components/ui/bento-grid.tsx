@@ -1,15 +1,16 @@
-import { ComponentPropsWithoutRef, ReactNode } from "react"
-import { ArrowRightIcon } from "@radix-ui/react-icons"
-
-import { cn } from "@/lib/utils"
+import { CornerCrosses } from "@/components/corner-corsses"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { ArrowRightIcon } from "lucide-react"
+import Link from "next/link"
+import { ComponentPropsWithoutRef, ReactNode } from "react"
 
 interface BentoGridProps extends ComponentPropsWithoutRef<"div"> {
   children: ReactNode
   className?: string
 }
 
-interface BentoCardProps extends ComponentPropsWithoutRef<"div"> {
+export interface BentoCardProps extends ComponentPropsWithoutRef<"div"> {
   name: string
   className: string
   background: ReactNode
@@ -19,13 +20,10 @@ interface BentoCardProps extends ComponentPropsWithoutRef<"div"> {
   cta: string
 }
 
-const BentoGrid = ({ children, className, ...props }: BentoGridProps) => {
+export const BentoGrid = ({ children, className, ...props }: BentoGridProps) => {
   return (
     <div
-      className={cn(
-        "grid w-full auto-rows-[22rem] grid-cols-3 gap-4",
-        className
-      )}
+      className={cn("grid w-full grid-cols-1 md:grid-cols-6 gap-4 md:gap-4", className)}
       {...props}
     >
       {children}
@@ -33,11 +31,11 @@ const BentoGrid = ({ children, className, ...props }: BentoGridProps) => {
   )
 }
 
-const BentoCard = ({
+export const BentoCard = ({
   name,
   className,
   background,
-
+  Icon,
   description,
   href,
   cta,
@@ -46,64 +44,44 @@ const BentoCard = ({
   <div
     key={name}
     className={cn(
-      "group relative col-span-3 flex flex-col justify-between overflow-hidden rounded-xl",
-      // light styles
-      "bg-background [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)]",
-      // dark styles
-      "dark:bg-background transform-gpu dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset] dark:[border:1px_solid_rgba(255,255,255,.1)]",
+      "group relative flex flex-col justify-between overflow-visible border-dashed",
+      "bg-black border border-zinc-800",
       className
     )}
     {...props}
   >
-    <div>{background}</div>
-    <div className="p-4">
-      <div className="pointer-events-none z-10 flex transform-gpu flex-col gap-1 transition-all duration-300 lg:group-hover:-translate-y-10">
-        
-        <h3 className="text-xl font-semibold text-neutral-700 dark:text-neutral-300">
-          {name}
-        </h3>
-        <p className="max-w-lg text-neutral-400">{description}</p>
-      </div>
+    <CornerCrosses />
 
-      <div
-        className={cn(
-          "pointer-events-none flex w-full translate-y-0 transform-gpu flex-row items-center transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 lg:hidden"
-        )}
-      >
-        <Button
-          variant="link"
-          size="sm"
-          className="pointer-events-auto p-0"
-          render={(props) => (
-            <a href={href} {...props}>
-              {cta}
-              <ArrowRightIcon className="ms-2 h-4 w-4 rtl:rotate-180" />
-            </a>
-          )}
-        />
+    <div className="relative overflow-hidden w-full h-full rounded-xl">
+      <div className="absolute inset-0 h-[60%] w-full overflow-hidden">{background}</div>
+
+      <div className="absolute bottom-0 left-0 right-0 p-6 z-20 bg-linear-to-t from-black via-black to-transparent pt-12">
+        <div className="mb-2 flex items-center gap-2">
+          <div className="p-1 rounded bg-zinc-900 border border-zinc-800">
+            <Icon className="h-3 w-3 text-zinc-400" />
+          </div>
+          <span className="text-[10px] font-mono font-medium text-zinc-500 uppercase tracking-wider">
+            SYSTEM_METRIC
+          </span>
+        </div>
+
+        <div className="transform-gpu transition-all duration-300 group-hover:-translate-y-2">
+          <h3 className="text-lg font-semibold text-zinc-100 mb-1 tracking-tight">{name}</h3>
+          <p className="text-zinc-400 text-xs leading-relaxed line-clamp-2">{description}</p>
+        </div>
+
+        <div className="absolute bottom-6 right-6 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-full"
+          >
+            <Link href={href}>
+              <ArrowRightIcon className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
       </div>
     </div>
-
-    <div
-      className={cn(
-        "pointer-events-none absolute bottom-0 hidden w-full translate-y-10 transform-gpu flex-row items-center p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 lg:flex"
-      )}
-    >
-      <Button
-        variant="link"
-        size="sm"
-        className="pointer-events-auto p-0"
-        render={(props) => (
-          <a href={href} {...props}>
-            {cta}
-            <ArrowRightIcon className="ms-2 h-4 w-4 rtl:rotate-180" />
-          </a>
-        )}
-      />
-    </div>
-
-    <div className="pointer-events-none absolute inset-0 transform-gpu transition-all duration-300 group-hover:bg-black/30 group-hover:dark:bg-neutral-800/10" />
   </div>
 )
-
-export { BentoCard, BentoGrid }

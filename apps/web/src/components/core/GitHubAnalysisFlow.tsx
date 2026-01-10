@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef } from "react"
-import { Github, Cpu, TrendingUp } from "lucide-react"
+import { Cpu, Github, TrendingUp } from "lucide-react"
 import { AnimatedBeam } from "@/components/ui/animated-beam"
 import { useIsMobile } from "@/hooks/use-mobile"
 
@@ -13,9 +13,9 @@ export function GitHubAnalysisFlow() {
   const isMobile = useIsMobile()
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      className="relative glass-card rounded-3xl p-4 md:p-8 min-h-[200px] md:min-h-[400px] flex flex-col justify-center w-full"
+      className="relative glass-card rounded-3xl p-4 md:p-8 min-h-50 md:min-h-100 flex flex-col justify-center w-full"
     >
       <div className="flex flex-row items-center justify-between gap-3 md:gap-4">
         {/* GitHub Input */}
@@ -26,7 +26,9 @@ export function GitHubAnalysisFlow() {
           >
             <Github className="h-6 w-6 md:h-10 md:w-10 text-foreground" />
           </div>
-          <span className="text-[10px] md:text-sm font-medium text-muted-foreground text-center">Connect GitHub</span>
+          <span className="text-[10px] md:text-sm font-medium text-muted-foreground text-center">
+            Connect GitHub
+          </span>
         </div>
 
         {/* AI Processing */}
@@ -37,7 +39,9 @@ export function GitHubAnalysisFlow() {
           >
             <Cpu className="h-7 w-7 md:h-12 md:w-12 text-primary animate-pulse" />
           </div>
-          <span className="text-[10px] md:text-sm font-medium text-primary text-center">AI Analysis</span>
+          <span className="text-[10px] md:text-sm font-medium text-primary text-center">
+            AI Analysis
+          </span>
         </div>
 
         {/* Score Output */}
@@ -48,7 +52,9 @@ export function GitHubAnalysisFlow() {
           >
             <TrendingUp className="h-6 w-6 md:h-10 md:w-10 text-success" />
           </div>
-          <span className="text-[10px] md:text-sm font-medium text-muted-foreground text-center">Developer Score</span>
+          <span className="text-[10px] md:text-sm font-medium text-muted-foreground text-center">
+            Developer Score
+          </span>
         </div>
       </div>
 
