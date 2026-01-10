@@ -6,6 +6,7 @@ import ScorePieChart from "@/components/developer/score-pie-chart"
 import { VisibilityToggle } from "@/components/developer/visibility-toggle"
 import { mockDevelopers, mockContactRequests, mockAnalysisResult } from "@/data/mock-data"
 import { ArrowRight, GitBranch, Inbox, Search } from "lucide-react"
+import GearIcon from "@/components/ui/gear-icon"
 
 export default function DashboardPage() {
   const developer = mockDevelopers[0]
@@ -36,20 +37,8 @@ export default function DashboardPage() {
             totalScore={developer.score}
           />
         </Card>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
-          <ScoreCard
-            score={developer.score}
-            showBreakdown
-            breakdown={{
-              codeQuality: 92,
-              architecture: 88,
-              security: 95,
-              gitPractices: 90,
-              documentation: 85,
-            }}
-          />
 
-          <div className="space-y-6">
+        <div className="space-y-6">
             <VisibilityToggle initialValue={developer.isOpenToRecruiters} score={developer.score} />
 
             <Card className="p-6">
@@ -132,9 +121,7 @@ export default function DashboardPage() {
             </Link>
             <Link href="/dashboard/settings">
               <Card className="p-4 hover:bg-accent/50 transition-colors cursor-pointer">
-                <Badge className="h-8 w-8 flex items-center justify-center text-primary mb-2 bg-transparent p-0 text-2xl">
-                  ⚙
-                </Badge>
+                <GearIcon size={32} className="text-primary mb-2" />
                 <h3 className="font-semibold">Settings</h3>
                 <p className="text-sm text-muted-foreground">Update your preferences</p>
               </Card>

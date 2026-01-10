@@ -1,11 +1,16 @@
 import { Navbar } from "@/components/core/Navbar"
 import { HeroSection } from "@/components/core/Hero"
+import {HowItWorks}  from "@/components/core/HowItWork"
 
 export default function page() {
   return (
-    <div className="relative">
+    <>
+    <main className="relative">
       <Navbar />
       <HeroSection />
-    </div>
+      <HowItWorks />
+    
+    </main>
+    </>
   )
 }
