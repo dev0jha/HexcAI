@@ -47,7 +47,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.1, ease: [0.2, 0.65, 0.3, 0.9] }}
           className="text-center max-w-5xl mx-auto mb-6"
         >
-          <h1 className="text-md sm:text-7xl md:text-8xl font-bold tracking-tighter text-white mb-4">
+          <h1 className="text-3xl md:text-8xl font-bold tracking-tighter text-white mb-4">
             Stop Resumes. <br className="hidden md:block" />
             <span className="text-zinc-500">Hire Skill.</span>
           </h1>
@@ -67,17 +67,17 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-16"
+          className="flex flex-col md:flex-row place-content-center gap-4 py-8"
         >
-          <Link href="#DiscoverProfile" className="w-full sm:w-auto">
-            <Button className="py-4 px-4">
+          <Link href="#DiscoverProfile">
+            <Button className="p-4 w-full">
               <IconCode className="w-4 h-4" />
               <span>Analyze Repository</span>
             </Button>
           </Link>
 
-          <Link href="#DiscoverProfile" className="w-full sm:w-auto">
-            <Button className="py-4">
+          <Link href="#DiscoverProfile">
+            <Button className="p-4 w-full">
               <span>View Leaderboard</span>
               <IconChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
             </Button>
