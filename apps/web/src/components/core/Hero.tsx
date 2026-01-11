@@ -19,7 +19,7 @@ export default function HeroSection() {
       id: 2,
       name: "Dev Hari Ojha",
       designation: "Full Stack Developer",
-      image: "https://pbs.twimg.com/profile_images/2007479757957701632/kPeohrWe_400x400.jpg",
+      image: "https://avatars.githubusercontent.com/u/155317634?v=4",
     },
     {
       id: 3,
