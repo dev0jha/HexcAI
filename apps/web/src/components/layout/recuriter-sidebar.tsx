@@ -9,8 +9,8 @@ import { Code2, Search, Users, LogOut, ChevronLeft, ChevronRight } from "lucide-
 import { useState } from "react"
 
 const navItems = [
-  { href: "/recuriter/discover", label: "Discover", icon: Search },
-  { href: "/recuriter/candidates", label: "My Candidates", icon: Users },
+  { href: "/recruiter/discover", label: "Discover", icon: Search },
+  { href: "/recruiter/candidates", label: "My Candidates", icon: Users },
 ]
 
 export function RecruiterSidebar() {

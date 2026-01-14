@@ -44,8 +44,8 @@ export function DashboardHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="gap-2">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="/developer-portrait-male-asian.jpg" alt="Alex Chen" />
-                <AvatarFallback>AC</AvatarFallback>
+                <AvatarImage src={session?.user.image || "/developer-portrait-male-asian.jpg"} alt={session?.user.name || "User"} />
+                <AvatarFallback>{session?.user.name?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
               </Avatar>
               <span className="hidden sm:inline">{session?.user.name}</span>
             </Button>

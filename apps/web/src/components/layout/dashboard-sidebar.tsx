@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 import {
   Code2,
   LayoutDashboard,
@@ -76,19 +76,7 @@ export function DashboardSidebar() {
         </nav>
 
         <div className="border-t border-sidebar-border p-4">
-          <div className={cn("flex items-center gap-3", collapsed && "justify-center")}>
-            <Avatar className="h-9 w-9">
-              <AvatarImage src="/developer-portrait-male-asian.jpg" alt="Alex Chen" />
-              <AvatarFallback>AC</AvatarFallback>
-            </Avatar>
-            {!collapsed && (
-              <div className="flex-1 overflow-hidden">
-                <p className="truncate text-sm font-medium">Alex Chen</p>
-                <p className="truncate text-xs text-muted-foreground">alex@example.com</p>
-              </div>
-            )}
-            {!collapsed && <LogoutBtn />}
-          </div>
+          {!collapsed && <LogoutBtn />}
         </div>
       </div>
     </aside>

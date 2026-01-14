@@ -30,7 +30,7 @@ export default function LogoutBtn() {
   return (
     <Button
       onClick={handleSignoutClick}
-      className="mt-2 text-xs dark:bg-white bg-black text-white dark:text-black w-full hover:bg-black rounded-lg shadow-xl"
+      className="text-xs dark:bg-white bg-black text-white dark:text-black w-full hover:bg-black rounded-lg shadow-xl"
     >
       <LogOut />
       Sign out
