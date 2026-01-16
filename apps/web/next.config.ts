@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'm.media-amazon.com',
       },
+       {
+        protocol: "https",
+        hostname: "pro-section.ui-layouts.com",
+      },
       {
         protocol: 'https',
         hostname: '**.githubusercontent.com',

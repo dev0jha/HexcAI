@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Navbar } from "@/components/core/Navbar"
-import { Footer } from "@/components/layout/footer"
+import  Footer  from "@/components/layout/footer"
 import { Button } from "@/components/ui/button"
 import { UserX } from "lucide-react"
 

@@ -4,6 +4,8 @@ import { HowItWorks } from "@/components/core/HowItWork"
 import Container from "@/components/core/Container"
 import { SchematicBackground } from "@/components/semantic-background"
 import { FeaturesSection } from "@/components/core/Features"
+import ClientFeedback from "@/components/testimonial"
+import Footer from "@/components/layout/footer"
 
 export default function page() {
   return (
@@ -15,6 +17,8 @@ export default function page() {
           <HeroSection />
           <HowItWorks />
           <FeaturesSection />
+          <ClientFeedback />
+          <Footer />
         </Container>
       </main>
     </>

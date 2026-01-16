@@ -1,36 +1,39 @@
-import Link from "next/link"
-import { Code2 } from "lucide-react"
-import Container from "@/components/core/Container"
-import { Card } from "@/components/ui/card"
+import React from "react";
 
-export function Footer() {
+const Footer: React.FC = () => {
   return (
-    <footer className="w-full bg-background py-8">
-      <Container className="px-4 sm:px-6">
-        <Card className="p-8 sm:p-12">
-          <div className="flex flex-col items-center">
-            <div className="flex items-center space-x-3 mb-6">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary">
-                  <Code2 className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <span className="text-2xl font-bold">HireXAI</span>
-                <span className="rounded bg-primary/20 px-2 py-1 text-xs font-medium text-primary">
-                  AI
-                </span>
-              </Link>
-            </div>
-            <p className="text-center max-w-xl text-sm font-normal leading-relaxed text-muted-foreground">
-              Empowering developers and recruiters with AI-powered code evaluation. Transform GitHub repositories into comprehensive skill assessments.
-            </p>
-          </div>
-          <div className="border-t border-border mt-8 pt-6">
-            <div className="text-center text-sm font-normal text-muted-foreground">
-              <Link href="/" className="hover:text-foreground transition-colors">HireXAI</Link> ©{new Date().getFullYear()}. All rights reserved.
-            </div>
-          </div>
-        </Card>
-      </Container>
+    <footer className="bg-white dark:bg-transparent text-black dark:text-white py-20 px-8 border-t border-gray-100 dark:border-zinc-900 transition-colors duration-500">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-end">
+        <div>
+          <h2 className="text-7xl font-light tracking-tighter mb-4">
+           HireXAI
+          </h2>
+        </div>
+        <div className="space-y-8">
+          <h2 className="text-7xl font-light tracking-tighter text-gray-400 dark:text-zinc-300">
+            Beyond Reach.
+          </h2>
+          <p className="max-w-md text-gray-500 dark:text-zinc-400 font-light leading-relaxed">
+           Designed for builders who value depth, clarity, and real results.
+          </p>
+          <button className="px-8 cursor-pointer relative py-3 bg-gray-100 dark:bg-zinc-800 text-xs font-bold uppercase tracking-[0.2em] rounded hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">
+            Contact us
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto mt-32 pt-8 border-t border-gray-100 dark:border-zinc-900 flex flex-col md:flex-row justify-between text-[10px] uppercase tracking-[0.3em] font-medium text-gray-400 dark:text-zinc-600">
+        <p>© 2025 HireXAI</p>
+        <p>ALL RIGHTS RESERVED</p>
+        <a href="https://agnic.dev/" target="_blank">
+          MADE BY{" "}
+          <span className="text-black dark:text-zinc-300 underline underline-offset-4 cursor-pointer">
+            AGNIC
+          </span>
+        </a>
+      </div>
     </footer>
-  )
-}
+  );
+};
+
+export default Footer;
