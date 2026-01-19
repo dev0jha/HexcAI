@@ -9,3 +9,5 @@ export abstract class HealthService {
     }
   }
 }
+
+export { AnalysisService } from "./analysis/analysis.service"
