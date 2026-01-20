@@ -1,193 +1,128 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
-import { animate } from "motion/react"
+import React, { useState } from "react"
+import { AnimatePresence, motion } from "motion/react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { Menu, X } from "lucide-react"
+import { usePathname } from "next/navigation"
+import { PlusIcon } from "@/components/ui/plus-icon"
 
 export interface NavItem {
   label: string
   href: string
 }
 
-export interface SpotlightNavbarProps {
+export interface NavbarProps {
   items?: NavItem[]
   className?: string
-  onItemClick?: (item: NavItem, index: number) => void
-  defaultActiveIndex?: number
 }
 
-export function SpotlightNavbar({
+export function Navbar({
   items = [
     { label: "Home", href: "#home" },
     { label: "About", href: "#about" },
     { label: "Pricing", href: "#pricing" },
-    { label: "Login", href: "/signin" },
   ],
   className,
-  onItemClick,
-  defaultActiveIndex = 0,
-}: SpotlightNavbarProps) {
-  const navRef = useRef<HTMLDivElement>(null)
-  const [activeIndex, setActiveIndex] = useState(defaultActiveIndex)
-  const [hoverX, setHoverX] = useState<number | null>(null)
-
-  const spotlightX = useRef(0)
-  const ambienceX = useRef(0)
-
-  useEffect(() => {
-    if (!navRef.current) return
-    const nav = navRef.current
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = nav.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      setHoverX(x)
-      spotlightX.current = x
-      nav.style.setProperty("--spotlight-x", `${x}px`)
-    }
-
-    const handleMouseLeave = () => {
-      setHoverX(null)
-      const activeItem = nav.querySelector(`[data-index="${activeIndex}"]`)
-      if (activeItem) {
-        const navRect = nav.getBoundingClientRect()
-        const itemRect = activeItem.getBoundingClientRect()
-        const targetX = itemRect.left - navRect.left + itemRect.width / 2
-
-        animate(spotlightX.current, targetX, {
-          type: "spring",
-          stiffness: 200,
-          damping: 20,
-          onUpdate: v => {
-            spotlightX.current = v
-            nav.style.setProperty("--spotlight-x", `${v}px`)
-          },
-        })
-      }
-    }
-
-    nav.addEventListener("mousemove", handleMouseMove)
-    nav.addEventListener("mouseleave", handleMouseLeave)
-
-    return () => {
-      nav.removeEventListener("mousemove", handleMouseMove)
-      nav.removeEventListener("mouseleave", handleMouseLeave)
-    }
-  }, [activeIndex])
-
-  useEffect(() => {
-    if (!navRef.current) return
-    const nav = navRef.current
-    const activeItem = nav.querySelector(`[data-index="${activeIndex}"]`)
-
-    if (activeItem) {
-      const navRect = nav.getBoundingClientRect()
-      const itemRect = activeItem.getBoundingClientRect()
-      const targetX = itemRect.left - navRect.left + itemRect.width / 2
-
-      animate(ambienceX.current, targetX, {
-        type: "spring",
-        stiffness: 200,
-        damping: 20,
-        onUpdate: v => {
-          ambienceX.current = v
-          nav.style.setProperty("--ambience-x", `${v}px`)
-        },
-      })
-    }
-  }, [activeIndex])
-
-  const handleItemClick = (item: NavItem, index: number) => {
-    setActiveIndex(index)
-    onItemClick?.(item, index)
-  }
+}: NavbarProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
 
   return (
-    <div className={cn("fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4", className)}>
-      <nav
-        ref={navRef}
-        className={cn(
-          "relative h-14 max-w-1/2 transition-all duration-300 py-4",
-          "bg-black/90 backdrop-blur-md border-2 border-zinc-800/40  border-dashed",
-          "overflow-hidden max-w-full rounded-lg"
-        )}
-        style={
-          {
-            "--spotlight-color": "rgba(255, 255, 255, 0.08)",
-            "--ambience-color": "#ffffff",
-          } as React.CSSProperties
-        }
-      >
-        <ul className="relative flex items-center h-full px-2 gap-1 z-10 whitespace-nowrap">
-          {items.map((item, idx) => (
-            <li key={idx} className="relative h-full flex items-center justify-center">
-              {item.label === "Login" ? (
-                <div onMouseMove={e => e.stopPropagation()} className="ml-2 mr-1">
-                  <Link href={item.href}>
-                    <button
+    <div className={cn("fixed top-0 left-0 right-0 z-50", className)}>
+      <header className="relative w-full border-b border-white/5 bg-black/10">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 backdrop-blur-md">
+          <PlusIcon className="absolute -bottom-1.5 -left-1.5 text-white/30" />
+          <PlusIcon className="absolute -bottom-1.5 -right-1.5 text-white/30" />
+          <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2 group">
+              <span className="text-lg font-bold tracking-tight text-white">HireXAI</span>
+            </Link>
+          </div>
+
+          <nav className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <ul className="flex items-center gap-1 rounded-lg border-[1.5] border-dashed border-white/10 px-2 py-1">
+              {items.map((item, idx) => {
+                const isActive =
+                  pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href))
+
+                return (
+                  <li key={idx}>
+                    <Link
+                      href={item.href}
                       className={cn(
-                        "relative z-20 flex items-center justify-center px-4 py-1.5",
-                        "text-xs sm:text-sm font-medium rounded-md transition-colors",
-                        "bg-white text-black hover:bg-zinc-200"
+                        "relative block px-4 py-1.5 text-sm font-medium transition-colors duration-200 rounded-full",
+                        isActive ? "text-white font-bold" : "text-zinc-400 hover:text-zinc-100"
                       )}
                     >
+                      {isActive && (
+                        <div className="absolute inset-0 -z-10 rounded-full bg-zinc-800/80 shadow-[0_1px_2px_rgba(0,0,0,0.5)] border border-white/10" />
+                      )}
                       {item.label}
-                    </button>
-                  </Link>
-                </div>
-              ) : (
-                <Link
-                  href={item.href}
-                  data-index={idx}
-                  onClick={e => {
-                    if (item.href.startsWith("#")) {
-                      e.preventDefault()
-                      handleItemClick(item, idx)
-                    } else {
-                      handleItemClick(item, idx)
-                    }
-                  }}
-                  className={cn(
-                    "px-4 py-2 text-xs sm:text-sm font-medium transition-colors duration-200 rounded-full",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500",
-                    activeIndex === idx ? "text-white" : "text-zinc-500 hover:text-zinc-300"
-                  )}
-                >
-                  {item.label}
-                </Link>
-              )}
-            </li>
-          ))}
-        </ul>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </nav>
 
-        <div
-          className="pointer-events-none absolute bottom-0 left-0 w-full h-full z-1 transition-opacity duration-300"
-          style={{
-            opacity: hoverX !== null ? 1 : 0,
-            background: `
-              radial-gradient(
-                100px circle at var(--spotlight-x) 100%, 
-                var(--spotlight-color) 0%, 
-                transparent 50%
-              )
-            `,
-          }}
-        />
+          <div className="flex items-center gap-3">
+            <Link href="/signin">
+              <button
+                className={cn(
+                  "relative items-center justify-center px-4 py-1.5 hidden sm:flex",
+                  "text-sm shadow-lg font-medium text-shadow-black/70 text-shadow-xl tracking-wide rounded-md transition-all duration-300",
+                  "bg-white text-black hover:bg-zinc-200 hover:shadow-[0_0_15px_rgba(255,255,255,0.4)]"
+                )}
+              >
+                Login
+              </button>
+            </Link>
 
-        <div
-          className="pointer-events-none absolute bottom-0 left-0 w-full h-px z-2"
-          style={{
-            background: `
-                  radial-gradient(
-                    40px circle at var(--ambience-x) 0%, 
-                    var(--ambience-color) 0%, 
-                    transparent 100%
+            <button
+              className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="md:hidden overflow-hidden border-b border-white/10 bg-black"
+            >
+              <ul className="flex flex-col p-4 gap-2">
+                {items.map((item, idx) => {
+                  const isActive = pathname === item.href
+                  return (
+                    <li key={idx}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={cn(
+                          "block px-4 py-3 rounded-md text-sm font-medium transition-colors",
+                          isActive
+                            ? "bg-zinc-800 text-white"
+                            : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                        )}
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
                   )
-                `,
-          }}
-        />
-      </nav>
+                })}
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
     </div>
   )
 }

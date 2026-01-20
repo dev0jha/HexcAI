@@ -1,68 +1,95 @@
 "use client"
-import { BentoCard, BentoCardProps } from "@/components/ui/bento-grid"
-const NoIcon = () => null
 
-const baseCardClass =
-  "col-span-1 min-h-[140px] border border-dashed border-zinc-800/60 bg-linear-to-t from-black via-black to-transparent backdrop-blur-sm text-white [&_p]:text-zinc-400"
+import React from "react"
+import { GitBranch, ShieldCheck, Inbox, Search, BarChart3, UserCheck } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { PlusIcon } from "@/components/ui/plus-icon"
 
-const developerFeatures: BentoCardProps[] = [
+interface TechCardProps {
+  title: string
+  description: string
+  icon: React.ElementType
+  href: string
+  cta: string
+}
+
+function TechCard({ title, description, icon: Icon }: TechCardProps) {
+  return (
+    <div className="group relative flex flex-col justify-between  bg-neutral-900/10 p-6 sm:p-8 transition-all hover:bg-zinc-900/40">
+      <div className="absolute inset-0 border border-dashed border-zinc-800/60 pointer-events-none" />
+
+      <PlusIcon className="absolute -top-1 -left-1 text-white/50" />
+      <PlusIcon className="absolute -top-1 -right-1 text-white/50" />
+      <PlusIcon className="absolute -bottom-1 -right-1 text-white/50" />
+      <PlusIcon className="absolute -bottom-1 -left-1 text-white/50" />
+
+      <div>
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950/80 text-zinc-400 group-hover:border-zinc-700 group-hover:text-white transition-colors">
+            <Icon size={18} strokeWidth={1.5} />
+          </div>
+          <h3 className="font-medium text-zinc-100">{title}</h3>
+        </div>
+
+        <p className="mb-6 text-sm leading-relaxed text-zinc-500 group-hover:text-zinc-400 transition-colors">
+          {description}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+const developerFeatures = [
   {
-    name: "AI Code Analysis",
+    title: "Automated Repository Audit",
     description:
-      "Get detailed feedback on code quality, architecture, and best practices from our AI.",
-    href: "#",
-    cta: "Learn More",
-    className: baseCardClass,
-    Icon: NoIcon,
-    background: null,
+      "Get an instant 0-100 score based on code architecture, security practices, and logic patterns. No manual review needed.",
+    icon: GitBranch,
+    href: "/dashboard/analyze",
+    cta: "Analyze Repo",
   },
   {
-    name: "Visibility Control",
-    description: "Choose when to be visible to recruiters. Your privacy, your control.",
-    href: "#",
-    cta: "Manage Privacy",
-    className: baseCardClass,
-    Icon: NoIcon,
-    background: null,
+    title: "Granular Privacy Controls",
+    description:
+      "Your profile remains invisible by default. Toggle visibility only when you are ready to be discovered.",
+    icon: ShieldCheck,
+    href: "/dashboard/settings",
+    cta: "Manage Visibility",
   },
   {
-    name: "Contact Requests",
-    description: "Review and approve contact requests from recruiters before sharing your info.",
-    href: "#",
+    title: "Spam-Free Inbox",
+    description:
+      "Recruiters cannot see your contact details. Review inbound requests and accept only the ones you like.",
+    icon: Inbox,
+    href: "/dashboard/requests",
     cta: "View Requests",
-    className: baseCardClass,
-    Icon: NoIcon,
-    background: null,
   },
 ]
 
-const recruiterFeatures: BentoCardProps[] = [
+const recruiterFeatures = [
   {
-    name: "Discover Talent",
-    description: "Find developers based on real code quality, not just keywords on a resume.",
-    href: "#",
-    cta: "Start Searching",
-    className: baseCardClass,
-    Icon: NoIcon,
-    background: null,
+    title: "Skill-Based Search",
+    description:
+      "Filter candidates by verified technical scores and tech stacks rather than resume keywords or pedigree.",
+    icon: Search,
+    href: "/recruiter/discover",
+    cta: "Browse Talent",
   },
   {
-    name: "Verified Skills",
-    description: "Each developer's score is based on actual GitHub project analysis.",
-    href: "#",
-    cta: "See Profiles",
-    className: baseCardClass,
-    Icon: NoIcon,
-    background: null,
+    title: "Deep Technical Insights",
+    description:
+      "Access detailed breakdowns of a candidate's git activity, documentation habits, and code complexity.",
+    icon: BarChart3,
+    href: "/recruiter/candidates",
+    cta: "View Sample Report",
   },
   {
-    name: "Ethical Contact",
-    description: "Only connect with developers who have opted in and approved your request.",
-    href: "#",
-    cta: "Contact Policy",
-    className: baseCardClass,
-    Icon: NoIcon,
-    background: null,
+    title: "High-Intent Messaging",
+    description:
+      "Connect with developers who have explicitly opted in. Higher response rates, less noise.",
+    icon: UserCheck,
+    href: "/signup",
+    cta: "Start Hiring",
   },
 ]
 
@@ -70,39 +97,53 @@ export function FeaturesSection() {
   return (
     <section className="relative w-full bg-black py-24 lg:py-32 border-t border-zinc-900">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl md:text-5xl  font-semibold text-white mb-8 tracking-tight">
-          Feartures <br />
+        {/* Section Header */}
+        <h2 className="text-4xl md:text-5xl font-semibold text-white mb-16 tracking-tight">
+          Features <br />
           <span className="text-zinc-600">Showcase your real skills</span>
         </h2>
+
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
           <div>
-            <p className="text-sm font-medium font-poppins text-success mb-3">For Developers</p>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-4">
-              Showcase your real skills
-            </h2>
-            <p className="text-zinc-400 mb-10">
-              No more resume games. Let your code speak for itself and connect with opportunities
-              that match your abilities.
-            </p>
-            <div className="space-y-4">
+            <div className="mb-8">
+              <p className="text-xs font-mono uppercase tracking-widest text-emerald-500 mb-2">
+                For Developers
+              </p>
+              <h2 className="text-3xl font-bold tracking-tight text-white mb-3">
+                Let your code speak
+              </h2>
+              <p className="text-zinc-400 max-w-md">
+                Stop relying on resume formatting. Get evaluated on your actual engineering output.
+              </p>
+            </div>
+
+            <div className="flex flex-col border-t border-dashed border-zinc-800/60 gap-6">
               {developerFeatures.map((feature, idx) => (
-                <BentoCard key={idx} {...feature} />
+                <div key={idx} className={cn(idx !== 0 && "-mt-px")}>
+                  <TechCard {...feature} />
+                </div>
               ))}
             </div>
           </div>
 
           <div>
-            <p className="text-sm font-medium font-poppins text-success mb-3">For Recruiters</p>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-4">
-              Find proven talent
-            </h2>
-            <p className="text-zinc-400 mb-10">
-              Skip the guesswork. Discover developers with verified technical skills through their
-              actual code contributions.
-            </p>
-            <div className="space-y-4">
+            <div className="mb-8">
+              <p className="text-xs font-mono uppercase tracking-widest text-emerald-500 mb-2">
+                For Recruiters
+              </p>
+              <h2 className="text-3xl font-bold tracking-tight text-white mb-3">
+                Find proven talent
+              </h2>
+              <p className="text-zinc-400 max-w-md">
+                Eliminate guesswork. Identify developers with verified technical abilities.
+              </p>
+            </div>
+
+            <div className="flex flex-col border-t border-dashed border-zinc-800/60 gap-6">
               {recruiterFeatures.map((feature, idx) => (
-                <BentoCard key={idx} {...feature} />
+                <div key={idx} className={cn(idx !== 0 && "-mt-px")}>
+                  <TechCard {...feature} />
+                </div>
               ))}
             </div>
           </div>
