@@ -22,9 +22,8 @@ export function useAnalysis() {
 
     const response = await apiClient.analyze.post({ repoUrl })
     if (response.error) {
-      console.error("API Error:", response.error.message)
-
-      setError(response.error.message ?? "Failed to analyze repository. Please try again.")
+      console.error("API Error:", response.error)
+      setError(response.error.value.message ?? "An unknown error occurred.")
       setIsAnalyzing(false)
       setAnalysisComplete(true)
       return

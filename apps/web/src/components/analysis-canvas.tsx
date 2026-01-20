@@ -90,7 +90,6 @@ export default function AnalysisCanvas({ analysisResult }: AnalysisCanvasProps) 
     [setEdges]
   )
 
-  // Update node data with actual scores
   const updatedNodes = nodes.map(node => {
     if (node.id === "repo" && analysisResult) {
       return {
@@ -168,6 +167,7 @@ export default function AnalysisCanvas({ analysisResult }: AnalysisCanvasProps) 
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         fitView
+        className="text-black rounded-3xl border-2 border-dashed"
       >
         <Controls />
         <MiniMap />

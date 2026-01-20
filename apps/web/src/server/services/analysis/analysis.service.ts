@@ -1,23 +1,25 @@
-import { google } from "@ai-sdk/google"
 import { generateText } from "ai"
-import { attempt, attemptSync, err, ok, PromiseRes, Result } from "@/utils/attempt"
-import { githubRepoSchema } from "@/utils/validation/github.validation"
+import { groq } from "@ai-sdk/groq"
 
-import type { RepoFetchResult } from "@/server/services/analysis/analysis.types"
+import { attempt, attemptSync, err, ok } from "@/utils/attempt"
+import { githubRepoSchema } from "@/utils/validation/github.validation"
+import { buildPrompt } from "@/server/prompt/prompt.builder"
+import { analysisResponse } from "./analysis.validation"
+
 import type { AnalyzedRepo } from "@/types"
+import type { PromiseRes, Result } from "@/utils/attempt"
+import type { RepoFetchResult } from "./analysis.types"
+import type { AnalysisResponse } from "./analysis.validation.ts"
 
 export class AnalysisService {
   /*
    * Internal function
    * Fetch GitHub repository data using GitHub API
    * **/
-  private static async fetchGitHubRepo(
-    owner: string,
-    repo: string
-  ): PromiseRes<RepoFetchResult, Error> {
+  private static async fetchGitHubRepo(owner: string, repo: string): PromiseRes<RepoFetchResult> {
     const response = await attempt(() => fetch(`https://api.github.com/repos/${owner}/${repo}`))
     if (!response.ok) {
-      return err(new Error(`Failed to fetch GitHub repo: ${response.error}`))
+      return err(new Error("Failed to fetch GitHub repo"))
     }
 
     const data = await response.data.json()
@@ -28,10 +30,7 @@ export class AnalysisService {
    *
    *  fetch README file from GitHub repository
    * */
-  private static async fetchREADME(
-    owner: string,
-    repo: string
-  ): Promise<Result<string | null, Error>> {
+  private static async fetchREADME(owner: string, repo: string): PromiseRes<string | null> {
     const response = await attempt(() =>
       fetch(`https://api.github.com/repos/${owner}/${repo}/readme`)
     )
@@ -42,11 +41,19 @@ export class AnalysisService {
 
     const data = await response.data.json()
 
+    const content = this.parseAIResponse(data)
+    if (!content.ok) {
+      return err(content.error)
+    }
+
+    return ok(content.data)
+  }
+
+  private static parseAIResponse(data: any): Result<string, Error> {
     const content = attemptSync(() => Buffer.from(data.content, "base64").toString("utf-8"))
     if (!content.ok) {
       return err(new Error("Failed to decode README content"))
     }
-
     return ok(content.data)
   }
 
@@ -57,7 +64,7 @@ export class AnalysisService {
   private static async fetchLanguages(
     owner: string,
     repo: string
-  ): Promise<Result<Record<string, number>, Error>> {
+  ): PromiseRes<Record<string, number>> {
     const response = await attempt(() =>
       fetch(`https://api.github.com/repos/${owner}/${repo}/languages`)
     )
@@ -76,72 +83,30 @@ export class AnalysisService {
    * Perform analysis using Gemini model
    * with information from the repository
    * **/
-  private static async analyzeWithGemini(repoData: any, readme: string | null, languages: any) {
-    const prompt = `
-	Analyze this GitHub repository and provide scores and feedback based on the following criteria:
-
-	Repository: ${repoData.name}
-	Description: ${repoData.description || "No description"}
-	Language: ${repoData.language}
-	Stars: ${repoData.stargazers_count}
-	Forks: ${repoData.forks_count}
-	Issues: ${repoData.open_issues_count}
-
-	README Content:
-	${readme || "No README found"}
-
-	Languages: ${JSON.stringify(languages)}
-
-	Please provide a detailed analysis in the following JSON format:
-	{
-	  "scores": {
-		"codeQuality": number (0-100),
-		"architecture": number (0-100),
-		"security": number (0-100),
-		"gitPractices": number (0-100),
-		"documentation": number (0-100)
-	  },
-	  "feedback": string[] (5-7 detailed feedback points),
-	  "totalScore": number (weighted average)
-	}
-
-	Scoring guidelines:
-	- Code Quality: Clean code, proper naming, structure
-	- Architecture: Project organization, design patterns
-	- Security: Safe practices, no obvious vulnerabilities
-	- Git Practices: Commit messages, branch management, PRs
-	- Documentation: README, code comments, API docs
-
-	Calculate totalScore as: (codeQuality*0.3 + architecture*0.2 + security*0.2 + gitPractices*0.15 + documentation*0.15)
-`
+  private static async analyze(
+    repoData: any,
+    readme: string | null,
+    languages: any
+  ): PromiseRes<AnalysisResponse, Error> {
+    const prompt = buildPrompt(repoData, readme, languages)
 
     const result = await generateText({
-      model: google("gemini-2.0-flash-exp"),
+      model: groq("openai/gpt-oss-20b"),
       prompt,
     })
 
-    try {
-      const analysis = JSON.parse(result.text)
-      return analysis
-    } catch (error) {
-      return {
-        scores: {
-          codeQuality: 75,
-          architecture: 70,
-          security: 65,
-          gitPractices: 80,
-          documentation: 60,
-        },
-        feedback: [
-          "Repository shows good basic structure",
-          "Consider improving documentation",
-          "Code quality appears acceptable",
-          "Security practices need review",
-          "Git practices seem standard",
-        ],
-        totalScore: 70,
-      }
+    const analysis = attemptSync(() => JSON.parse(result.text))
+    if (!analysis.ok) {
+      console.error("[PARSE ERROR]:", analysis.error)
+      return err(new Error("Failed to parse analysis result"))
     }
+
+    const formatValidation = analysisResponse.safeParse(analysis.data)
+    if (!formatValidation.success) {
+      return err(new Error(formatValidation.error.issues[0].message))
+    }
+
+    return ok(formatValidation.data)
   }
 
   /*
@@ -163,14 +128,10 @@ export class AnalysisService {
       return err(new Error(validationRes.error.issues[0].message))
     }
 
-    const githubRepoPormise = this.fetchGitHubRepo(owner, repo)
-    const readmPromise = this.fetchREADME(owner, repo)
-    const languagesPromise = this.fetchLanguages(owner, repo)
-
     const [repoData, readme, languages] = await Promise.all([
-      githubRepoPormise,
-      readmPromise,
-      languagesPromise,
+      this.fetchGitHubRepo(owner, repo),
+      this.fetchREADME(owner, repo),
+      this.fetchLanguages(owner, repo),
     ])
 
     switch (true) {
@@ -187,7 +148,12 @@ export class AnalysisService {
         return err(languages.error)
     }
 
-    const analysis = await this.analyzeWithGemini(repoData.data, readme.data, languages.data)
+    const analysisRes = await this.analyze(repoData.data, readme.data, languages.data)
+    if (!analysisRes.ok) {
+      return err(analysisRes.error)
+    }
+
+    const analysis = analysisRes.data
 
     return ok({
       id: `ar-${Date.now()}`,
