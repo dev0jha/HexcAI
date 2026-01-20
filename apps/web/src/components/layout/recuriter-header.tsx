@@ -13,11 +13,24 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Code2, Menu, X, Settings, LogOut, Building2, User, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
 
 export function RecruiterHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
+  const router = useRouter()
   const isDark = theme === "dark"
+
+  const handleSignout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/")
+        },
+      },
+    })
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md md:left-64">
@@ -59,30 +72,28 @@ export function RecruiterHeader() {
               <Settings className="h-4 w-4" />
               Settings
             </DropdownMenuItem>
-           
-          <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="flex items-center gap-2 cursor-pointer">
+
+            <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="flex items-center gap-2 cursor-pointer">
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               {theme === "dark" ? "Light Mode" : "Dark Mode"}
             </DropdownMenuItem>            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/" className="flex items-center gap-2 text-destructive">
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </Link>
+            <DropdownMenuItem onClick={handleSignout} className="flex items-center gap-2 text-destructive cursor-pointer">
+              <LogOut className="h-4 w-4" />
+              Sign Out
             </DropdownMenuItem>
-          </DropdownMenuContent> 
+          </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
       {mobileMenuOpen && (
         <div className="border-t border-border p-4 md:hidden">
           <nav className="space-y-2">
-            <Link href="/recuriter/discover" onClick={() => setMobileMenuOpen(false)}>
+            <Link href="/recruiter/discover" onClick={() => setMobileMenuOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">
                 Discover
               </Button>
             </Link>
-            <Link href="/recuriter/candidates" onClick={() => setMobileMenuOpen(false)}>
+            <Link href="/recruiter/candidates" onClick={() => setMobileMenuOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">
                 My Candidates
               </Button>

@@ -1,12 +1,14 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Code2, Search, Users, LogOut, ChevronLeft, ChevronRight } from "lucide-react"
 import { useState } from "react"
+import { authClient } from "@/lib/auth-client"
+import { toast } from "sonner"
 
 const navItems = [
   { href: "/recruiter/discover", label: "Discover", icon: Search },
@@ -15,12 +17,23 @@ const navItems = [
 
 export function RecruiterSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
   const [collapsed, setCollapsed] = useState(false)
+
+  const handleSignout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/")
+        }
+      }
+    })
+  }
 
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 z-40 h-screen border-r border-border bg-sidebar transition-all duration-300",
+        "fixed left-0 top-0 z-40 h-screen border-r border-border bg-sidebar transition-all duration-300 hidden md:block",
         collapsed ? "w-16" : "w-64"
       )}
     >
@@ -74,10 +87,8 @@ export function RecruiterSidebar() {
               </div>
             )}
             {!collapsed && (
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Link href="/">
-                  <LogOut className="h-4 w-4" />
-                </Link>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleSignout}>
+                <LogOut className="h-4 w-4" />
               </Button>
             )}
           </div>

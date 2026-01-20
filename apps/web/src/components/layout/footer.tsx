@@ -1,39 +1,153 @@
-import React from "react";
 
-const Footer: React.FC = () => {
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import {
+  FacebookIcon,
+  GithubIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  TwitterIcon,
+  YoutubeIcon,
+} from "lucide-react";
+
+export default function Footer() {
+  const company = [
+    {
+      title: "About Us",
+      href: "#",
+    },
+    {
+      title: "Careers",
+      href: "#",
+    },
+    {
+      title: "Brand assets",
+      href: "#",
+    },
+    {
+      title: "Privacy Policy",
+      href: "#",
+    },
+    {
+      title: "Terms of Service",
+      href: "#",
+    },
+  ];
+
+  const resources = [
+    {
+      title: "Blog",
+      href: "#",
+    },
+    {
+      title: "Help Center",
+      href: "#",
+    },
+    {
+      title: "Contact Support",
+      href: "#",
+    },
+    {
+      title: "Community",
+      href: "#",
+    },
+    {
+      title: "Security",
+      href: "#",
+    },
+  ];
+
+  const socialLinks = [
+    {
+      icon: FacebookIcon,
+      link: "#",
+    },
+    {
+      icon: GithubIcon,
+      link: "#",
+    },
+    {
+      icon: InstagramIcon,
+      link: "#",
+    },
+    {
+      icon: LinkedinIcon,
+      link: "#",
+    },
+    {
+      icon: TwitterIcon,
+      link: "#",
+    },
+    {
+      icon: YoutubeIcon,
+      link: "#",
+    },
+  ];
   return (
-    <footer className="bg-white dark:bg-transparent text-black dark:text-white py-20 px-8 border-t border-gray-100 dark:border-zinc-900 transition-colors duration-500">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-end">
-        <div>
-          <h2 className="text-7xl font-light tracking-tighter mb-4">
-           HireXAI
-          </h2>
+    <footer className="relative">
+      <div
+        className={cn(
+          "mx-auto max-w-5xl lg:border-x lg:border-dotted lg:border-border",
+          "dark:bg-[radial-gradient(35%_80%_at_30%_0%,--theme(--color-foreground/.1),transparent)]"
+        )}
+      >
+        <div className="absolute inset-x-0 border-t border-dotted border-border" />
+        <div className="grid max-w-5xl grid-cols-6 gap-6 p-4">
+          <div className="col-span-6 flex flex-col gap-4 pt-5 md:col-span-4">
+          <h3 className="text-xl font-bold">HireXAI</h3>
+            <p className="max-w-sm text-balance font-mono text-muted-foreground text-sm">
+              Designed for builders who value depth, clarity, and real results.
+            </p>
+            <div className="flex gap-2">
+              {socialLinks.map((item, index) => (
+                <Button
+                  key={`social-${item.link}-${index}`}
+                  size="icon-sm"
+                  variant="outline"
+                >
+                  <a href={item.link} target="_blank">
+                    <item.icon className="size-3.5" />
+                  </a>
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div className="col-span-3 w-full md:col-span-1">
+            <span className="text-muted-foreground text-xs">Resources</span>
+            <div className="mt-2 flex flex-col gap-2">
+              {resources.map(({ href, title }) => (
+                <a
+                  className="w-max text-sm hover:underline"
+                  href={href}
+                  key={title}
+                >
+                  {title}
+                </a>
+              ))}
+            </div>
+          </div>
+          <div className="col-span-3 w-full md:col-span-1">
+            <span className="text-muted-foreground text-xs">Company</span>
+            <div className="mt-2 flex flex-col gap-2">
+              {company.map(({ href, title }) => (
+                <a
+                  className="w-max text-sm hover:underline"
+                  href={href}
+                  key={title}
+                >
+                  {title}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="space-y-8">
-          <h2 className="text-7xl font-light tracking-tighter text-gray-400 dark:text-zinc-300">
-            Beyond Reach.
-          </h2>
-          <p className="max-w-md text-gray-500 dark:text-zinc-400 font-light leading-relaxed">
-           Designed for builders who value depth, clarity, and real results.
+        <div className="absolute inset-x-0 border-t border-dotted border-border" />
+        <div className="flex max-w-4xl flex-col justify-between gap-2 py-4">
+          <p className="text-center font-light text-muted-foreground text-sm">
+            &copy; {new Date().getFullYear()} HireXAI, All rights reserved
           </p>
-          <button className="px-8 cursor-pointer relative py-3 bg-gray-100 dark:bg-zinc-800 text-xs font-bold uppercase tracking-[0.2em] rounded hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">
-            Contact us
-          </button>
         </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto mt-32 pt-8 border-t border-gray-100 dark:border-zinc-900 flex flex-col md:flex-row justify-between text-[10px] uppercase tracking-[0.3em] font-medium text-gray-400 dark:text-zinc-600">
-        <p>© 2025 HireXAI</p>
-        <p>ALL RIGHTS RESERVED</p>
-        <a href="https://agnic.dev/" target="_blank">
-          MADE BY{" "}
-          <span className="text-black dark:text-zinc-300 underline underline-offset-4 cursor-pointer">
-            AGNIC
-          </span>
-        </a>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}
