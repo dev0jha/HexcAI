@@ -1,15 +1,12 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { mockAnalysisResult } from "@/data/mock-data"
+import AnalysisCanvas from "@/components/analysis-canvas"
 import {
   Github,
   Search,
@@ -21,15 +18,7 @@ import {
   Layers,
   CheckCircle,
 } from "lucide-react"
-
-const analysisSteps = [
-  { label: "Fetching repository", duration: 800 },
-  { label: "Analyzing code quality", duration: 1200 },
-  { label: "Evaluating architecture", duration: 1000 },
-  { label: "Checking security practices", duration: 900 },
-  { label: "Reviewing documentation", duration: 700 },
-  { label: "Generating score", duration: 600 },
-]
+import { useAnalysis } from "@/hooks/screens/analysis.hook"
 
 const scoreCategories = [
   { name: "Code Quality", icon: Code2, weight: "30%" },
@@ -40,36 +29,16 @@ const scoreCategories = [
 ]
 
 export default function AnalyzePage() {
-  const [repoUrl, setRepoUrl] = useState("")
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [currentStep, setCurrentStep] = useState(0)
-  const [analysisComplete, setAnalysisComplete] = useState(false)
-
-  async function handleAnalyze(e: React.FormEvent) {
-    e.preventDefault()
-    if (!repoUrl) return
-
-    setIsAnalyzing(true)
-    setCurrentStep(0)
-    setAnalysisComplete(false)
-
-    for (let i = 0; i < analysisSteps.length; i++) {
-      setCurrentStep(i)
-      await new Promise(resolve => setTimeout(resolve, analysisSteps[i].duration))
-    }
-
-    setIsAnalyzing(false)
-    setAnalysisComplete(true)
-  }
-
-  const scores = mockAnalysisResult.scores
-  const scoreValues = [
-    scores.codeQuality,
-    scores.architecture,
-    scores.security,
-    scores.gitPractices,
-    scores.documentation,
-  ]
+  const {
+    state,
+    repoUrl,
+    setRepoUrl,
+    handleAnalyze,
+    scoreValues,
+    isError,
+    isComplete,
+    isAnalyzing,
+  } = useAnalysis()
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10 mt-4 sm:mt-6">
@@ -121,100 +90,107 @@ export default function AnalyzePage() {
 
           {isAnalyzing && (
             <div className="mt-8 space-y-4">
-              <div className="space-y-2">
-                {analysisSteps.map((step, index) => (
-                  <div key={step.label} className="flex items-center gap-3">
-                    {index < currentStep ? (
-                      <CheckCircle className="h-5 w-5 text-primary" />
-                    ) : index === currentStep ? (
-                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                    ) : (
-                      <div className="h-5 w-5 rounded-full border-2 border-muted" />
-                    )}
-                    <span
-                      className={index <= currentStep ? "text-foreground" : "text-muted-foreground"}
-                    >
-                      {step.label}
-                    </span>
-                  </div>
-                ))}
+              <div className="flex items-center gap-3">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <p className="text-sm">
+                  {state.status === "responding" ? state.currentStatus : ""}
+                </p>
               </div>
-              <Progress value={((currentStep + 1) / analysisSteps.length) * 100} className="h-2" />
             </div>
           )}
         </Card>
 
-        {analysisComplete && (
-          <div className="grid gap-6 lg:grid-cols-2 mt-8">
+        {isError && (
+          <Card className="p-6 mt-8 border-destructive/50 bg-destructive/5">
+            <div className="flex items-center gap-3">
+              <div className="h-5 w-5 rounded-full border-2 border-destructive flex items-center justify-center">
+                <span className="text-destructive text-xs">!</span>
+              </div>
+              <p className="text-sm text-destructive">
+                {state.status === "error" ? state.error : ""}
+              </p>
+            </div>
+          </Card>
+        )}
+
+        {isComplete && state.status === "complete" && (
+          <div className="space-y-8 mt-8">
             <Card className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-xl font-semibold">{mockAnalysisResult.name}</h2>
-                  <p className="text-sm text-muted-foreground">{mockAnalysisResult.url}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-muted-foreground">Total Score</p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-bold text-primary">
-                      {mockAnalysisResult.totalScore}
-                    </span>
-                    <span className="text-muted-foreground">/100</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-2 mb-6">
-                <Badge variant="outline">{mockAnalysisResult.language}</Badge>
-                <Badge variant="outline">{mockAnalysisResult.stars} stars</Badge>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="font-semibold">Score Breakdown</h3>
-                {scoreCategories.map((category, index) => (
-                  <div key={category.name} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <category.icon className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{category.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">{category.weight}</span>
-                        <span className="text-sm font-semibold">{scoreValues[index]}</span>
-                      </div>
-                    </div>
-                    <Progress value={scoreValues[index]} className="h-2" />
-                  </div>
-                ))}
-              </div>
+              <h3 className="text-xl font-semibold mb-4">Analysis Flow</h3>
+              <AnalysisCanvas analysisResult={state.result} />
             </Card>
 
-            <Card className="p-6">
-              <h3 className="text-xl font-semibold mb-4">AI Feedback</h3>
-              <div className="space-y-4">
-                {mockAnalysisResult.feedback.map((item, index) => (
-                  <div key={index} className="flex gap-3 p-3 rounded-lg bg-muted/50">
-                    <div className="mt-0.5">
-                      {index < 2 ? (
-                        <CheckCircle className="h-5 w-5 text-primary" />
-                      ) : (
-                        <div className="h-5 w-5 rounded-full border-2 border-warning flex items-center justify-center">
-                          <span className="text-warning text-xs">!</span>
+            <div className="grid gap-6 lg:grid-cols-2">
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-xl font-semibold">{state.result.name}</h2>
+                    <p className="text-sm text-muted-foreground">{state.result.url}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-muted-foreground">Total Score</p>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-bold text-primary">
+                        {state.result.totalScore}
+                      </span>
+                      <span className="text-muted-foreground">/100</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mb-6">
+                  <Badge variant="outline">{state.result.language}</Badge>
+                  <Badge variant="outline">{state.result.stars} stars</Badge>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="font-semibold">Score Breakdown</h3>
+                  {scoreCategories.map((category, index) => (
+                    <div key={category.name} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <category.icon className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">{category.name}</span>
                         </div>
-                      )}
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">{category.weight}</span>
+                          <span className="text-sm font-semibold">{scoreValues[index]}</span>
+                        </div>
+                      </div>
+                      <Progress value={scoreValues[index]} className="h-2" />
                     </div>
-                    <p className="text-sm">{item}</p>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </Card>
 
-              <div className="mt-6 p-4 rounded-lg border border-primary/20 bg-primary/5">
-                <p className="text-sm font-medium text-primary">Pro Tip</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Focus on improving your documentation score by adding comprehensive README files
-                  and inline code comments.
-                </p>
-              </div>
-            </Card>
+              <Card className="p-6">
+                <h3 className="text-xl font-semibold mb-4">AI Feedback</h3>
+                <div className="space-y-4">
+                  {state.result.feedback.map((item: string, index: number) => (
+                    <div key={index} className="flex gap-3 p-3 rounded-lg bg-muted/50">
+                      <div className="mt-0.5">
+                        {index < 2 ? (
+                          <CheckCircle className="h-5 w-5 text-primary" />
+                        ) : (
+                          <div className="h-5 w-5 rounded-full border-2 border-warning flex items-center justify-center">
+                            <span className="text-warning text-xs">!</span>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-sm">{item}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 p-4 rounded-lg border border-primary/20 bg-primary/5">
+                  <p className="text-sm font-medium text-primary">Pro Tip</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Focus on improving your documentation score by adding comprehensive README files
+                    and inline code comments.
+                  </p>
+                </div>
+              </Card>
+            </div>
           </div>
         )}
       </div>

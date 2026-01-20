@@ -2,14 +2,25 @@ import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Navbar } from "@/components/core/Navbar"
-import Footer from "@/components/layout/footer"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { mockDevelopers, mockAnalysisResult } from "@/data/mock-data"
 import { getScoreLabel } from "@/types"
-import { MapPin, Globe, Linkedin, Github, Code2, Shield, GitBranch, FileText, Layers, ExternalLink } from "lucide-react"
+import {
+  MapPin,
+  Globe,
+  Linkedin,
+  Github,
+  Code2,
+  Shield,
+  GitBranch,
+  FileText,
+  Layers,
+  ExternalLink,
+} from "lucide-react"
+import Footer from "@/components/layout/footer"
 
 const scoreCategories = [
   { key: "codeQuality", name: "Code Quality", icon: Code2 },
@@ -25,7 +36,7 @@ interface ProfilePageProps {
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const { username } = await params
-  const developer = mockDevelopers.find((d) => d.username === username)
+  const developer = mockDevelopers.find(d => d.username === username)
 
   if (!developer) {
     notFound()
@@ -43,7 +54,10 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               <div className="flex flex-col items-center md:items-start">
                 <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-primary/20">
                   <Image
-                    src={developer.avatar || "/placeholder.svg?height=128&width=128&query=developer portrait"}
+                    src={
+                      developer.avatar ||
+                      "/placeholder.svg?height=128&width=128&query=developer portrait"
+                    }
                     alt={developer.name}
                     fill
                     className="object-cover"
@@ -65,7 +79,9 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                   </div>
                 )}
 
-                {developer.bio && <p className="mt-4 text-muted-foreground max-w-xl">{developer.bio}</p>}
+                {developer.bio && (
+                  <p className="mt-4 text-muted-foreground max-w-xl">{developer.bio}</p>
+                )}
 
                 <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
                   {developer.website && (
@@ -90,7 +106,10 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                       LinkedIn
                     </a>
                   )}
-                  <a href="#" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+                  <a
+                    href="#"
+                    className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                  >
                     <Github className="h-4 w-4" />
                     GitHub
                   </a>
@@ -114,7 +133,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             <div className="mt-8">
               <h2 className="text-lg font-semibold mb-4">Tech Stack</h2>
               <div className="flex flex-wrap gap-2">
-                {developer.techStack.map((tech) => (
+                {developer.techStack.map(tech => (
                   <Badge key={tech} variant="outline" className="text-sm">
                     {tech}
                   </Badge>
@@ -127,8 +146,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             <Card className="p-6">
               <h2 className="text-lg font-semibold mb-4">Score Breakdown</h2>
               <div className="space-y-4">
-                {scoreCategories.map((category) => {
-                  const score = mockAnalysisResult.scores[category.key as keyof typeof mockAnalysisResult.scores]
+                {scoreCategories.map(category => {
+                  const score =
+                    mockAnalysisResult.scores[
+                      category.key as keyof typeof mockAnalysisResult.scores
+                    ]
                   return (
                     <div key={category.key} className="space-y-2">
                       <div className="flex items-center justify-between">
@@ -151,7 +173,9 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="font-medium">{mockAnalysisResult.name}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{mockAnalysisResult.description}</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {mockAnalysisResult.description}
+                    </p>
                   </div>
                   <Badge variant="secondary">{mockAnalysisResult.totalScore}</Badge>
                 </div>

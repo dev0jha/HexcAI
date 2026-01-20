@@ -3,9 +3,10 @@ import { attempt } from "@/utils/attempt"
 import { headers } from "next/headers"
 
 import type { Context } from "elysia/context"
+import type { GetUserResponse } from "@/server/services/user/user.types"
 
 export abstract class UserService {
-  static async getUser({ set }: Context) {
+  static async getUser({ set }: Context): Promise<GetUserResponse> {
     const nextHeaders = await headers()
 
     const sessionRes = await attempt(() =>
