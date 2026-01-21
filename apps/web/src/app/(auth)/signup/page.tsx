@@ -10,6 +10,7 @@ import PassField from "@/components/auth/primitives/pass-fields"
 import RoleSelectorField from "@/components/auth/primitives/role-selector"
 import { CornerDecorations } from "@/components/ui/corner-decorations"
 import { AuthBackgroundsPatterns } from "@/components/auth-bg-patterns"
+import { cn } from "@/lib/utils"
 
 export default function SignUpPage() {
   const { form, submitFormAction } = useSignUp()
@@ -29,7 +30,12 @@ export default function SignUpPage() {
         <div className="relative z-10 w-full max-w-120">
           <CornerDecorations />
 
-          <div className="border-2 border-zinc-800/30 bg-neutral-900/10 backdrop-blur-md p-8 shadow-2xl">
+          <div
+            className={cn(
+              "border-2 border-zinc-800/30 bg-neutral-900/10 backdrop-blur-3xl p-8 shadow-2xl",
+              "bg-[repeating-linear-gradient(315deg,background_0,background_1px,transparent_0,transparent_50%)] bg-size-[8px_8px] -z-10"
+            )}
+          >
             <form onSubmit={submitFormAction} className="flex flex-col gap-6">
               <div className="space-y-2 text-center sm:text-left">
                 <h1 className="text-3xl font-bold tracking-tight text-white">Create an account</h1>

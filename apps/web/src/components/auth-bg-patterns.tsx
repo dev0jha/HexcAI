@@ -21,7 +21,7 @@ const ElectricLine = ({
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ pathLength: 1, opacity: 1 }}
         transition={{ duration: 1.5, delay, ease: "easeInOut" }}
-        stroke="#27272a"
+        stroke="#3f3f46"
         strokeWidth="1.5"
         fill="none"
         className={className}
@@ -71,16 +71,6 @@ const Crosshair = ({ x, y, delay }: { x: number; y: number; delay: number }) => 
 export const AuthBackgroundsPatterns = () => {
   return (
     <div className={cn("absolute inset-0 z-0 pointer-events-none overflow-hidden select-none")}>
-      <div className="absolute inset-0 flex items-center justify-center opacity-20">
-        <svg className="w-full h-full" width="100%" height="100%">
-          <defs>
-            <pattern id="smallGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#27272a" strokeWidth="0.5" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#smallGrid)" />
-        </svg>
-      </div>
       <div className="absolute inset-0 flex items-center justify-center opacity-60 md:opacity-80">
         <svg
           className="w-full h-full min-w-200"
@@ -94,14 +84,6 @@ export const AuthBackgroundsPatterns = () => {
 
           <ElectricLine d="M1440 800 H1240 V600 H990" delay={0.2} duration={6} />
           <ElectricLine d="M1340 900 V750 H1140 V650" delay={0.7} duration={5} />
-
-          <g className="opacity-30">
-            <path d="M500 300 V250 H550" stroke="#3f3f46" strokeWidth="1" fill="none" />
-            <path d="M500 600 V650 H550" stroke="#3f3f46" strokeWidth="1" fill="none" />
-
-            <path d="M940 300 V250 H890" stroke="#3f3f46" strokeWidth="1" fill="none" />
-            <path d="M940 600 V650 H890" stroke="#3f3f46" strokeWidth="1" fill="none" />
-          </g>
 
           <Crosshair x={200} y={300} delay={1} />
           <Crosshair x={1240} y={600} delay={1.2} />
@@ -149,7 +131,7 @@ export const AuthBackgroundsPatterns = () => {
         </svg>
       </div>
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,#000_100%)] opacity-90" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,#000_100%)] opacity-100" />
       <div className="absolute inset-0 bg-black/20" />
     </div>
   )

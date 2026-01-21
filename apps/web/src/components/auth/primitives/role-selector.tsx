@@ -21,7 +21,7 @@ export default function RoleSelectorField({ control }: RoleSelectorProps) {
           <FormLabel className="text-xs tracking-wider text-zinc-500">Role</FormLabel>
           <Select onValueChange={field.onChange} value={field.value} name={field.name}>
             <FormControl>
-              <SelectTrigger className="bg-zinc-900/50 border-zinc-800 text-zinc-100 placeholder:text-zinc-700 focus:ring-1 focus:ring-zinc-400 focus:border-zinc-700 h-11">
+              <SelectTrigger className="bg-zinc-900 border border-zinc-800 text-zinc-100 placeholder:text-zinc-700 focus:border-zinc-700 h-11">
                 <SelectValue />
               </SelectTrigger>
             </FormControl>
