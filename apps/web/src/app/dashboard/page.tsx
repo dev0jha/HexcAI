@@ -13,7 +13,7 @@ export default async function DashboardPage() {
   const pendingRequests = mockContactRequests.filter(r => r.status === "pending")
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-8 lg:py-10 mt-4 sm:mt-6">
+    <div className="container mx-auto px-2 sm:px-6 lg:px-8 py-4 sm:py-8 lg:py-10">
       <div className="">
         <div className="mb-6">
           <DashTitleShell
@@ -62,9 +62,8 @@ export default async function DashboardPage() {
 
               <p className="text-sm text-muted-foreground mb-4">
                 {pendingRequests.length > 0
-                  ? `You have ${pendingRequests.length} pending request${
-                      pendingRequests.length > 1 ? "s" : ""
-                    }`
+                  ? `You have ${pendingRequests.length} pending request${pendingRequests.length > 1 ? "s" : ""
+                  }`
                   : "No pending requests"}
               </p>
 

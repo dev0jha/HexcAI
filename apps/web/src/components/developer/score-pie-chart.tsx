@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react"
 import { Label, Pie, PieChart, Sector } from "recharts";
 import { type PieSectorDataItem } from "recharts/types/polar/Pie";
 import {
@@ -43,6 +44,12 @@ interface ScorePieChartProps {
 }
 
 const ScorePieChart = ({ scores, totalScore }: ScorePieChartProps) => {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const chartData = [
     {
       category: "codeQuality",
@@ -81,61 +88,65 @@ const ScorePieChart = ({ scores, totalScore }: ScorePieChartProps) => {
   return (
     <div className="">
       <h3 className="text-lg font-semibold mb-4">Score Distribution</h3>
-      <ChartContainer
-        config={chartConfig}
-        className="mx-auto aspect-square max-h-75"
-      >
-        <PieChart>
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
-          <Pie
-            data={chartData}
-            dataKey="score"
-            nameKey="category"
-            innerRadius={60}
-            strokeWidth={5}
-            activeIndex={0}
-            activeShape={({
-              outerRadius = 0,
-              ...props
-            }: PieSectorDataItem) => (
-              <Sector {...props} outerRadius={outerRadius + 10} />
-            )}
-          >
-            <Label
-              content={({ viewBox }) => {
-                if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                  return (
-                    <text
-                      x={viewBox.cx}
-                      y={viewBox.cy}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                    >
-                      <tspan
+      {mounted && (
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto aspect-square max-h-[250px] sm:max-h-[300px]"
+          id="score-distribution"
+        >
+          <PieChart>
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            {/* @ts-ignore */}
+            <Pie
+              data={chartData}
+              dataKey="score"
+              nameKey="category"
+              innerRadius={60}
+              strokeWidth={5}
+              activeIndex={0}
+              activeShape={({
+                outerRadius = 0,
+                ...props
+              }: PieSectorDataItem) => (
+                <Sector {...props} outerRadius={outerRadius + 10} />
+              )}
+            >
+              <Label
+                content={({ viewBox }) => {
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    return (
+                      <text
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        className="fill-foreground text-3xl font-bold"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
                       >
-                        {averageScore}
-                      </tspan>
-                      <tspan
-                        x={viewBox.cx}
-                        y={(viewBox.cy || 0) + 24}
-                        className="fill-muted-foreground text-sm"
-                      >
-                        Overall Score
-                      </tspan>
-                    </text>
-                  );
-                }
-              }}
-            />
-          </Pie>
-        </PieChart>
-      </ChartContainer>
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          className="fill-foreground text-3xl font-bold"
+                        >
+                          {averageScore}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) + 24}
+                          className="fill-muted-foreground text-sm"
+                        >
+                          Overall Score
+                        </tspan>
+                      </text>
+                    );
+                  }
+                }}
+              />
+            </Pie>
+          </PieChart>
+        </ChartContainer>
+      )}
       <div className="mt-4 flex flex-col gap-2 items-center">
         <div className="flex items-center gap-2 font-medium leading-none text-sm">
           {averageScore >= 85 ? (

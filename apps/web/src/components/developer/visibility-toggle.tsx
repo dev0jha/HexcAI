@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
@@ -13,7 +13,13 @@ interface VisibilityToggleProps {
 }
 
 export function VisibilityToggle({ initialValue, score }: VisibilityToggleProps) {
+  const [mounted, setMounted] = useState(false)
   const [isOpen, setIsOpen] = useState(initialValue)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const canBeVisible = score >= 80
 
   return (
@@ -40,12 +46,14 @@ export function VisibilityToggle({ initialValue, score }: VisibilityToggleProps)
             </p>
           </div>
         </div>
-        <Switch
-          id="visibility"
-          checked={isOpen && canBeVisible}
-          onCheckedChange={setIsOpen}
-          disabled={!canBeVisible}
-        />
+        {mounted && (
+          <Switch
+            id="visibility"
+            checked={isOpen && canBeVisible}
+            onCheckedChange={setIsOpen}
+            disabled={!canBeVisible}
+          />
+        )}
       </div>
 
       {!canBeVisible && (

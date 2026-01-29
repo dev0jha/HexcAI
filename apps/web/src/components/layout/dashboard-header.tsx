@@ -30,7 +30,7 @@ export function DashboardHeader() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="border-t border-white/10 p-4 md:hidden bg-black">
+        <div className="border-t border-white/5 p-4 md:hidden bg-[#121212]">
           <nav className="space-y-2">
             <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
               <Button
@@ -48,7 +48,7 @@ export function DashboardHeader() {
                 Analyze Repo
               </Button>
             </Link>
-            <Link href="/dashboard/request" onClick={() => setMobileMenuOpen(false)}>
+            <Link href="/dashboard/requests" onClick={() => setMobileMenuOpen(false)}>
               <Button
                 variant="ghost"
                 className="w-full justify-start text-zinc-400 hover:text-white hover:bg-white/10"
@@ -56,7 +56,7 @@ export function DashboardHeader() {
                 Requests
               </Button>
             </Link>
-            <Link href="/dashboard/setting" onClick={() => setMobileMenuOpen(false)}>
+            <Link href="/dashboard/settings" onClick={() => setMobileMenuOpen(false)}>
               <Button
                 variant="ghost"
                 className="w-full justify-start text-zinc-400 hover:text-white hover:bg-white/10"
