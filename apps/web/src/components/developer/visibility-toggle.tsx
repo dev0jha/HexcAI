@@ -1,26 +1,31 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
-import { DashboardCard } from "@/components/layout/dashboard-card"
-import { IconAlertCircle, IconEye, IconEyeOff } from "@tabler/icons-react"
+import { useEffect, useState } from "react";
+
+import { IconAlertCircle, IconEye, IconEyeOff } from "@tabler/icons-react";
+
+import { DashboardCard } from "@/components/layout/dashboard-card";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 interface VisibilityToggleProps {
-  initialValue: boolean
-  score: number
+  initialValue: boolean;
+  score: number;
 }
 
-export function VisibilityToggle({ initialValue, score }: VisibilityToggleProps) {
-  const [mounted, setMounted] = useState(false)
-  const [isOpen, setIsOpen] = useState(initialValue)
+export function VisibilityToggle({
+  initialValue,
+  score,
+}: VisibilityToggleProps) {
+  const [mounted, setMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(initialValue);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
-  const canBeVisible = score >= 80
+  const canBeVisible = score >= 80;
 
   return (
     <DashboardCard>
@@ -31,7 +36,7 @@ export function VisibilityToggle({ initialValue, score }: VisibilityToggleProps)
               <IconEye className="h-5 w-5" />
             </div>
           ) : (
-            <div className="rounded-lg bg-muted p-2">
+            <div className="bg-muted rounded-lg p-2">
               <IconEyeOff className="h-5 w-5" />
             </div>
           )}
@@ -39,7 +44,7 @@ export function VisibilityToggle({ initialValue, score }: VisibilityToggleProps)
             <Label htmlFor="visibility" className="text-base font-semibold">
               Open to Recruiters
             </Label>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-muted-foreground mt-1 text-sm">
               {isOpen && canBeVisible
                 ? "Recruiters can view your profile and send contact requests"
                 : "Your profile is hidden from recruiters"}
@@ -57,10 +62,11 @@ export function VisibilityToggle({ initialValue, score }: VisibilityToggleProps)
       </div>
 
       {!canBeVisible && (
-        <div className="mt-4 flex items-center gap-2 rounded-lg bg-muted p-3">
-          <IconAlertCircle className="h-4 w-4 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">
-            You need a score of 80+ to be visible to recruiters. Current: {score}
+        <div className="bg-muted mt-4 flex items-center gap-2 rounded-lg p-3">
+          <IconAlertCircle className="text-muted-foreground h-4 w-4" />
+          <p className="text-muted-foreground text-sm">
+            You need a score of 80+ to be visible to recruiters. Current:{" "}
+            {score}
           </p>
         </div>
       )}
@@ -73,5 +79,5 @@ export function VisibilityToggle({ initialValue, score }: VisibilityToggleProps)
         </div>
       )}
     </DashboardCard>
-  )
+  );
 }

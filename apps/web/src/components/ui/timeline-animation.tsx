@@ -1,7 +1,8 @@
-"use client"
+"use client";
+import type React from "react";
+
 import { type HTMLMotionProps, motion, useInView } from "motion/react";
 import type { Variants } from "motion/react";
-import type React from "react";
 
 type TimelineContentProps<T extends keyof HTMLElementTagNameMap> = {
   children?: React.ReactNode;

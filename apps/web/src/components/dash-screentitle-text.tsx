@@ -1,13 +1,16 @@
 interface DashTitleShellProps {
-  title: string
-  description: string
+  title: string;
+  description: string;
 }
 
-export default function DashTitleShell({ title, description }: DashTitleShellProps) {
+export default function DashTitleShell({
+  title,
+  description,
+}: DashTitleShellProps) {
   return (
     <div className="mb-6">
-      <h1 className="text-xl font-bold line-clamp-4 text-white">{title}</h1>
-      <p className="text-muted-foreground mt-1 text-md">{description}</p>
+      <h1 className="line-clamp-4 text-xl font-bold text-white">{title}</h1>
+      <p className="text-muted-foreground text-md mt-1">{description}</p>
     </div>
-  )
+  );
 }

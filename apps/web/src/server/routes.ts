@@ -1,5 +1,5 @@
-import { Elysia } from "elysia"
+import { Elysia } from "elysia";
 
-const indexRouter = new Elysia().get("/", () => "HirexAI API service v0.5")
+const indexRouter = new Elysia().get("/", () => "HirexAI API service v0.5");
 
-export default indexRouter
+export default indexRouter;

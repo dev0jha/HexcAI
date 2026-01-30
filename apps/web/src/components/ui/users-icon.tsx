@@ -1,12 +1,14 @@
 "use client";
-import { forwardRef, useImperativeHandle, useCallback } from "react";
-import type { AnimatedIconHandle, AnimatedIconProps } from "./types";
+import { forwardRef, useCallback, useImperativeHandle } from "react";
+
 import { motion, useAnimate } from "motion/react";
+
+import type { AnimatedIconHandle, AnimatedIconProps } from "./types";
 
 const UsersIcon = forwardRef<AnimatedIconHandle, AnimatedIconProps>(
   (
     { size = 24, color = "currentColor", strokeWidth = 2, className = "" },
-    ref,
+    ref
   ) => {
     const [scope, animate] = useAnimate();
 
@@ -21,7 +23,7 @@ const UsersIcon = forwardRef<AnimatedIconHandle, AnimatedIconProps>(
         {
           duration: 0.3,
           ease: "easeOut",
-        },
+        }
       );
 
       // Secondary user (right side) moves slightly
@@ -34,7 +36,7 @@ const UsersIcon = forwardRef<AnimatedIconHandle, AnimatedIconProps>(
         {
           duration: 0.3,
           ease: "easeOut",
-        },
+        }
       );
     }, [animate]);
 
@@ -48,7 +50,7 @@ const UsersIcon = forwardRef<AnimatedIconHandle, AnimatedIconProps>(
         {
           duration: 0.25,
           ease: "easeInOut",
-        },
+        }
       );
 
       animate(
@@ -60,7 +62,7 @@ const UsersIcon = forwardRef<AnimatedIconHandle, AnimatedIconProps>(
         {
           duration: 0.25,
           ease: "easeInOut",
-        },
+        }
       );
     }, [animate]);
 
@@ -100,7 +102,7 @@ const UsersIcon = forwardRef<AnimatedIconHandle, AnimatedIconProps>(
         </motion.g>
       </motion.svg>
     );
-  },
+  }
 );
 
 UsersIcon.displayName = "UsersIcon";

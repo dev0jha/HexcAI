@@ -1,3 +1,3 @@
-import { describe, expect, it, mock } from "bun:test"
+import { describe, expect, it, mock } from "bun:test";
 
-describe("Analysis Service Tests", () => {})
+describe("Analysis Service Tests", () => {});

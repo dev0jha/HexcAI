@@ -1,10 +1,11 @@
-import { pgTable, text, timestamp, pgEnum } from "drizzle-orm/pg-core"
-import { user } from "@/db/schema/auth-schema"
+import { pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
-export const contactStatus = ["pending", "accepted", "rejected"] as const
-export type ContactStatus = (typeof contactStatus)[number]
+import { user } from "@/db/schema/auth-schema";
 
-const contactStatusEnum = pgEnum("contact_status", contactStatus)
+export const contactStatus = ["pending", "accepted", "rejected"] as const;
+export type ContactStatus = (typeof contactStatus)[number];
+
+const contactStatusEnum = pgEnum("contact_status", contactStatus);
 
 export const contactRequests = pgTable("contact_requests", {
   id: text("id").primaryKey(),
@@ -15,10 +16,6 @@ export const contactRequests = pgTable("contact_requests", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   message: text("message"),
-  status: contactStatusEnum("status")
-  .default("pending")
-  .notNull(),
-  createdAt: timestamp("created_at")
-  .defaultNow()
-  .notNull(),
-})
+  status: contactStatusEnum("status").default("pending").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});

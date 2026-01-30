@@ -1,24 +1,25 @@
-"use client"
+"use client";
 
-import { useCallback } from "react"
+import { useCallback } from "react";
+
 import {
-  ReactFlow,
-  MiniMap,
-  Controls,
-  Background,
-  useNodesState,
-  useEdgesState,
   addEdge,
-  Node,
-  Edge,
+  Background,
   Connection,
-} from "@xyflow/react"
-import "@xyflow/react/dist/style.css"
+  Controls,
+  Edge,
+  MiniMap,
+  Node,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 
-import type { AnalyzedRepo } from "@/types"
+import type { AnalyzedRepo } from "@/types";
 
 interface AnalysisCanvasProps {
-  analysisResult: AnalyzedRepo | null
+  analysisResult: AnalyzedRepo | null;
 }
 
 const initialNodes: Node[] = [
@@ -64,7 +65,7 @@ const initialNodes: Node[] = [
     data: { label: "Total Score" },
     style: { background: "#e8f5e8", border: "1px solid #1b5e20" },
   },
-]
+];
 
 const initialEdges: Edge[] = [
   { id: "repo-code-quality", source: "repo", target: "code-quality" },
@@ -79,18 +80,20 @@ const initialEdges: Edge[] = [
   { id: "security-total", source: "security", target: "total-score" },
   { id: "documentation-total", source: "documentation", target: "total-score" },
   { id: "repo-documentation", source: "repo", target: "documentation" },
-]
+];
 
-export default function AnalysisCanvas({ analysisResult }: AnalysisCanvasProps) {
-  const [nodes, , onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+export default function AnalysisCanvas({
+  analysisResult,
+}: AnalysisCanvasProps) {
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
-    (params: Connection) => setEdges(eds => addEdge(params, eds)),
+    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
-  )
+  );
 
-  const updatedNodes = nodes.map(node => {
+  const updatedNodes = nodes.map((node) => {
     if (node.id === "repo" && analysisResult) {
       return {
         ...node,
@@ -98,7 +101,7 @@ export default function AnalysisCanvas({ analysisResult }: AnalysisCanvasProps) 
           ...node.data,
           label: `${analysisResult.name}\n${analysisResult.language}\n⭐ ${analysisResult.stars}`,
         },
-      }
+      };
     }
     if (node.id === "code-quality" && analysisResult) {
       return {
@@ -107,7 +110,7 @@ export default function AnalysisCanvas({ analysisResult }: AnalysisCanvasProps) 
           ...node.data,
           label: `Code Quality\n${analysisResult.scores.codeQuality}/100`,
         },
-      }
+      };
     }
     if (node.id === "architecture" && analysisResult) {
       return {
@@ -116,7 +119,7 @@ export default function AnalysisCanvas({ analysisResult }: AnalysisCanvasProps) 
           ...node.data,
           label: `Architecture\n${analysisResult.scores.architecture}/100`,
         },
-      }
+      };
     }
     if (node.id === "security" && analysisResult) {
       return {
@@ -125,7 +128,7 @@ export default function AnalysisCanvas({ analysisResult }: AnalysisCanvasProps) 
           ...node.data,
           label: `Security\n${analysisResult.scores.security}/100`,
         },
-      }
+      };
     }
     if (node.id === "git-practices" && analysisResult) {
       return {
@@ -134,7 +137,7 @@ export default function AnalysisCanvas({ analysisResult }: AnalysisCanvasProps) 
           ...node.data,
           label: `Git Practices\n${analysisResult.scores.gitPractices}/100`,
         },
-      }
+      };
     }
     if (node.id === "documentation" && analysisResult) {
       return {
@@ -143,7 +146,7 @@ export default function AnalysisCanvas({ analysisResult }: AnalysisCanvasProps) 
           ...node.data,
           label: `Documentation\n${analysisResult.scores.documentation}/100`,
         },
-      }
+      };
     }
     if (node.id === "total-score" && analysisResult) {
       return {
@@ -152,10 +155,10 @@ export default function AnalysisCanvas({ analysisResult }: AnalysisCanvasProps) 
           ...node.data,
           label: `Total Score\n${analysisResult.totalScore}/100`,
         },
-      }
+      };
     }
-    return node
-  })
+    return node;
+  });
 
   return (
     <div style={{ height: 500 }}>
@@ -167,12 +170,12 @@ export default function AnalysisCanvas({ analysisResult }: AnalysisCanvasProps) 
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         fitView
-        className="text-black rounded-3xl border-2 border-dashed"
+        className="rounded-3xl border-2 border-dashed text-black"
       >
         <Controls />
         <MiniMap />
         <Background />
       </ReactFlow>
     </div>
-  )
+  );
 }

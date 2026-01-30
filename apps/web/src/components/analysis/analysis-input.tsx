@@ -1,21 +1,29 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { IconBrandGithub, IconLoader2, IconSearch } from "@tabler/icons-react"
-import { DashboardCard } from "@/components/layout/dashboard-card"
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
-import { useAnalysisActions, useAnalysisState } from "@/hooks/screens/analysis.hooks"
+import { IconBrandGithub, IconLoader2, IconSearch } from "@tabler/icons-react";
+
+import { DashboardCard } from "@/components/layout/dashboard-card";
+import { Button } from "@/components/ui/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+  useAnalysisActions,
+  useAnalysisState,
+} from "@/hooks/screens/analysis.hooks";
 
 export function AnalysisInputTrigger() {
-  const { isAnalyzing, state } = useAnalysisState()
-  const { handleAnalyze, repoUrl, setRepoURL } = useAnalysisActions()
+  const { isAnalyzing, state } = useAnalysisState();
+  const { handleAnalyze, repoUrl, setRepoURL } = useAnalysisActions();
 
   return (
-    <DashboardCard className="p-6 flex-1 border bg-neutral-800/40 relative">
+    <DashboardCard className="relative flex-1 border bg-neutral-800/40 p-6">
       <form onSubmit={handleAnalyze} className="space-y-4">
         <div>
-          <div className="flex flex-col sm:flex-row gap-3 items-stretch">
-            <InputGroup className="bg-neutral-900 placeholder:text-center border-zinc-800 text-zinc-100 h-11 z-80 rounded-md">
+          <div className="flex flex-col items-stretch gap-3 sm:flex-row">
+            <InputGroup className="z-80 h-11 rounded-md border-zinc-800 bg-neutral-900 text-zinc-100 placeholder:text-center">
               <InputGroupAddon align="inline-start">
                 <IconBrandGithub className="h-4 w-4 text-white/60" />
               </InputGroupAddon>
@@ -25,7 +33,7 @@ export function AnalysisInputTrigger() {
                 type="url"
                 placeholder="https://github.com/user/repository"
                 value={repoUrl}
-                onChange={e => setRepoURL(e.target.value)}
+                onChange={(e) => setRepoURL(e.target.value)}
                 disabled={isAnalyzing}
               />
             </InputGroup>
@@ -34,7 +42,7 @@ export function AnalysisInputTrigger() {
               <Button
                 type="submit"
                 disabled={isAnalyzing || !repoUrl}
-                className="gap-2 h-14 border-2 border-neutral-50/10 py-4 w-full sm:w-auto"
+                className="h-14 w-full gap-2 border-2 border-neutral-50/10 py-4 sm:w-auto"
               >
                 {isAnalyzing ? (
                   <>
@@ -56,9 +64,11 @@ export function AnalysisInputTrigger() {
       {isAnalyzing && (
         <div className="mt-8 flex items-center gap-3">
           <IconLoader2 className="h-5 w-5 animate-spin" />
-          <p className="text-sm">{state.status === "responding" ? state.currentStatus : ""}</p>
+          <p className="text-sm">
+            {state.status === "responding" ? state.currentStatus : ""}
+          </p>
         </div>
       )}
     </DashboardCard>
-  )
+  );
 }

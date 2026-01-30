@@ -1,8 +1,12 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
+import { useState } from "react";
 
-import { useState } from "react"
+import { Loader2, Send } from "lucide-react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,52 +14,59 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import type { Developer } from "@/types"
-import { Loader2, Send } from "lucide-react"
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import type { Developer } from "@/types";
 
 interface ContactModalProps {
-  developer: Developer | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onSend: (message: string) => void
+  developer: Developer | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSend: (message: string) => void;
 }
 
-export function ContactModal({ developer, open, onOpenChange, onSend }: ContactModalProps) {
-  const [message, setMessage] = useState("")
-  const [isSending, setIsSending] = useState(false)
+export function ContactModal({
+  developer,
+  open,
+  onOpenChange,
+  onSend,
+}: ContactModalProps) {
+  const [message, setMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
   async function handleSend(e: React.FormEvent) {
-    e.preventDefault()
-    if (!message.trim()) return
+    e.preventDefault();
+    if (!message.trim()) return;
 
-    setIsSending(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    onSend(message)
-    setMessage("")
-    setIsSending(false)
-    onOpenChange(false)
+    setIsSending(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    onSend(message);
+    setMessage("");
+    setIsSending(false);
+    onOpenChange(false);
   }
 
-  if (!developer) return null
+  if (!developer) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md lg:max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+      <DialogContent className="max-h-[90vh] overflow-y-auto p-4 sm:max-w-md sm:p-6 lg:max-w-lg">
         <DialogHeader className="space-y-2 sm:space-y-3">
-          <DialogTitle className="text-xl sm:text-2xl font-semibold">Contact Developer</DialogTitle>
+          <DialogTitle className="text-xl font-semibold sm:text-2xl">
+            Contact Developer
+          </DialogTitle>
           <DialogDescription className="text-sm sm:text-base">
             Send a message to request contact with this developer.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-5 rounded-lg bg-muted/50 border">
-          <Avatar className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 shrink-0">
-            <AvatarImage src={developer.avatar || "/placeholder.svg"} alt={developer.name} />
+        <div className="bg-muted/50 flex items-center gap-3 rounded-lg border p-3 sm:gap-4 sm:p-5">
+          <Avatar className="h-12 w-12 shrink-0 sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+            <AvatarImage
+              src={developer.avatar || "/placeholder.svg"}
+              alt={developer.name}
+            />
             <AvatarFallback className="text-base sm:text-lg">
               {developer.name
                 .split(" ")
@@ -64,14 +75,21 @@ export function ContactModal({ developer, open, onOpenChange, onSend }: ContactM
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <p className="font-semibold text-base sm:text-lg truncate">{developer.name}</p>
-            <p className="text-sm sm:text-base text-muted-foreground">Score: {developer.score}/100</p>
+            <p className="truncate text-base font-semibold sm:text-lg">
+              {developer.name}
+            </p>
+            <p className="text-muted-foreground text-sm sm:text-base">
+              Score: {developer.score}/100
+            </p>
           </div>
         </div>
 
         <form onSubmit={handleSend} className="space-y-4 sm:space-y-5">
           <div className="space-y-2 sm:space-y-3">
-            <Label htmlFor="message" className="text-sm sm:text-base font-medium">
+            <Label
+              htmlFor="message"
+              className="text-sm font-medium sm:text-base"
+            >
               Your Message
             </Label>
             <Textarea
@@ -81,26 +99,27 @@ export function ContactModal({ developer, open, onOpenChange, onSend }: ContactM
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
               required
-              className="text-sm sm:text-base resize-none min-h-[100px] sm:min-h-[120px]"
+              className="min-h-[100px] resize-none text-sm sm:min-h-[120px] sm:text-base"
             />
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              This message will be sent to the developer for review. They will decide whether to accept your request.
+            <p className="text-muted-foreground text-xs leading-relaxed sm:text-sm">
+              This message will be sent to the developer for review. They will
+              decide whether to accept your request.
             </p>
           </div>
 
-          <DialogFooter className="flex-col-reverse sm:flex-row gap-2 sm:gap-3 pt-2">
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => onOpenChange(false)} 
-              className="w-full sm:w-auto sm:min-w-[100px] bg-transparent"
+          <DialogFooter className="flex-col-reverse gap-2 pt-2 sm:flex-row sm:gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="w-full bg-transparent sm:w-auto sm:min-w-[100px]"
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
-              disabled={isSending || !message.trim()} 
-              className="w-full sm:w-auto sm:min-w-[140px] gap-2"
+            <Button
+              type="submit"
+              disabled={isSending || !message.trim()}
+              className="w-full gap-2 sm:w-auto sm:min-w-[140px]"
             >
               {isSending ? (
                 <>
@@ -118,5 +137,5 @@ export function ContactModal({ developer, open, onOpenChange, onSend }: ContactM
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

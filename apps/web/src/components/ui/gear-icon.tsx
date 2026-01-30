@@ -1,13 +1,15 @@
 "use client";
 
 import { forwardRef, useImperativeHandle } from "react";
-import type { AnimatedIconHandle, AnimatedIconProps } from "./types";
+
 import { motion, useAnimate } from "motion/react";
+
+import type { AnimatedIconHandle, AnimatedIconProps } from "./types";
 
 const GearIcon = forwardRef<AnimatedIconHandle, AnimatedIconProps>(
   (
     { size = 24, color = "currentColor", strokeWidth = 2, className = "" },
-    ref,
+    ref
   ) => {
     const [scope, animate] = useAnimate();
 
@@ -17,13 +19,13 @@ const GearIcon = forwardRef<AnimatedIconHandle, AnimatedIconProps>(
       animate(
         ".gear-center",
         { scale: [1, 1.1, 1] },
-        { duration: 0.3, ease: "easeOut" },
+        { duration: 0.3, ease: "easeOut" }
       );
 
       animate(
         ".gear-rotator",
         { rotate: 360 },
-        { duration: 0.9, ease: "easeInOut" },
+        { duration: 0.9, ease: "easeInOut" }
       );
     };
 
@@ -80,7 +82,7 @@ const GearIcon = forwardRef<AnimatedIconHandle, AnimatedIconProps>(
         </motion.g>
       </motion.svg>
     );
-  },
+  }
 );
 
 GearIcon.displayName = "GearIcon";

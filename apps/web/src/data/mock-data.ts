@@ -1,4 +1,9 @@
-import type { Developer, Recruiter, ContactRequest, AnalyzedRepo } from "@/types"
+import type {
+  AnalyzedRepo,
+  ContactRequest,
+  Developer,
+  Recruiter,
+} from "@/types";
 
 export const mockDevelopers: Developer[] = [
   {
@@ -97,7 +102,7 @@ export const mockDevelopers: Developer[] = [
     analyzedRepos: [],
     createdAt: new Date("2024-02-28"),
   },
-]
+];
 
 export const mockRecruiters: Recruiter[] = [
   {
@@ -120,7 +125,7 @@ export const mockRecruiters: Recruiter[] = [
     avatar: "/recruiter-portrait-female-professional-asian.jpg",
     createdAt: new Date("2024-02-15"),
   },
-]
+];
 
 export const mockContactRequests: ContactRequest[] = [
   {
@@ -146,7 +151,7 @@ export const mockContactRequests: ContactRequest[] = [
     recruiterCompany: "StartupHub",
     recruiterEmail: "lisa.wong@startuphub.io",
   },
-]
+];
 
 export const mockAnalysisResult: AnalyzedRepo = {
   id: "ar1",
@@ -171,4 +176,4 @@ export const mockAnalysisResult: AnalyzedRepo = {
     "Security practices are solid, but consider implementing rate limiting",
     "Documentation could be improved with API endpoint descriptions",
   ],
-}
+};

@@ -1,8 +1,10 @@
-import { Elysia } from "elysia"
-import { openapi } from "@elysiajs/openapi"
-import { betterAuthmiddleware } from "@/server/middlewares/auth.middleware"
-import { HealthService, AnalysisService } from "@/server/services"
-import { repoAnalysisRequestBodySchema } from "./services/analysis/analysis.validation"
+import { openapi } from "@elysiajs/openapi";
+import { Elysia } from "elysia";
+
+import { betterAuthmiddleware } from "@/server/middlewares/auth.middleware";
+import { AnalysisService, HealthService } from "@/server/services";
+
+import { repoAnalysisRequestBodySchema } from "./services/analysis/analysis.validation";
 
 export const app = new Elysia({ prefix: "/api" })
   .use(openapi())
@@ -16,6 +18,6 @@ export const app = new Elysia({ prefix: "/api" })
      *this will be an authenticated route
      * **/
     auth: true,
-  })
+  });
 
-export type API = typeof app
+export type API = typeof app;

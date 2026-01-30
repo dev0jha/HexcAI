@@ -1,25 +1,31 @@
-"use client"
+"use client";
 
-import { GitHubAnalysisFlow } from "@/components/core/GitHubAnalysisFlow"
-import { Terminal, Shield, Cpu, Network, FileCode } from "lucide-react"
-import { BentoCard, BentoCardProps, BentoGrid } from "@/components/ui/bento-grid"
+import { Cpu, FileCode, Network, Shield, Terminal } from "lucide-react";
+
+import { GitHubAnalysisFlow } from "@/components/core/GitHubAnalysisFlow";
+import {
+  BentoCard,
+  BentoCardProps,
+  BentoGrid,
+} from "@/components/ui/bento-grid";
 import {
   DevIdCardSkeleton,
   NetworkNodes,
   SecurityHash,
   SystemLogs,
-} from "@/components/ui/bento-seletons"
+} from "@/components/ui/bento-seletons";
 
 const features: BentoCardProps[] = [
   {
     name: "AI Analysis Engine",
-    description: "Deep semantic understanding of your codebase structure and logic flows.",
+    description:
+      "Deep semantic understanding of your codebase structure and logic flows.",
     href: "#",
     cta: "View Logic",
     className: "col-span-1 md:col-span-6 lg:col-span-4 min-h-[300px]",
     Icon: Cpu,
     background: (
-      <div className="absolute inset-0 flex items-center justify-center -translate-y-8 opacity-40 grayscale contrast-125 group-hover:opacity-60 transition-opacity duration-500 py-44">
+      <div className="absolute inset-0 flex -translate-y-8 items-center justify-center py-44 opacity-40 contrast-125 grayscale transition-opacity duration-500 group-hover:opacity-60">
         <GitHubAnalysisFlow />
       </div>
     ),
@@ -53,27 +59,29 @@ const features: BentoCardProps[] = [
   },
   {
     name: "Encryption",
-    description: "One-way hashing ensures your raw data never leaves the vault.",
+    description:
+      "One-way hashing ensures your raw data never leaves the vault.",
     href: "#",
     cta: "Read Policy",
     className: "col-span-1 md:col-span-6 lg:col-span-2 min-h-[300px]",
     Icon: Shield,
     background: <SecurityHash />,
   },
-]
+];
 
 export function HowItWorks() {
   return (
-    <section className="relative w-full bg-black py-24 lg:py-32 border-t border-zinc-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <section className="relative w-full border-t border-zinc-900 bg-black py-24 lg:py-32">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16">
-          <h2 className="text-4xl md:text-5xl font-semibold text-white mb-6 tracking-tight">
+          <h2 className="mb-6 text-4xl font-semibold tracking-tight text-white md:text-5xl">
             Built for precision. <br />
             <span className="text-zinc-600">Designed for privacy.</span>
           </h2>
-          <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl">
-            HireXAI operates on a zero-knowledge architecture. We analyze code patterns without
-            storing proprietary logic, converting your skills into verifiable hashes.
+          <p className="max-w-2xl text-lg leading-relaxed text-zinc-400">
+            HireXAI operates on a zero-knowledge architecture. We analyze code
+            patterns without storing proprietary logic, converting your skills
+            into verifiable hashes.
           </p>
         </div>
 
@@ -84,5 +92,5 @@ export function HowItWorks() {
         </BentoGrid>
       </div>
     </section>
-  )
+  );
 }

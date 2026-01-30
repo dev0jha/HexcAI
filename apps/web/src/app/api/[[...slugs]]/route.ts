@@ -1,4 +1,4 @@
-import { app } from "@/server/app"
+import { app } from "@/server/app";
 
-export const GET = app.fetch
-export const POST = app.fetch
+export const GET = app.fetch;
+export const POST = app.fetch;

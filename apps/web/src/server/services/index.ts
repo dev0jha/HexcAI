@@ -6,8 +6,8 @@ export abstract class HealthService {
     return {
       status: "ok",
       message: "Service is healthy",
-    }
+    };
   }
 }
 
-export { AnalysisService } from "./analysis/analysis.service"
+export { AnalysisService } from "./analysis/analysis.service";

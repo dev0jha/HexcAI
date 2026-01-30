@@ -1,7 +1,7 @@
-import { describe, expect, it, mock } from "bun:test"
-import { UserService } from "@/server/services/user/user.service"
+import { describe, expect, it, mock } from "bun:test";
 
-import type { UserWithRole } from "@/actions/session.actions"
+import type { UserWithRole } from "@/actions/session.actions";
+import { UserService } from "@/server/services/user/user.service";
 
 describe("UserService", () => {
   describe("getUser", () => {
@@ -14,51 +14,53 @@ describe("UserService", () => {
         emailVerified: false,
         name: "Test User",
         updatedAt: new Date(),
-      }
-      const mockSession = { user: mockUser }
+      };
+      const mockSession = { user: mockUser };
 
-      const mockHeaders = new Headers()
+      const mockHeaders = new Headers();
       mock.module("@/utils/attempt", () => ({
         attempt: mock(() => Promise.resolve({ ok: true, data: mockSession })),
-      }))
+      }));
 
       mock.module("next/headers", () => ({
         headers: mock(() => Promise.resolve(mockHeaders)),
-      }))
+      }));
 
-      const mockSet = { status: 200 }
-      const context = { set: mockSet }
+      const mockSet = { status: 200 };
+      const context = { set: mockSet };
 
-      const result = await UserService.getUser(context as any)
+      const result = await UserService.getUser(context as any);
 
-      if (result.success) expect(result).toEqual({ success: true, user: mockUser })
+      if (result.success)
+        expect(result).toEqual({ success: true, user: mockUser });
 
-      if (!result.success) expect(result).toBe({ success: false, message: "Unauthorized" })
+      if (!result.success)
+        expect(result).toBe({ success: false, message: "Unauthorized" });
 
-      expect(context.set.status).toBe(200)
-    })
+      expect(context.set.status).toBe(200);
+    });
 
     it("returns unauthorized when no user in session", async () => {
-      const mockSession = { user: null }
+      const mockSession = { user: null };
 
       mock.module("@/utils/attempt", () => ({
         attempt: mock(() => Promise.resolve({ ok: true, data: mockSession })),
-      }))
+      }));
 
       mock.module("next/headers", () => ({
         headers: mock(() => Promise.resolve(new Headers())),
-      }))
+      }));
 
-      const mockSet = { status: 401 }
-      const context = { set: mockSet }
+      const mockSet = { status: 401 };
+      const context = { set: mockSet };
 
-      const result = await UserService.getUser(context as any)
+      const result = await UserService.getUser(context as any);
 
       expect(result).toEqual({
         success: false,
         message: "Unauthorized",
-      })
-      expect(context.set.status).toBe(401)
-    })
-  })
-})
+      });
+      expect(context.set.status).toBe(401);
+    });
+  });
+});

@@ -35,5 +35,5 @@ export const buildPrompt = (repoData: any) => {
 
 
 	DONT GIVE ME JSON BLOCK ONLY RETURN THE RAW JSON IN A FORMAT , I CAN PARSE IT DIRECTLY!
-	`
-}
+	`;
+};

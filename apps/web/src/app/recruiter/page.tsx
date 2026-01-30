@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"
+import { redirect } from "next/navigation";
 
 export default function RecruiterPage() {
-  redirect("/recruiter/candidates")
+  redirect("/recruiter/candidates");
 }

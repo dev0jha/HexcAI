@@ -1,27 +1,28 @@
-import Image from "next/image"
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { mockDevelopers, mockAnalysisResult } from "@/data/mock-data"
-import { getScoreLabel } from "@/types"
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
 import {
-  MapPin,
-  Globe,
-  Linkedin,
-  Github,
   Code2,
-  Shield,
-  GitBranch,
-  FileText,
-  Layers,
   ExternalLink,
+  FileText,
+  GitBranch,
+  Github,
+  Globe,
+  Layers,
+  Linkedin,
+  MapPin,
   PlusIcon,
-} from "lucide-react"
-import ScorePieChart from "@/components/developer/score-pie-chart"
-import Footer from "@/components/layout/footer"
+  Shield,
+} from "lucide-react";
+
+import ScorePieChart from "@/components/developer/score-pie-chart";
+import Footer from "@/components/layout/footer";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { mockAnalysisResult, mockDevelopers } from "@/data/mock-data";
+import { getScoreLabel } from "@/types";
 
 const scoreCategories = [
   { key: "codeQuality", name: "Code Quality", icon: Code2 },
@@ -29,46 +30,46 @@ const scoreCategories = [
   { key: "security", name: "Security", icon: Shield },
   { key: "gitPractices", name: "Git Practices", icon: GitBranch },
   { key: "documentation", name: "Documentation", icon: FileText },
-]
+];
 
 interface ProfilePageProps {
-  params: Promise<{ username: string }>
+  params: Promise<{ username: string }>;
 }
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
-  const { username } = await params
-  const developer = mockDevelopers.find(d => d.username === username)
+  const { username } = await params;
+  const developer = mockDevelopers.find((d) => d.username === username);
 
   if (!developer) {
-    notFound()
+    notFound();
   }
 
-  const scoreLabel = getScoreLabel(developer.score)
+  const scoreLabel = getScoreLabel(developer.score);
 
   return (
     <div className="min-h-screen bg-black">
       <main className="pt-20 pb-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div className="relative p-6 border-dashed border-1 rounded-none bg-transparent before:rounded-none">
+          <div className="relative rounded-none border-1 border-dashed bg-transparent p-6 before:rounded-none">
             <PlusIcon
-              className="-top-[12.5px] -left-[12.5px] absolute h-6 w-6 text-zinc-600"
+              className="absolute -top-[12.5px] -left-[12.5px] h-6 w-6 text-zinc-600"
               strokeWidth={2}
             />
             <PlusIcon
-              className="-top-[12.5px] -right-[12.5px] absolute h-6 w-6 text-zinc-600"
+              className="absolute -top-[12.5px] -right-[12.5px] h-6 w-6 text-zinc-600"
               strokeWidth={2}
             />
             <PlusIcon
-              className="-bottom-[12.5px] -left-[12.5px] absolute h-6 w-6 text-zinc-600"
+              className="absolute -bottom-[12.5px] -left-[12.5px] h-6 w-6 text-zinc-600"
               strokeWidth={2}
             />
             <PlusIcon
-              className="-bottom-[12.5px] -right-[12.5px] absolute h-6 w-6 text-zinc-600"
+              className="absolute -right-[12.5px] -bottom-[12.5px] h-6 w-6 text-zinc-600"
               strokeWidth={2}
             />
-            <div className="flex flex-col md:flex-row gap-8">
+            <div className="flex flex-col gap-8 md:flex-row">
               <div className="flex flex-col items-center md:items-start">
-                <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-primary/20">
+                <div className="border-primary/20 relative h-32 w-32 overflow-hidden rounded-full border-4">
                   <Image
                     src={
                       developer.avatar ||
@@ -80,32 +81,38 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                   />
                 </div>
                 {developer.isOpenToRecruiters && developer.score >= 80 && (
-                  <Badge className="mt-4 bg-primary/20 text-primary">Open to opportunities</Badge>
+                  <Badge className="bg-primary/20 text-primary mt-4">
+                    Open to opportunities
+                  </Badge>
                 )}
               </div>
 
               <div className="flex-1 text-center md:text-left">
-                <h1 className="text-3xl font-poppins font-bold">{developer.name}</h1>
+                <h1 className="font-poppins text-3xl font-bold">
+                  {developer.name}
+                </h1>
                 <p className="text-muted-foreground">@{developer.username}</p>
 
                 {developer.location && (
-                  <div className="flex items-center justify-center md:justify-start text-muted-foreground">
+                  <div className="text-muted-foreground flex items-center justify-center md:justify-start">
                     <MapPin className="h-4 w-4" />
                     {developer.location}
                   </div>
                 )}
 
                 {developer.bio && (
-                  <p className="mt-4 text-muted-foreground max-w-xl">{developer.bio}</p>
+                  <p className="text-muted-foreground mt-4 max-w-xl">
+                    {developer.bio}
+                  </p>
                 )}
 
-                <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+                <div className="mt-4 flex flex-wrap justify-center gap-3 md:justify-start">
                   {developer.website && (
                     <a
                       href={`https://${developer.website}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                      className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-sm"
                     >
                       <Globe className="h-4 w-4" />
                       {developer.website}
@@ -116,7 +123,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                       href={`https://${developer.linkedIn}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                      className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-sm"
                     >
                       <Linkedin className="h-4 w-4" />
                       LinkedIn
@@ -124,7 +131,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                   )}
                   <a
                     href="#"
-                    className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-sm"
                   >
                     <Github className="h-4 w-4" />
                     GitHub
@@ -133,13 +140,20 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               </div>
 
               <div className="flex flex-col items-center">
-                <div className="text-center p-6 rounded-xl bg-transparent border border-dashed">
-                  <p className="text-sm text-muted-foreground">Developer Score</p>
-                  <div className="flex items-baseline justify-center gap-1 mt-1">
-                    <span className="text-4xl font-bold text-primary">{developer.score}</span>
+                <div className="rounded-xl border border-dashed bg-transparent p-6 text-center">
+                  <p className="text-muted-foreground text-sm">
+                    Developer Score
+                  </p>
+                  <div className="mt-1 flex items-baseline justify-center gap-1">
+                    <span className="text-primary text-4xl font-bold">
+                      {developer.score}
+                    </span>
                     <span className="text-muted-foreground">/100</span>
                   </div>
-                  <Badge variant="secondary" className="mt-2 bg-primary/20 text-primary">
+                  <Badge
+                    variant="secondary"
+                    className="bg-primary/20 text-primary mt-2"
+                  >
                     {scoreLabel}
                   </Badge>
                 </div>
@@ -147,9 +161,9 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             </div>
 
             <div className="mt-8">
-              <h2 className="text-lg font-semibold mb-4">Tech Stack</h2>
+              <h2 className="mb-4 text-lg font-semibold">Tech Stack</h2>
               <div className="flex flex-wrap gap-2">
-                {developer.techStack.map(tech => (
+                {developer.techStack.map((tech) => (
                   <Badge key={tech} variant="outline" className="text-sm">
                     {tech}
                   </Badge>
@@ -158,25 +172,27 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             </div>
           </div>
 
-          <div className="grid gap-6 mt-8 md:grid-cols-2">
-            <Card className="p-6 border-dashed border-1 rounded-none bg-transparent relative before:rounded-none">
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            <Card className="relative rounded-none border-1 border-dashed bg-transparent p-6 before:rounded-none">
               <PlusIcon
-                className="-top-[12.5px] -left-[12.5px] absolute h-6 w-6 text-zinc-600"
+                className="absolute -top-[12.5px] -left-[12.5px] h-6 w-6 text-zinc-600"
                 strokeWidth={2}
               />
               <PlusIcon
-                className="-top-[12.5px] -right-[12.5px] absolute h-6 w-6 text-zinc-600"
+                className="absolute -top-[12.5px] -right-[12.5px] h-6 w-6 text-zinc-600"
                 strokeWidth={2}
               />
               <PlusIcon
-                className="-bottom-[12.5px] -left-[12.5px] absolute h-6 w-6 text-zinc-600"
+                className="absolute -bottom-[12.5px] -left-[12.5px] h-6 w-6 text-zinc-600"
                 strokeWidth={2}
               />
               <PlusIcon
-                className="-bottom-[12.5px] -right-[12.5px] absolute h-6 w-6 text-zinc-600"
+                className="absolute -right-[12.5px] -bottom-[12.5px] h-6 w-6 text-zinc-600"
                 strokeWidth={2}
               />
-              <h2 className="text-lg font-semibold mb-4 text-white">Score Breakdown</h2>
+              <h2 className="mb-4 text-lg font-semibold text-white">
+                Score Breakdown
+              </h2>
               <div className="flex items-center justify-center py-4">
                 <ScorePieChart
                   scores={{
@@ -191,40 +207,49 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               </div>
             </Card>
 
-            <Card className="p-6 border-dashed border-1 rounded-none bg-transparent relative before:rounded-none">
-              <PlusIcon className="-top-[12.5px] -left-[12.5px] absolute h-6 w-6" strokeWidth={2} />
+            <Card className="relative rounded-none border-1 border-dashed bg-transparent p-6 before:rounded-none">
               <PlusIcon
-                className="-top-[12.5px] -right-[12.5px] absolute h-6 w-6"
+                className="absolute -top-[12.5px] -left-[12.5px] h-6 w-6"
                 strokeWidth={2}
               />
               <PlusIcon
-                className="-bottom-[12.5px] -left-[12.5px] absolute h-6 w-6"
+                className="absolute -top-[12.5px] -right-[12.5px] h-6 w-6"
                 strokeWidth={2}
               />
               <PlusIcon
-                className="-bottom-[12.5px] -right-[12.5px] absolute h-6 w-6"
+                className="absolute -bottom-[12.5px] -left-[12.5px] h-6 w-6"
                 strokeWidth={2}
               />
-              <h2 className="text-lg font-semibold mb-4 text-white">Featured Project</h2>
-              <div className="rounded-lg border border-border p-4">
+              <PlusIcon
+                className="absolute -right-[12.5px] -bottom-[12.5px] h-6 w-6"
+                strokeWidth={2}
+              />
+              <h2 className="mb-4 text-lg font-semibold text-white">
+                Featured Project
+              </h2>
+              <div className="border-border rounded-lg border p-4">
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="font-medium">{mockAnalysisResult.name}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-muted-foreground mt-1 text-sm">
                       {mockAnalysisResult.description}
                     </p>
                   </div>
-                  <Badge variant="secondary">{mockAnalysisResult.totalScore}</Badge>
+                  <Badge variant="secondary">
+                    {mockAnalysisResult.totalScore}
+                  </Badge>
                 </div>
-                <div className="flex flex-wrap gap-2 mt-4">
+                <div className="mt-4 flex flex-wrap gap-2">
                   <Badge variant="outline">{mockAnalysisResult.language}</Badge>
-                  <Badge variant="outline">{mockAnalysisResult.stars} stars</Badge>
+                  <Badge variant="outline">
+                    {mockAnalysisResult.stars} stars
+                  </Badge>
                 </div>
                 <a
                   href={mockAnalysisResult.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 mt-4 text-sm text-primary hover:underline"
+                  className="text-primary mt-4 flex items-center gap-1 text-sm hover:underline"
                 >
                   View on GitHub
                   <ExternalLink className="h-3 w-3" />
@@ -232,11 +257,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               </div>
 
               {developer.isOpenToRecruiters && developer.score >= 80 && (
-                <div className="mt-6 p-4 rounded-lg bg-primary/10 border border-primary/20">
-                  <p className="text-sm font-medium text-primary">
+                <div className="bg-primary/10 border-primary/20 mt-6 rounded-lg border p-4">
+                  <p className="text-primary text-sm font-medium">
                     Interested in hiring {developer.name.split(" ")[0]}?
                   </p>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-muted-foreground mt-1 text-sm">
                     Sign in as a recruiter to send a contact request.
                   </p>
                   <Link href="/login">
@@ -252,5 +277,5 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       </main>
       <Footer />
     </div>
-  )
+  );
 }

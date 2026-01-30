@@ -1,9 +1,9 @@
-import React from "react"
+import React from "react";
 
 interface PlusIconProps {
-  size?: number
-  color?: string
-  className?: string
+  size?: number;
+  color?: string;
+  className?: string;
 }
 
 export const PlusIcon: React.FC<PlusIconProps> = ({
@@ -22,5 +22,5 @@ export const PlusIcon: React.FC<PlusIconProps> = ({
     >
       <path d="M5.5 0L5.5 11M0 5.5L11 5.5" stroke={color} strokeWidth="1" />
     </svg>
-  )
-}
+  );
+};

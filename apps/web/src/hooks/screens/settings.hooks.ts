@@ -1,14 +1,14 @@
-import { SettingStore } from "@/hooks/scopedstores/settings.store"
+import { SettingStore } from "@/hooks/scopedstores/settings.store";
 
 /*
  * Hook to get saving settings status
  * **/
 export function useSaveSettingsStatus() {
-  const [isSaving, setIsSaving] = SettingStore.useAtom("isSaving")
+  const [isSaving, setIsSaving] = SettingStore.useAtom("isSaving");
   return {
     isSaving,
     setIsSaving,
-  }
+  };
 }
 
 /**
@@ -16,29 +16,30 @@ export function useSaveSettingsStatus() {
  * Is open to recruiters toggle hook
  * **/
 export function useOpenToRecuiterSetting() {
-  const [isOpenToRecruiters, setIsOpenToRecruiters] = SettingStore.useAtom("isOpenToRecruiters")
+  const [isOpenToRecruiters, setIsOpenToRecruiters] =
+    SettingStore.useAtom("isOpenToRecruiters");
   return {
     isOpenToRecruiters,
     setIsOpenToRecruiters,
-  }
+  };
 }
 
 /*
  *  Hook to handle saving settings action
  * **/
 export function useSaveSettingsAction() {
-  const { isSaving, setIsSaving } = useSaveSettingsStatus()
+  const { isSaving, setIsSaving } = useSaveSettingsStatus();
 
   async function handleSave(e: React.FormEvent) {
-    e.preventDefault()
-    setIsSaving(true)
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setIsSaving(false)
+    e.preventDefault();
+    setIsSaving(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsSaving(false);
   }
 
   return {
     handleSave,
     isSaving,
     setIsSaving,
-  }
+  };
 }

@@ -1,8 +1,10 @@
 "use client";
 
-import { TimelineContent } from "@/components/ui/timeline-animation";
-import Image from "next/image";
 import { useRef } from "react";
+
+import Image from "next/image";
+
+import { TimelineContent } from "@/components/ui/timeline-animation";
 
 function ClientFeedback() {
   const testimonialRef = useRef<HTMLDivElement>(null);
@@ -31,28 +33,30 @@ function ClientFeedback() {
       ref={testimonialRef}
       className="relative container mx-auto h-full py-14"
     >
-      
-    <div className=" mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-  <h2 className="mb-5 text-4xl font-semibold font-poppins tracking-tight text-white md:text-5xl">
-    Trusted By Engineers<br />
-    <span className="text-zinc-600">Showcase your real skills</span>
-  </h2>
-</div>
+      <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+        <h2 className="font-poppins mb-5 text-4xl font-semibold tracking-tight text-white md:text-5xl">
+          Trusted By Engineers
+          <br />
+          <span className="text-zinc-600">Showcase your real skills</span>
+        </h2>
+      </div>
 
       {/* Grid */}
-      <div className="flex w-full flex-col gap-2 px-4 pb-4 pt-10 lg:grid lg:grid-cols-3 lg:px-10 lg:py-10">
+      <div className="flex w-full flex-col gap-2 px-4 pt-10 pb-4 lg:grid lg:grid-cols-3 lg:px-10 lg:py-10">
         {/* Column 1 */}
         <div className="flex h-full flex-col gap-2 lg:gap-0 lg:space-y-2">
           <TimelineContent
             animationNum={0}
             customVariants={revealVariants}
             timelineRef={testimonialRef}
-            className={`bg-primaryColor p-5 lg:flex-7 flex-6 ${cardBase}`}
+            className={`bg-primaryColor flex-6 p-5 lg:flex-7 ${cardBase}`}
           >
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-size-[50px_56px] mask-[radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] mask-[radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] bg-size-[50px_56px]" />
             <article className="mt-auto">
               <p>
-                &quot;For the first time, my skills were judged by my code — not just my resume. The AI insights felt accurate and motivating.&quot;
+                &quot;For the first time, my skills were judged by my code — not
+                just my resume. The AI insights felt accurate and
+                motivating.&quot;
               </p>
 
               <div className="flex justify-between pt-5">
@@ -78,11 +82,12 @@ function ClientFeedback() {
             animationNum={1}
             customVariants={revealVariants}
             timelineRef={testimonialRef}
-            className={`bg-primaryColor p-5 text-white lg:flex-3 flex-4 lg:h-fit lg:shrink-0 ${cardBase}`}
+            className={`bg-primaryColor flex-4 p-5 text-white lg:h-fit lg:flex-3 lg:shrink-0 ${cardBase}`}
           >
             <article className="mt-auto">
               <p>
-                &quot;The developer score helped me understand where I stand and how to improve.&quot;
+                &quot;The developer score helped me understand where I stand and
+                how to improve.&quot;
               </p>
 
               <div className="flex justify-between pt-5">
@@ -110,22 +115,19 @@ function ClientFeedback() {
               name: "ANIKET NISHAD",
               profession: "",
               img: "https://pro-section.ui-layouts.com/people/aam4.jpg",
-              text:
-                "I loved how transparent the evaluation was. I could see exactly why I got my score and what to work on next.",
+              text: "I loved how transparent the evaluation was. I could see exactly why I got my score and what to work on next.",
             },
             {
               name: "NISHANT DIXIT",
               profession: "",
               img: "https://avatars.githubusercontent.com/u/145234347?v=4",
-              text:
-                "Thanks to HireXAI, recruiters reached out to me directly based on my real abilities, not keywords.",
+              text: "Thanks to HireXAI, recruiters reached out to me directly based on my real abilities, not keywords.",
             },
             {
               name: "PRABHAT YADAV",
               profession: "",
               img: "https://pro-section.ui-layouts.com/people/aam3.jpg",
-              text:
-                "The platform turned my GitHub work into real opportunities.",
+              text: "The platform turned my GitHub work into real opportunities.",
             },
           ].map((item, i) => (
             <TimelineContent
@@ -136,9 +138,7 @@ function ClientFeedback() {
               className={`bg-black p-5 text-white ${cardBase}`}
             >
               <article className="mt-auto">
-                <p className="text-sm 2xl:text-base">
-                  &quot;{item.text}&quot;
-                </p>
+                <p className="text-sm 2xl:text-base">&quot;{item.text}&quot;</p>
 
                 <div className="flex items-end justify-between pt-5">
                   <div>
@@ -169,11 +169,12 @@ function ClientFeedback() {
             animationNum={5}
             customVariants={revealVariants}
             timelineRef={testimonialRef}
-            className={`bg-transparent p-5 text-white lg:flex-3 flex-4 ${cardBase}`}
+            className={`flex-4 bg-transparent p-5 text-white lg:flex-3 ${cardBase}`}
           >
             <article className="mt-auto">
               <p>
-                &quot;My GitHub finally mattered. HireXAI turned real projects into a meaningful developer profile.&quot;
+                &quot;My GitHub finally mattered. HireXAI turned real projects
+                into a meaningful developer profile.&quot;
               </p>
 
               <div className="flex justify-between pt-5">
@@ -197,12 +198,13 @@ function ClientFeedback() {
             animationNum={6}
             customVariants={revealVariants}
             timelineRef={testimonialRef}
-            className={`bg-primaryColor p-5 lg:flex-7 flex-6 ${cardBase}`}
+            className={`bg-primaryColor flex-6 p-5 lg:flex-7 ${cardBase}`}
           >
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-size-[50px_56px] mask-[radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] mask-[radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] bg-size-[50px_56px]" />
             <article className="mt-auto">
               <p>
-                &quot;The AI feedback pushed me to write cleaner, more maintainable code.&quot;
+                &quot;The AI feedback pushed me to write cleaner, more
+                maintainable code.&quot;
               </p>
 
               <div className="flex justify-between pt-5">

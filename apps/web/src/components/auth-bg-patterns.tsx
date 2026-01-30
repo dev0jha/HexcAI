@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { motion } from "motion/react"
+import { motion } from "motion/react";
+
+import { cn } from "@/lib/utils";
 
 const ElectricLine = ({
   d,
@@ -9,10 +10,10 @@ const ElectricLine = ({
   duration = 4,
   className,
 }: {
-  d: string
-  delay?: number
-  duration?: number
-  className?: string
+  d: string;
+  delay?: number;
+  duration?: number;
+  className?: string;
 }) => {
   return (
     <>
@@ -54,10 +55,18 @@ const ElectricLine = ({
         }}
       />
     </>
-  )
-}
+  );
+};
 
-const Crosshair = ({ x, y, delay }: { x: number; y: number; delay: number }) => (
+const Crosshair = ({
+  x,
+  y,
+  delay,
+}: {
+  x: number;
+  y: number;
+  delay: number;
+}) => (
   <motion.g
     initial={{ opacity: 0 }}
     animate={{ opacity: 0.4 }}
@@ -66,14 +75,18 @@ const Crosshair = ({ x, y, delay }: { x: number; y: number; delay: number }) => 
   >
     <path d="M-5 0 H5 M0 -5 V5" stroke="#52525b" strokeWidth="1" />
   </motion.g>
-)
+);
 
 export const AuthBackgroundsPatterns = () => {
   return (
-    <div className={cn("absolute inset-0 z-0 pointer-events-none overflow-hidden select-none")}>
+    <div
+      className={cn(
+        "pointer-events-none absolute inset-0 z-0 overflow-hidden select-none"
+      )}
+    >
       <div className="absolute inset-0 flex items-center justify-center opacity-60 md:opacity-80">
         <svg
-          className="w-full h-full min-w-200"
+          className="h-full w-full min-w-200"
           viewBox="0 0 1440 900"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -82,8 +95,16 @@ export const AuthBackgroundsPatterns = () => {
           <ElectricLine d="M0 100 H200 V300 H450" delay={0} duration={6} />
           <ElectricLine d="M100 0 V150 H300 V250" delay={0.5} duration={5} />
 
-          <ElectricLine d="M1440 800 H1240 V600 H990" delay={0.2} duration={6} />
-          <ElectricLine d="M1340 900 V750 H1140 V650" delay={0.7} duration={5} />
+          <ElectricLine
+            d="M1440 800 H1240 V600 H990"
+            delay={0.2}
+            duration={6}
+          />
+          <ElectricLine
+            d="M1340 900 V750 H1140 V650"
+            delay={0.7}
+            duration={5}
+          />
 
           <Crosshair x={200} y={300} delay={1} />
           <Crosshair x={1240} y={600} delay={1.2} />
@@ -134,5 +155,5 @@ export const AuthBackgroundsPatterns = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,#000_100%)] opacity-100" />
       <div className="absolute inset-0 bg-black/20" />
     </div>
-  )
-}
+  );
+};

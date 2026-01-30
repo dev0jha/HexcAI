@@ -1,20 +1,23 @@
-import Elysia from "elysia"
-import { auth } from "@/lib/auth"
-import { checkSession } from "@/actions/session.actions"
+import Elysia from "elysia";
 
-export const betterAuthmiddleware = new Elysia({ name: "better-auth" }).mount(auth.handler).macro({
-  auth: {
-    async resolve({ status }) {
-      const session = await checkSession()
-      if (!session.success) {
-        return status(401)
-      }
+import { checkSession } from "@/actions/session.actions";
+import { auth } from "@/lib/auth";
 
-      const sessionData = session.data
+export const betterAuthmiddleware = new Elysia({ name: "better-auth" })
+  .mount(auth.handler)
+  .macro({
+    auth: {
+      async resolve({ status }) {
+        const session = await checkSession();
+        if (!session.success) {
+          return status(401);
+        }
 
-      return {
-        ...sessionData,
-      }
+        const sessionData = session.data;
+
+        return {
+          ...sessionData,
+        };
+      },
     },
-  },
-})
+  });

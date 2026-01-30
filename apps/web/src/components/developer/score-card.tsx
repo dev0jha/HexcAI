@@ -1,31 +1,33 @@
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { getScoreLabel, getScoreColor } from "@/types"
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { getScoreColor, getScoreLabel } from "@/types";
 
 interface ScoreCardProps {
-  score: number
-  showBreakdown?: boolean
+  score: number;
+  showBreakdown?: boolean;
   breakdown?: {
-    codeQuality: number
-    architecture: number
-    security: number
-    gitPractices: number
-    documentation: number
-  }
+    codeQuality: number;
+    architecture: number;
+    security: number;
+    gitPractices: number;
+    documentation: number;
+  };
 }
 
 export function ScoreCard({ score, showBreakdown, breakdown }: ScoreCardProps) {
-  const label = getScoreLabel(score)
+  const label = getScoreLabel(score);
 
   return (
     <Card className="p-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <div>
-          <p className="text-sm text-muted-foreground">Developer Score</p>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className={`text-4xl font-bold ${getScoreColor(score)}`}>{score}</span>
-            <span className="text-xl text-muted-foreground">/100</span>
+          <p className="text-muted-foreground text-sm">Developer Score</p>
+          <div className="mt-1 flex items-baseline gap-2">
+            <span className={`text-4xl font-bold ${getScoreColor(score)}`}>
+              {score}
+            </span>
+            <span className="text-muted-foreground text-xl">/100</span>
           </div>
         </div>
         <Badge
@@ -55,5 +57,5 @@ export function ScoreCard({ score, showBreakdown, breakdown }: ScoreCardProps) {
         </div>
       )}
     </Card>
-  )
+  );
 }

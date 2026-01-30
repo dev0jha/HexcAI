@@ -1,11 +1,14 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { motion } from "motion/react"
-import { AnimatedTooltip } from "../ui/animated-tooltip"
-import { Button } from "@/components/ui/button"
-import { IconChevronRight, IconCode } from "@tabler/icons-react"
-import { SchematicBackground } from "@/components/semantic-background"
+import Link from "next/link";
+
+import { IconChevronRight, IconCode } from "@tabler/icons-react";
+import { motion } from "motion/react";
+
+import { SchematicBackground } from "@/components/semantic-background";
+import { Button } from "@/components/ui/button";
+
+import { AnimatedTooltip } from "../ui/animated-tooltip";
 
 export default function HeroSection() {
   const people = [
@@ -27,13 +30,13 @@ export default function HeroSection() {
       designation: "Backend Developer",
       image: "https://avatars.githubusercontent.com/u/33592027?v=4",
     },
-  ]
+  ];
 
   return (
     <section className="relative min-h-[90vh] w-full overflow-hidden bg-transparent">
       <SchematicBackground />
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 min-h-[90vh] flex flex-col items-center justify-center py-20">
+      <div className="relative z-10 container mx-auto flex min-h-[90vh] flex-col items-center justify-center px-4 py-20 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -44,10 +47,14 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1, ease: [0.2, 0.65, 0.3, 0.9] }}
-          className="text-center max-w-5xl mx-auto mb-6"
+          transition={{
+            duration: 0.8,
+            delay: 0.1,
+            ease: [0.2, 0.65, 0.3, 0.9],
+          }}
+          className="mx-auto mb-6 max-w-5xl text-center"
         >
-          <h1 className="text-3xl md:text-8xl font-bold tracking-tighter text-white mb-4">
+          <h1 className="mb-4 text-3xl font-bold tracking-tighter text-white md:text-8xl">
             Stop Resumes. <br className="hidden md:block" />
             <span className="text-zinc-500">Hire Skill.</span>
           </h1>
@@ -57,29 +64,29 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-sm font-medium sm:text-xl text-zinc-400/80 max-w-2xl mx-auto text-center leading-relaxed mb-10"
+          className="mx-auto mb-10 max-w-2xl text-center text-sm leading-relaxed font-medium text-zinc-400/80 sm:text-xl"
         >
-          Replace subjective hiring with cryptographic proof of skill. AI-driven assessments that
-          parse logic, not keywords.
+          Replace subjective hiring with cryptographic proof of skill. AI-driven
+          assessments that parse logic, not keywords.
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="flex flex-col md:flex-row place-content-center gap-4 py-8"
+          className="flex flex-col place-content-center gap-4 py-8 md:flex-row"
         >
           <Link href="#DiscoverProfile">
-            <Button className="p-4 w-full">
-              <IconCode className="w-4 h-4" />
+            <Button className="w-full p-4">
+              <IconCode className="h-4 w-4" />
               <span>Analyze Repository</span>
             </Button>
           </Link>
 
           <Link href="#DiscoverProfile">
-            <Button className="p-4 w-full">
+            <Button className="w-full p-4">
               <span>View Leaderboard</span>
-              <IconChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
+              <IconChevronRight className="h-4 w-4 text-zinc-500 transition-colors group-hover:text-white" />
             </Button>
           </Link>
         </motion.div>
@@ -93,9 +100,11 @@ export default function HeroSection() {
           <div className="flex items-center justify-center -space-x-4">
             <AnimatedTooltip items={people} />
           </div>
-          <p className="text-xs text-zinc-600 tracking-widest">Trusted by 100+ Engineering Teams</p>
+          <p className="text-xs tracking-widest text-zinc-600">
+            Trusted by 100+ Engineering Teams
+          </p>
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

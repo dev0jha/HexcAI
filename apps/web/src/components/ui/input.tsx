@@ -1,57 +1,45 @@
-"use client"
+"use client";
 
-import { Input as InputPrimitive } from "@base-ui/react/input"
-import type * as React from "react"
-import { cn } from "@/lib/utils"
+import type * as React from "react";
 
-type InputProps = Omit<InputPrimitive.Props & React.RefAttributes<HTMLInputElement>, "size"> & {
-  size?: "sm" | "default" | "lg" | number
-  unstyled?: boolean
-}
+import { Input as InputPrimitive } from "@base-ui/react/input";
 
-function Input({ className, size = "default", unstyled = false, ...props }: InputProps) {
+import { cn } from "@/lib/utils";
+
+type InputProps = Omit<
+  InputPrimitive.Props & React.RefAttributes<HTMLInputElement>,
+  "size"
+> & {
+  size?: "sm" | "default" | "lg" | number;
+  unstyled?: boolean;
+};
+
+function Input({
+  className,
+  size = "default",
+  unstyled = false,
+  ...props
+}: InputProps) {
   return (
     <span
       data-slot="input-control"
       className={cn(
         !unstyled &&
-          `
-          relative isolate inline-flex w-full items-stretch rounded-lg
-          transition-colors
-          ring-1
-          ring-zinc-700/50
-          bg-zinc-800/50
-          has-focus-visible:border-zinc-500
-          has-focus-visible:ring-1 
-          has-focus-visible:ring-zinc-500/50
-          has-aria-invalid:border-red-500
-          has-aria-invalid:border-0
-          has-aria-invalid:ring-1
-          has-aria-invalid:ring-red-500
-          `,
+          `relative isolate inline-flex w-full items-stretch rounded-lg bg-zinc-800/50 ring-1 ring-zinc-700/50 transition-colors has-focus-visible:border-zinc-500 has-focus-visible:ring-1 has-focus-visible:ring-zinc-500/50 has-aria-invalid:border-0 has-aria-invalid:border-red-500 has-aria-invalid:ring-1 has-aria-invalid:ring-red-500`,
         className
       )}
     >
       <InputPrimitive
         {...props}
         className={cn(
-          `
-          w-full h-full
-          rounded-[inherit]
-          bg-transparent
-          text-zinc-100
-          placeholder:text-zinc-500/70
-          outline-none
-          border-0
-          px-3
-          `,
+          `h-full w-full rounded-[inherit] border-0 bg-transparent px-3 text-zinc-100 outline-none placeholder:text-zinc-500/70`,
           size === "sm" && "h-9 text-sm",
           size === "default" && "h-11",
           size === "lg" && "h-12 text-lg"
         )}
       />
     </span>
-  )
+  );
 }
 
-export { Input, type InputProps }
+export { Input, type InputProps };

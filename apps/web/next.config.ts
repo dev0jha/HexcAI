@@ -1,4 +1,4 @@
-import type { NextConfig } from "next"
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -6,19 +6,19 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'm.media-amazon.com',
+        protocol: "https",
+        hostname: "m.media-amazon.com",
       },
-       {
+      {
         protocol: "https",
         hostname: "pro-section.ui-layouts.com",
       },
       {
-        protocol: 'https',
-        hostname: '**.githubusercontent.com',
+        protocol: "https",
+        hostname: "**.githubusercontent.com",
       },
     ],
   },
 };
 
-export default nextConfig
+export default nextConfig;

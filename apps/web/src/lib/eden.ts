@@ -1,14 +1,15 @@
-import { treaty } from "@elysiajs/eden"
-import type { API } from "@/server/app"
+import { treaty } from "@elysiajs/eden";
 
-let apiClient: ReturnType<typeof treaty<API>>["api"]
+import type { API } from "@/server/app";
+
+let apiClient: ReturnType<typeof treaty<API>>["api"];
 
 if (typeof window === "undefined") {
   /**
    * Server-side
    * **/
-  const { app } = await import("@/server/app")
-  apiClient = treaty(app).api
+  const { app } = await import("@/server/app");
+  apiClient = treaty(app).api;
 } else {
   /**
    * Client-side
@@ -17,7 +18,7 @@ if (typeof window === "undefined") {
     fetch: {
       credentials: "include",
     },
-  }).api
+  }).api;
 }
 
-export { apiClient }
+export { apiClient };

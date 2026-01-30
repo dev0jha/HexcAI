@@ -1,38 +1,41 @@
-"use client"
+"use client";
 
-import { useTheme } from "next-themes"
-import { motion } from "motion/react"
-import { Moon, Sun } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+
+import { useTheme } from "next-themes";
+
+import { Moon, Sun } from "lucide-react";
+import { motion } from "motion/react";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function ThemeToggle() {
-  const [mounted, setMounted] = useState(false)
-  const { theme, setTheme } = useTheme()
-  const isDark = theme === "dark"
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0)
-    return () => clearTimeout(timer)
-  }, [])
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const toggleTheme = () => {
-    setTheme(isDark ? "light" : "dark")
-  }
+    setTheme(isDark ? "light" : "dark");
+  };
 
   if (!mounted) {
     return (
       <Button
         variant="ghost"
         size="icon"
-        className={cn("relative h-9 w-9 ")}
+        className={cn("relative h-9 w-9")}
         aria-label="Toggle theme"
         disabled
       >
         <Sun className="h-5 w-5" />
       </Button>
-    )
+    );
   }
 
   return (
@@ -75,5 +78,5 @@ export default function ThemeToggle() {
         <Moon className="h-5 w-5" />
       </motion.div>
     </Button>
-  )
+  );
 }

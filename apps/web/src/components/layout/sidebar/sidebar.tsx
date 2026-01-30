@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { useSidebar } from "@/components/ui/sidebar"
-import { SiderbarFooter } from "@/components/layout/sidebar/sidebar-footer"
-import { SidebarHeader } from "@/components/layout/sidebar/sidebar-header"
-import { MainContent } from "@/components/layout/sidebar/sidebar-maincontent"
+import { SiderbarFooter } from "@/components/layout/sidebar/sidebar-footer";
+import { SidebarHeader } from "@/components/layout/sidebar/sidebar-header";
+import { MainContent } from "@/components/layout/sidebar/sidebar-maincontent";
+import { useSidebar } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 export function DashboardSidebar() {
-  const { open } = useSidebar()
+  const { open } = useSidebar();
 
-  const collapsed = !open
+  const collapsed = !open;
 
   return (
     <aside
       className={cn(
-        "hidden md:block fixed left-0 top-0 z-40 h-screen bg-[#191919] transition-all duration-300 shadow-xl border border-r border-[#2c2c2c] overflow-hidden",
+        "fixed top-0 left-0 z-40 hidden h-screen overflow-hidden border border-r border-[#2c2c2c] bg-[#191919] shadow-xl transition-all duration-300 md:block",
         collapsed ? "w-16" : "w-64"
       )}
     >
@@ -27,5 +27,5 @@ export function DashboardSidebar() {
         <SiderbarFooter collapsed={collapsed} />
       </div>
     </aside>
-  )
+  );
 }

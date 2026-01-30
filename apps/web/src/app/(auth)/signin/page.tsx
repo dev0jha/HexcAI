@@ -1,20 +1,21 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { useSignIn } from "@/hooks/screens/signIn.hooks"
-import { Form } from "@/components/ui/form"
-import EmailField from "@/components/auth/primitives/email-field"
-import PassField from "@/components/auth/primitives/pass-fields"
-import { CornerDecorations } from "@/components/ui/corner-decorations"
-import { AuthBackgroundsPatterns } from "@/components/auth-bg-patterns"
-import { cn } from "@/lib/utils"
+import Link from "next/link";
+
+import { AuthBackgroundsPatterns } from "@/components/auth-bg-patterns";
+import EmailField from "@/components/auth/primitives/email-field";
+import PassField from "@/components/auth/primitives/pass-fields";
+import { Button } from "@/components/ui/button";
+import { CornerDecorations } from "@/components/ui/corner-decorations";
+import { Form } from "@/components/ui/form";
+import { useSignIn } from "@/hooks/screens/signIn.hooks";
+import { cn } from "@/lib/utils";
 
 export default function SignInPage() {
-  const { form, onSubmitFormAction } = useSignIn()
+  const { form, onSubmitFormAction } = useSignIn();
   const {
     formState: { isSubmitting },
-  } = form
+  } = form;
 
   return (
     <Form {...form}>
@@ -29,18 +30,25 @@ export default function SignInPage() {
 
           <div
             className={cn(
-              "border-2 border-zinc-800/30 bg-neutral-900/10 backdrop-blur-md p-8 shadow-2xl"
+              "border-2 border-zinc-800/30 bg-neutral-900/10 p-8 shadow-2xl backdrop-blur-md"
             )}
           >
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-4">
-              <div className="absolute inset-0 bg-[repeating-linear-gradient(315deg,background_0,background_1px,transparent_0,transparent_50%)] bg-size-[8px_8px] pointer-events-none select-none" />
+            <div className="pointer-events-none absolute inset-0 z-0 opacity-4">
+              <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(315deg,background_0,background_1px,transparent_0,transparent_50%)] bg-size-[8px_8px] select-none" />
             </div>
 
             <div className="relative z-10">
-              <form onSubmit={onSubmitFormAction} className="flex flex-col gap-6 z-1000">
+              <form
+                onSubmit={onSubmitFormAction}
+                className="z-1000 flex flex-col gap-6"
+              >
                 <div className="space-y-2 text-center sm:text-left">
-                  <h1 className="text-3xl font-bold tracking-tight text-white">Welcome back</h1>
-                  <p className="text-sm text-zinc-400">Authenticate to access your profile.</p>
+                  <h1 className="text-3xl font-bold tracking-tight text-white">
+                    Welcome back
+                  </h1>
+                  <p className="text-sm text-zinc-400">
+                    Authenticate to access your profile.
+                  </p>
                 </div>
 
                 <div className="space-y-5">
@@ -52,7 +60,7 @@ export default function SignInPage() {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full bg-white text-black hover:bg-zinc-200 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all duration-300 font-medium"
+                    className="w-full bg-white font-medium text-black transition-all duration-300 hover:bg-zinc-200 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -69,7 +77,7 @@ export default function SignInPage() {
                     No Account?
                     <Link
                       href="/signup"
-                      className="text-zinc-300 hover:text-white hover:underline underline-offset-4 transition-colors px-1"
+                      className="px-1 text-zinc-300 underline-offset-4 transition-colors hover:text-white hover:underline"
                     >
                       Create one
                     </Link>
@@ -81,5 +89,5 @@ export default function SignInPage() {
         </div>
       </div>
     </Form>
-  )
+  );
 }

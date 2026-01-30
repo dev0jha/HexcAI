@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { motion } from "motion/react"
+import { motion } from "motion/react";
+
+import { cn } from "@/lib/utils";
 
 const ElectricLine = ({
   d,
@@ -9,10 +10,10 @@ const ElectricLine = ({
   duration = 4,
   className,
 }: {
-  d: string
-  delay?: number
-  duration?: number
-  className?: string
+  d: string;
+  delay?: number;
+  duration?: number;
+  className?: string;
 }) => {
   return (
     <>
@@ -54,36 +55,57 @@ const ElectricLine = ({
         }}
       />
     </>
-  )
-}
+  );
+};
 
 export const SchematicBackground = () => {
   return (
-    <div className={cn("absolute inset-0 z-0 pointer-events-none overflow-hidden select-none")}>
+    <div
+      className={cn(
+        "pointer-events-none absolute inset-0 z-0 overflow-hidden select-none"
+      )}
+    >
       <div className="absolute inset-0" />
 
       <div className="absolute inset-0 flex items-center justify-center opacity-40 md:opacity-70">
         <svg
-          className="w-full h-full min-w-250"
+          className="h-full w-full min-w-250"
           viewBox="0 0 1440 900"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="xMidYMid slice"
         >
           <defs>
-            <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="8" height="8">
-              <path d="M-2,2 l4,-4 M0,8 l8,-8 M6,10 l4,-4" stroke="#27272a" strokeWidth="1" />
+            <pattern
+              id="diagonalHatch"
+              patternUnits="userSpaceOnUse"
+              width="8"
+              height="8"
+            >
+              <path
+                d="M-2,2 l4,-4 M0,8 l8,-8 M6,10 l4,-4"
+                stroke="#27272a"
+                strokeWidth="1"
+              />
             </pattern>
           </defs>
 
           <g transform="translate(100, 50)">
             <ElectricLine d="M-200 0 L400 400 H800" delay={0} duration={5} />
 
-            <ElectricLine d="M800 400 L950 550 H1400" delay={0.5} duration={4} />
+            <ElectricLine
+              d="M800 400 L950 550 H1400"
+              delay={0.5}
+              duration={4}
+            />
 
             <ElectricLine d="M1000 400 L850 550" delay={0.2} duration={6} />
 
-            <ElectricLine d="M1000 400 L1200 200 H1400" delay={0.2} duration={7} />
+            <ElectricLine
+              d="M1000 400 L1200 200 H1400"
+              delay={0.2}
+              duration={7}
+            />
 
             <motion.rect
               initial={{ opacity: 0 }}
@@ -129,5 +151,5 @@ export const SchematicBackground = () => {
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)] opacity-80" />
     </div>
-  )
-}
+  );
+};

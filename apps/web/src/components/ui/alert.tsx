@@ -1,7 +1,8 @@
-import { cva, type VariantProps } from "class-variance-authority"
-import type * as React from "react"
+import type * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cva, type VariantProps } from "class-variance-authority";
+
+import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
   "relative grid w-full items-start gap-x-2 gap-y-0.5 rounded-xl border px-3.5 py-3 text-card-foreground text-sm has-[>svg]:has-data-[slot=alert-action]:grid-cols-[calc(var(--spacing)*4)_1fr_auto] has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-data-[slot=alert-action]:grid-cols-[1fr_auto] has-[>svg]:gap-x-2 [&>svg]:h-lh [&>svg]:w-4",
@@ -11,15 +12,17 @@ const alertVariants = cva(
     },
     variants: {
       variant: {
-        default: "bg-transparent dark:bg-input/32 [&>svg]:text-muted-foreground",
-        error: "border-destructive/32 bg-destructive/4 [&>svg]:text-destructive",
+        default:
+          "bg-transparent dark:bg-input/32 [&>svg]:text-muted-foreground",
+        error:
+          "border-destructive/32 bg-destructive/4 [&>svg]:text-destructive",
         info: "border-info/32 bg-info/4 [&>svg]:text-info",
         success: "border-success/32 bg-success/4 [&>svg]:text-success",
         warning: "border-warning/32 bg-warning/4 [&>svg]:text-warning",
       },
     },
   }
-)
+);
 
 function Alert({
   className,
@@ -33,7 +36,7 @@ function Alert({
       role="alert"
       {...props}
     />
-  )
+  );
 }
 
 function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
@@ -43,17 +46,23 @@ function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="alert-title"
       {...props}
     />
-  )
+  );
 }
 
-function AlertDescription({ className, ...props }: React.ComponentProps<"div">) {
+function AlertDescription({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("flex flex-col gap-2.5 text-muted-foreground [svg~&]:col-start-2", className)}
+      className={cn(
+        "text-muted-foreground flex flex-col gap-2.5 [svg~&]:col-start-2",
+        className
+      )}
       data-slot="alert-description"
       {...props}
     />
-  )
+  );
 }
 
 function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
@@ -66,7 +75,7 @@ function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="alert-action"
       {...props}
     />
-  )
+  );
 }
 
-export { Alert, AlertTitle, AlertDescription, AlertAction }
+export { Alert, AlertTitle, AlertDescription, AlertAction };

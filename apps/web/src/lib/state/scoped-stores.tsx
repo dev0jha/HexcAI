@@ -1,13 +1,14 @@
-import { createContext, useContext, useRef } from "react"
-import { Provider as JotaiProvider, useAtom } from "jotai"
-import type { Atom, WritableAtom, SetStateAction } from "jotai"
+import { createContext, useContext, useRef } from "react";
+
+import { Provider as JotaiProvider, useAtom } from "jotai";
+import type { Atom, SetStateAction, WritableAtom } from "jotai";
 
 /*
  * Defaults for state values
  */
 type AtomDefaults<T> = {
-  [K in keyof T]?: AtomValue<T[K]>
-}
+  [K in keyof T]?: AtomValue<T[K]>;
+};
 
 /**
  * Extract the value type carried by a Jotai Atom.
@@ -15,7 +16,7 @@ type AtomDefaults<T> = {
  * Example:
  *   Atom<string> -> string
  */
-type AtomValue<A> = A extends Atom<infer V> ? V : never
+type AtomValue<A> = A extends Atom<infer V> ? V : never;
 
 /**
  * Extract the return type of useAtom for a given atom
@@ -27,7 +28,7 @@ type UseAtomReturn<A> =
       : [V, (...args: Args) => Result]
     : A extends Atom<infer V>
       ? [V, React.Dispatch<SetStateAction<V>>]
-      : never
+      : never;
 
 /**
  * Creates a **scoped atom registry**.
@@ -53,9 +54,9 @@ type UseAtomReturn<A> =
  * - Provider: scopes the atom registry to a component tree
  * - useAtom: type-safe access to individual atoms by key
  */
-export function createScopedAtoms<T extends Record<string, WritableAtom<any, any[], any>>>(
-  factory: (defaults?: AtomDefaults<T>) => T
-) {
+export function createScopedAtoms<
+  T extends Record<string, WritableAtom<any, any[], any>>,
+>(factory: (defaults?: AtomDefaults<T>) => T) {
   /**
    * Context holding the atom registry.
    *
@@ -64,7 +65,7 @@ export function createScopedAtoms<T extends Record<string, WritableAtom<any, any
    * - Actual state lives inside Jotai
    * - Context is only used to locate the correct atom set
    */
-  const StoreContext = createContext<T | null>(null)
+  const StoreContext = createContext<T | null>(null);
 
   /**
    * Provider responsible for instantiating and scoping the atom registry.
@@ -82,15 +83,17 @@ export function createScopedAtoms<T extends Record<string, WritableAtom<any, any
      * The atom registry must never be recreated,
      * otherwise all state would reset.
      */
-    const atomsRef = useRef<T | null>(null)
+    const atomsRef = useRef<T | null>(null);
     if (!atomsRef.current) {
-      atomsRef.current = factory(defaults)
+      atomsRef.current = factory(defaults);
     }
     return (
       <JotaiProvider>
-        <StoreContext.Provider value={atomsRef.current}>{children}</StoreContext.Provider>
+        <StoreContext.Provider value={atomsRef.current}>
+          {children}
+        </StoreContext.Provider>
       </JotaiProvider>
-    )
+    );
   }
 
   /**
@@ -109,12 +112,12 @@ export function createScopedAtoms<T extends Record<string, WritableAtom<any, any
    *   The key of the atom to access from the registry
    */
   function useScopedAtom<K extends keyof T>(key: K): UseAtomReturn<T[K]> {
-    const store = useContext(StoreContext)
+    const store = useContext(StoreContext);
     if (!store) {
-      throw new Error("Scoped atoms used outside Provider")
+      throw new Error("Scoped atoms used outside Provider");
     }
 
-    return useAtom(store[key]) as UseAtomReturn<T[K]>
+    return useAtom(store[key]) as UseAtomReturn<T[K]>;
   }
 
   /**
@@ -131,5 +134,5 @@ export function createScopedAtoms<T extends Record<string, WritableAtom<any, any
   return {
     Provider,
     useAtom: useScopedAtom,
-  }
+  };
 }

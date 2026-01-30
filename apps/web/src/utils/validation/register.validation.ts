@@ -1,9 +1,10 @@
-import { userRoles } from "@/db/schema/enums"
+import { z } from "zod";
+
+import { userRoles } from "@/db/schema/enums";
 import {
   emailValidationSchema,
   passwordValidationSchema,
-} from "@/utils/validation/signIn.validation"
-import { z } from "zod"
+} from "@/utils/validation/signIn.validation";
 
 export const signUpSchema = z
   .object({
@@ -24,9 +25,9 @@ export const signUpSchema = z
     role: z.enum(userRoles.enumValues, { message: "Invalid user role" }),
     confirmPassword: z.string({ message: "Please confirm your password" }),
   })
-  .refine(data => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
-  })
+  });
 
-export type SignUpSchema = z.infer<typeof signUpSchema>
+export type SignUpSchema = z.infer<typeof signUpSchema>;

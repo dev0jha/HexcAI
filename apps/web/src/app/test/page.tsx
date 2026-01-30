@@ -1,14 +1,14 @@
-import { apiClient } from "@/lib/eden"
+import { apiClient } from "@/lib/eden";
 
 export default async function Page() {
   /*
    * fetching data with eden on server
    * **/
-  const { data: health, error } = await apiClient.health.get()
+  const { data: health, error } = await apiClient.health.get();
 
   if (error) {
-    console.error("Error fetching message:", error)
-    return
+    console.error("Error fetching message:", error);
+    return;
   }
 
   return (
@@ -16,5 +16,5 @@ export default async function Page() {
       <p>{health.message}</p>
       <p>{health.status}</p>
     </div>
-  )
+  );
 }

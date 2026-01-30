@@ -1,18 +1,20 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { authClient } from "@/lib/auth-client"
-import { LogOut } from "lucide-react"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
-import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation";
+
+import { LogOut } from "lucide-react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
 
 interface LogoutBtnProps {
-  className?: string
+  className?: string;
 }
 
 export default function LogoutBtn({ className }: LogoutBtnProps) {
-  const router = useRouter()
+  const router = useRouter();
   /*
    *
    * Handles the sign-out button click event.
@@ -22,28 +24,28 @@ export default function LogoutBtn({ className }: LogoutBtnProps) {
       authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
-            router.push("/")
+            router.push("/");
           },
         },
       }),
       {
         loading: "Signing out...",
         success: "Signed out successfully",
-        error: error => "Failed to sign out: " + error.message,
+        error: (error) => "Failed to sign out: " + error.message,
       }
-    )
+    );
   }
 
   return (
     <Button
       onClick={handleSignoutClick}
       className={cn(
-        "text-xs text-white dark:text-black w-full rounded-lg shadow-xl",
+        "w-full rounded-lg text-xs text-white shadow-xl dark:text-black",
         className
       )}
     >
       <LogOut />
       Sign out
     </Button>
-  )
+  );
 }

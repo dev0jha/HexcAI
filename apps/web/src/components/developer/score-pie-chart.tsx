@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react";
+
+import { TrendingUp } from "lucide-react";
 import { Label, Pie, PieChart, Sector } from "recharts";
 import { type PieSectorDataItem } from "recharts/types/polar/Pie";
+
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { TrendingUp } from "lucide-react";
 import type { ScoreBreakdown } from "@/types";
 
 const chartConfig = {
@@ -44,11 +46,11 @@ interface ScorePieChartProps {
 }
 
 const ScorePieChart = ({ scores, totalScore }: ScorePieChartProps) => {
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   const chartData = [
     {
@@ -87,7 +89,7 @@ const ScorePieChart = ({ scores, totalScore }: ScorePieChartProps) => {
 
   return (
     <div className="">
-      <h3 className="text-lg font-semibold mb-4">Score Distribution</h3>
+      <h3 className="mb-4 text-lg font-semibold">Score Distribution</h3>
       {mounted && (
         <ChartContainer
           config={chartConfig}
@@ -147,23 +149,23 @@ const ScorePieChart = ({ scores, totalScore }: ScorePieChartProps) => {
           </PieChart>
         </ChartContainer>
       )}
-      <div className="mt-4 flex flex-col gap-2 items-center">
-        <div className="flex items-center gap-2 font-medium leading-none text-sm">
+      <div className="mt-4 flex flex-col items-center gap-2">
+        <div className="flex items-center gap-2 text-sm leading-none font-medium">
           {averageScore >= 85 ? (
             <>
-              Excellent performance <TrendingUp className="h-4 w-4 text-green-500" />
+              Excellent performance{" "}
+              <TrendingUp className="h-4 w-4 text-green-500" />
             </>
           ) : averageScore >= 70 ? (
             <>
-              Strong performance <TrendingUp className="h-4 w-4 text-blue-500" />
+              Strong performance{" "}
+              <TrendingUp className="h-4 w-4 text-blue-500" />
             </>
           ) : (
-            <>
-              Room for improvement
-            </>
+            <>Room for improvement</>
           )}
         </div>
-        <div className="leading-none text-muted-foreground text-xs">
+        <div className="text-muted-foreground text-xs leading-none">
           Analysis based on repository metrics
         </div>
       </div>
