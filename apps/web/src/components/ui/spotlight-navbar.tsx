@@ -1,12 +1,13 @@
 "use client"
 
-import React, { useState } from "react"
+import { useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { PlusIcon } from "@/components/ui/plus-icon"
+import { Button } from "@/components/ui/button"
 
 export interface NavItem {
   label: string
@@ -69,7 +70,7 @@ export function Navbar({
 
           <div className="flex items-center gap-3">
             <Link href="/signin">
-              <button
+              <Button
                 className={cn(
                   "relative items-center justify-center px-4 py-1.5 hidden sm:flex",
                   "text-sm shadow-lg font-medium text-shadow-black/70 text-shadow-xl tracking-wide rounded-md transition-all duration-300",
@@ -77,7 +78,7 @@ export function Navbar({
                 )}
               >
                 Login
-              </button>
+              </Button>
             </Link>
 
             <button

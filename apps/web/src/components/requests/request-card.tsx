@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Check, X, Building2, Mail, Clock } from "lucide-react"
 
 import type { ContactRequest } from "@/types"
+import { cn } from "@/lib/utils"
 
 export function RequestCard({
   request,
@@ -14,13 +15,13 @@ export function RequestCard({
   setRequests: React.Dispatch<React.SetStateAction<ContactRequest[]>>
 }) {
   return (
-    <Card className="group flex flex-col gap-5 p-6 rounded-xl border border-zinc-800 bg-zinc-900/50 shadow-sm transition-all hover:border-zinc-700 hover:bg-zinc-900 hover:shadow-md">
+    <Card className="group flex flex-col gap-5 p-6 rounded-xl border border-zinc-800 bg-zinc-900/50 shadow-sm transition-all hover:shadow-md">
       {/* Header Section */}
       <RequestCardHeader request={request} />
 
       {/* Content Section */}
       <div className="flex flex-col gap-4">
-        <p className="text-[15px] leading-7 text-zinc-300 font-poppins">{request.message}</p>
+        <p className="text-sm font-poppins leading-7 text-zinc-300">{request.message}</p>
 
         {/* Revealed Contact */}
         {request.status === "accepted" && request.recruiterEmail && (
@@ -88,9 +89,10 @@ function RequestCardHeader({ request }: { request: ContactRequest }) {
 
       <Badge
         variant="outline"
-        className={`capitalize px-3 py-1 font-medium transition-colors ${getBadgeStyle(
-          request.status
-        )}`}
+        className={cn(
+          "capitalize px-3 py-3 text-xs font-medium transition-colors",
+          getBadgeStyle(request.status)
+        )}
       >
         {request.status}
       </Badge>
@@ -125,7 +127,7 @@ function RequestCardActions({
         size="sm"
         variant="ghost"
         onClick={() => handleReject(request.id)}
-        className="h-9 px-4 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 border border-transparent hover:border-zinc-700"
+        className="h-9 py-4.5 px-4 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 border-2 border-zinc-700 hover:border-zinc-700"
       >
         <X className="h-4 w-4 mr-2" />
         Decline
@@ -133,7 +135,7 @@ function RequestCardActions({
       <Button
         size="sm"
         onClick={() => handleAccept(request.id)}
-        className="h-9 px-5 bg-white text-black hover:bg-zinc-200 font-semibold shadow-lg shadow-white/5"
+        className="h-9 px-5 bg-white text-black hover:bg-zinc-200 font-semibold shadow-lg shadow-white/5 py-4"
       >
         <Check className="h-4 w-4 mr-2" />
         Accept

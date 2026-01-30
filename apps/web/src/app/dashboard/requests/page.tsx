@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { mockContactRequests } from "@/data/mock-data"
 import { ContactRequest } from "@/types"
-import { PlusIcon } from "lucide-react"
 import { RequestCard } from "@/components/requests/request-card"
 import DashTitleShell from "@/components/dash-screentitle-text"
+import { IconMailForward } from "@tabler/icons-react"
 
 export default function RequestsPage() {
   const [requests, setRequests] = useState<ContactRequest[]>(mockContactRequests)
@@ -16,14 +16,6 @@ export default function RequestsPage() {
   const pendingRequests = requests.filter(r => r.status === "pending")
   const acceptedRequests = requests.filter(r => r.status === "accepted")
   const rejectedRequests = requests.filter(r => r.status === "rejected")
-
-  const EmptyState = ({ message }: { message: string }) => (
-    <Card className="p-8 text-center border-dashed border-zinc-800 rounded-lg bg-transparent relative">
-      <PlusIcon className="-top-3 -left-3 absolute h-6 w-6 text-zinc-700" strokeWidth={2} />
-      <PlusIcon className="-bottom-3 -right-3 absolute h-6 w-6 text-zinc-700" strokeWidth={2} />
-      <p className="text-zinc-500">{message}</p>
-    </Card>
-  )
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-2">
@@ -40,7 +32,7 @@ export default function RequestsPage() {
           <TabsList className="w-full sm:w-fit h-auto bg-zinc-900/50 border border-zinc-800 p-1.5 rounded-md flex gap-1">
             <TabsTrigger
               value="pending"
-              className="rounded-full px-6 py-2.5 h-10 text-sm font-medium data-[state=active]:bg-zinc-100 data-[state=active]:text-zinc-950 text-zinc-400 hover:text-zinc-200 transition-all"
+              className="rounded-full px-6 py-2.5 h-10 text-sm font-medium data-[state=active]:bg-zinc-100 data-[state=active]:text-zinc-950 text-zinc-400 hover:text-zinc-200 transition-all ring-0"
             >
               Pending
               {pendingRequests.length > 0 && (
@@ -54,13 +46,13 @@ export default function RequestsPage() {
             </TabsTrigger>
             <TabsTrigger
               value="accepted"
-              className="rounded-full px-6 py-2.5 h-10 text-sm font-medium data-[state=active]:bg-zinc-100 data-[state=active]:text-zinc-950 text-zinc-400 hover:text-zinc-200 transition-all"
+              className="rounded-full px-6 py-2.5 h-10 text-sm font-medium data-[state=active]:bg-zinc-100 data-[state=active]:text-zinc-950 text-zinc-400 hover:text-zinc-200 transition-all ring-0"
             >
               Accepted
             </TabsTrigger>
             <TabsTrigger
               value="rejected"
-              className="rounded-full px-6 py-2.5 h-10 text-sm font-medium data-[state=active]:bg-zinc-100 data-[state=active]:text-zinc-950 text-zinc-400 hover:text-zinc-200 transition-all"
+              className="rounded-full px-6 py-2.5 h-10 text-sm font-medium data-[state=active]:bg-zinc-100 data-[state=active]:text-zinc-950 text-zinc-400 hover:text-zinc-200 transition-all ring-0"
             >
               Declined
             </TabsTrigger>
@@ -109,3 +101,12 @@ export default function RequestsPage() {
     </div>
   )
 }
+
+const EmptyState = ({ message }: { message: string }) => (
+  <Card className="p-8 text-center border-dashed border-zinc-800 rounded-lg bg-zinc-800/20 relative">
+    <div className="w-full flex items-center justify-center  text-zinc-500">
+      <IconMailForward />
+    </div>
+    <p className="text-zinc-500">{message}</p>
+  </Card>
+)
