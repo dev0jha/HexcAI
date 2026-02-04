@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1767953211115,
-      "tag": "0000_zippy_spitfire",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1768295300071,
-      "tag": "0001_silly_arachne",
+      "when": 1770196771869,
+      "tag": "0000_created_tables",
       "breakpoints": true
     }
   ]

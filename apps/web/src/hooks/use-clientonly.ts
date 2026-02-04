@@ -1,15 +1,15 @@
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react"
 
-const emptySubscribe = () => () => {};
+const emptySubscribe = () => () => {}
 
 export function useClientOnly() {
-  const isHydrated = useSyncExternalStore(
-    emptySubscribe,
-    () => true,
-    () => false
-  );
+   const isHydrated = useSyncExternalStore(
+      emptySubscribe,
+      () => true,
+      () => false
+   )
 
-  return {
-    isHydrated,
-  };
+   return {
+      isHydrated,
+   }
 }

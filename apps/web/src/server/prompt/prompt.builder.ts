@@ -1,13 +1,15 @@
-export const buildPrompt = (repoData: any) => {
-  return `
+import type { RepoFetchResult } from "@/server/services/analysis/analysis.types"
+
+export const buildPrompt = (repoData: RepoFetchResult) => {
+   return `
 	Analyze this GitHub repository and provide scores and feedback based on the following criteria:
 
 	Repository: ${repoData.name}
 	Description: ${repoData.description ?? "No description"}
 	Language: ${repoData.language}
 	Stars: ${repoData.stargazers_count}
-	Forks: ${repoData.forks_count}
-	Issues: ${repoData.open_issues_count}
+	Forks: ${repoData.forks_count ?? 0}
+	Issues: ${repoData.open_issues_count ?? 0}
 
 	You can use the available tools to fetch additional information like README content and programming languages used in the repository to provide a more accurate analysis.
 
@@ -35,5 +37,5 @@ export const buildPrompt = (repoData: any) => {
 
 
 	DONT GIVE ME JSON BLOCK ONLY RETURN THE RAW JSON IN A FORMAT , I CAN PARSE IT DIRECTLY!
-	`;
-};
+	`
+}

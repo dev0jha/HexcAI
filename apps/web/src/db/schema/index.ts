@@ -1,1 +1,5 @@
-export * from "./auth-schema";
+export * from "./candidateProfile.schema"
+export * from "./recruiterProfile.schema"
+export * from "./analysis.schema"
+export * from "./contactRequest.schema"
+export * from "./auth.schema"

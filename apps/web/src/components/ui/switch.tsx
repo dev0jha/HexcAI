@@ -1,27 +1,27 @@
-"use client";
+"use client"
 
-import { Switch as SwitchPrimitive } from "@base-ui/react/switch";
+import { Switch as SwitchPrimitive } from "@base-ui/react/switch"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 function Switch({ className, ...props }: SwitchPrimitive.Root.Props) {
-  return (
-    <SwitchPrimitive.Root
-      className={cn(
-        "group/switch focus-visible:ring-ring focus-visible:ring-offset-background data-checked:bg-primary data-unchecked:bg-input inline-flex h-5.5 w-9.5 shrink-0 items-center rounded-full p-px inset-shadow-[0_1px_--theme(--color-black/4%)] transition-all outline-none focus-visible:ring-2 focus-visible:ring-offset-1 data-disabled:opacity-64 sm:h-4.5 sm:w-7.5",
-        className
-      )}
-      data-slot="switch"
-      {...props}
-    >
-      <SwitchPrimitive.Thumb
-        className={cn(
-          "bg-background pointer-events-none block size-5 rounded-full shadow-sm transition-[translate,width] group-active/switch:not-data-disabled:w-5.5 data-checked:translate-x-4 data-checked:group-active/switch:translate-x-3.5 data-unchecked:translate-x-0 sm:size-4 sm:group-active/switch:not-data-disabled:w-4.5 sm:data-checked:translate-x-3 sm:data-checked:group-active/switch:translate-x-2.5"
-        )}
-        data-slot="switch-thumb"
-      />
-    </SwitchPrimitive.Root>
-  );
+   return (
+      <SwitchPrimitive.Root
+         className={cn(
+            "group/switch focus-visible:ring-ring focus-visible:ring-offset-background data-checked:bg-primary data-unchecked:bg-input inline-flex h-5.5 w-9.5 shrink-0 items-center rounded-full p-px inset-shadow-[0_1px_--theme(--color-black/4%)] transition-all outline-none focus-visible:ring-2 focus-visible:ring-offset-1 data-disabled:opacity-64 sm:h-4.5 sm:w-7.5",
+            className
+         )}
+         data-slot="switch"
+         {...props}
+      >
+         <SwitchPrimitive.Thumb
+            className={cn(
+               "bg-background pointer-events-none block size-5 rounded-full shadow-sm transition-[translate,width] group-active/switch:not-data-disabled:w-5.5 data-checked:translate-x-4 data-checked:group-active/switch:translate-x-3.5 data-unchecked:translate-x-0 sm:size-4 sm:group-active/switch:not-data-disabled:w-4.5 sm:data-checked:translate-x-3 sm:data-checked:group-active/switch:translate-x-2.5"
+            )}
+            data-slot="switch-thumb"
+         />
+      </SwitchPrimitive.Root>
+   )
 }
 
-export { Switch };
+export { Switch }

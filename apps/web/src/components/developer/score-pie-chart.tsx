@@ -1,176 +1,172 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-
-import { TrendingUp } from "lucide-react";
-import { Label, Pie, PieChart, Sector } from "recharts";
-import { type PieSectorDataItem } from "recharts/types/polar/Pie";
-
+import { TrendingUp } from "lucide-react"
+import { Label, Pie, PieChart, Sector } from "recharts"
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import type { ScoreBreakdown } from "@/types";
+   ChartConfig,
+   ChartContainer,
+   ChartTooltip,
+   ChartTooltipContent,
+} from "@/components/ui/chart"
+import { useClientOnly } from "@/hooks/use-clientonly"
 
-const chartConfig = {
-  score: {
-    label: "Score",
-  },
-  codeQuality: {
-    label: "Code Quality",
-    color: "#3b82f6",
-  },
-  architecture: {
-    label: "Architecture",
-    color: "#8b5cf6",
-  },
-  security: {
-    label: "Security",
-    color: "#ec4899",
-  },
-  gitPractices: {
-    label: "Git Practices",
-    color: "#f59e0b",
-  },
-  documentation: {
-    label: "Documentation",
-    color: "#10b981",
-  },
-} satisfies ChartConfig;
+import type { ScoreBreakdown } from "@/types"
+import type { PieSectorDataItem } from "recharts/types/polar/Pie"
+
 
 interface ScorePieChartProps {
-  scores: ScoreBreakdown;
-  totalScore: number;
+   scores: ScoreBreakdown
+   totalScore: number
 }
 
+
+{/* @ts-ignore */}
 const ScorePieChart = ({ scores, totalScore }: ScorePieChartProps) => {
-  const [mounted, setMounted] = useState(false);
+	const chartData = getChartData(scores)
+    const averageScore = totalScore
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+	const {isHydrated} = useClientOnly()
+	if (!isHydrated) {
+		return null 
+	}
 
-  const chartData = [
-    {
-      category: "codeQuality",
-      score: scores.codeQuality,
-      fill: "#3b82f6",
-      label: "Code Quality",
-    },
-    {
-      category: "architecture",
-      score: scores.architecture,
-      fill: "#8b5cf6",
-      label: "Architecture",
-    },
-    {
-      category: "security",
-      score: scores.security,
-      fill: "#ec4899",
-      label: "Security",
-    },
-    {
-      category: "gitPractices",
-      score: scores.gitPractices,
-      fill: "#f59e0b",
-      label: "Git Practices",
-    },
-    {
-      category: "documentation",
-      score: scores.documentation,
-      fill: "#10b981",
-      label: "Documentation",
-    },
-  ];
-
-  const averageScore = totalScore;
-
-  return (
-    <div className="">
-      <h3 className="mb-4 text-lg font-semibold">Score Distribution</h3>
-      {mounted && (
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px] sm:max-h-[300px]"
-          id="score-distribution"
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            {/* @ts-ignore */}
-            <Pie
-              data={chartData}
-              dataKey="score"
-              nameKey="category"
-              innerRadius={60}
-              strokeWidth={5}
-              activeIndex={0}
-              activeShape={({
-                outerRadius = 0,
-                ...props
-              }: PieSectorDataItem) => (
-                <Sector {...props} outerRadius={outerRadius + 10} />
-              )}
+   return (
+      <div className="">
+         <h3 className="mb-4 text-lg font-semibold">Score Distribution</h3>
+            <ChartContainer
+               config={chartConfig}
+               className="mx-auto aspect-square max-h-62.5 sm:max-h-75"
+               id="score-distribution"
             >
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
-                        >
-                          {averageScore}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground text-sm"
-                        >
-                          Overall Score
-                        </tspan>
-                      </text>
-                    );
-                  }
-                }}
-              />
-            </Pie>
-          </PieChart>
-        </ChartContainer>
-      )}
-      <div className="mt-4 flex flex-col items-center gap-2">
-        <div className="flex items-center gap-2 text-sm leading-none font-medium">
-          {averageScore >= 85 ? (
-            <>
-              Excellent performance{" "}
-              <TrendingUp className="h-4 w-4 text-green-500" />
-            </>
-          ) : averageScore >= 70 ? (
-            <>
-              Strong performance{" "}
-              <TrendingUp className="h-4 w-4 text-blue-500" />
-            </>
-          ) : (
-            <>Room for improvement</>
-          )}
-        </div>
-        <div className="text-muted-foreground text-xs leading-none">
-          Analysis based on repository metrics
-        </div>
-      </div>
-    </div>
-  );
-};
+               <PieChart>
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                  <Pie
+                     data={chartData}
+                     dataKey="score"
+                     nameKey="category"
+                     innerRadius={60}
+                     strokeWidth={5}
+                     activeShape={({ outerRadius = 0, ...props }: PieSectorDataItem) => (
 
-export default ScorePieChart;
+                        <Sector {...props} outerRadius={outerRadius + 10} />
+                     )}
+                  >
+                     <Label
+                        content={({ viewBox }) => {
+                           if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                              return (
+                                 <text
+                                    x={viewBox.cx}
+                                    y={viewBox.cy}
+                                    textAnchor="middle"
+                                    dominantBaseline="middle"
+                                 >
+                                    <tspan
+                                       x={viewBox.cx}
+                                       y={viewBox.cy}
+                                       className="fill-foreground text-3xl font-bold"
+                                    >
+                                       {averageScore}
+                                    </tspan>
+                                    <tspan
+                                       x={viewBox.cx}
+                                       y={(viewBox.cy || 0) + 24}
+                                       className="fill-muted-foreground text-sm"
+                                    >
+                                       Overall Score
+                                    </tspan>
+                                 </text>
+                              )
+                           }
+                        }}
+                     />
+                  </Pie>
+               </PieChart>
+            </ChartContainer>
+         <div className="mt-4 flex flex-col items-center gap-2">
+            <div className="flex items-center gap-2 text-sm leading-none font-medium">
+               {averageScore >= 85 ? (
+                  <>
+                     Excellent performance <TrendingUp className="h-4 w-4 text-green-500" />
+                  </>
+               ) : averageScore >= 70 ? (
+                  <>
+                     Strong performance <TrendingUp className="h-4 w-4 text-blue-500" />
+                  </>
+               ) : (
+                  <>Room for improvement</>
+               )}
+            </div>
+            <div className="text-muted-foreground text-xs leading-none">
+               Analysis based on repository metrics
+            </div>
+         </div>
+      </div>
+   )
+}
+
+
+function getChartData(scores: ScoreBreakdown) {
+   return [
+      {
+         category: "codeQuality",
+         score: scores.codeQuality,
+         fill: "#3b82f6",
+         label: "Code Quality",
+      },
+      {
+         category: "architecture",
+         score: scores.architecture,
+         fill: "#8b5cf6",
+         label: "Architecture",
+      },
+      {
+         category: "security",
+         score: scores.security,
+         fill: "#ec4899",
+         label: "Security",
+      },
+      {
+         category: "gitPractices",
+         score: scores.gitPractices,
+         fill: "#f59e0b",
+         label: "Git Practices",
+      },
+      {
+         category: "documentation",
+         score: scores.documentation,
+         fill: "#10b981",
+         label: "Documentation",
+      },
+   ]
+}
+
+
+const chartConfig = {
+   score: {
+      label: "Score",
+   },
+   codeQuality: {
+      label: "Code Quality",
+      color: "#3b82f6",
+   },
+   architecture: {
+      label: "Architecture",
+      color: "#8b5cf6",
+   },
+   security: {
+      label: "Security",
+      color: "#ec4899",
+   },
+   gitPractices: {
+      label: "Git Practices",
+      color: "#f59e0b",
+   },
+   documentation: {
+      label: "Documentation",
+      color: "#10b981",
+   },
+} satisfies ChartConfig
+
+export default ScorePieChart
+
