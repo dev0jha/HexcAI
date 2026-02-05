@@ -1,280 +1,257 @@
-# HireXAI – Product Requirements Document (PRD)
+<div align="center">
 
-**Product Name:** HireXAI  
-**Tagline:** Hire Smarter. Hire by Code.  
-**Product Type:** AI-powered developer evaluation & hiring platform  
-**Scope:** Frontend-first (Next.js 14 – App Router)  
-**Last Updated:** 2026
+# HireXAI
 
----
+### Hire Smarter. Hire by Code.
 
-## 1. Product Overview
+**AI-powered developer evaluation & hiring platform that assesses real GitHub code, not resumes.**
 
-HireXAI is a modern hiring platform that evaluates developers based on their **real GitHub code**, not resumes.  
-Using AI, HireXAI generates a **Developer Score** and allows recruiters to **discover and contact top developers**, only with developer consent.
+[![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![Turborepo](https://img.shields.io/badge/Turborepo-2.7-EF4444?style=for-the-badge&logo=turborepo)](https://turbo.build/)
 
-The platform is built with a **developer-first, privacy-first** approach.
+[Features](#-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started) • [Project Structure](#-project-structure) • [Contributing](#-contributing)
 
----
-
-## 2. Problem Statement
-
-### Problems with Traditional Hiring
-
-- Resumes don’t reflect real coding skills
-- GitHub profiles are ignored or misjudged
-- Recruiters spend excessive time screening
-- Developers struggle to stand out authentically
-
-### HireXAI Solves This By:
-
-- Using real GitHub repositories
-- Generating transparent, AI-based scores
-- Enabling ethical, consent-based recruiter outreach
+</div>
 
 ---
 
-## 3. Goals & Objectives
+## 📋 Overview
 
-### Primary Goals
+**HireXAI** transforms the developer hiring process by evaluating candidates based on their **real GitHub repositories** using AI-powered code analysis. The platform generates transparent **Developer Scores** (0-100) across multiple dimensions while respecting developer privacy and consent.
 
-- Evaluate developers using real code
-- Provide a clear, explainable Developer Score
-- Enable faster, smarter hiring
+### 🎯 Key Benefits
 
-### Success Metrics
+**For Developers:**
+- 📊 Get AI-evaluated Developer Score based on real code quality
+- 🎓 Understand strengths and areas for improvement
+- 🔒 Control visibility and recruiter access (opt-in only)
+- 💼 Get discovered by recruiters without spam
 
-- Clear value understood within 5 seconds
-- Recruiters can identify top developers easily
-- Developers feel safe and in control
-
----
-
-## 4. Target Users
-
-### 👨‍💻 Developers
-
-- Students, professionals, open-source contributors
-- Want skill-based visibility
-- Want recruiter outreach without spam
-
-### 🧑‍💼 Recruiters
-
-- Hiring managers, founders, HR teams
-- Want fast, reliable technical signals
-- Want to see code before contacting
-
-### 🛠️ Admin (Platform Owner)
-
-- Moderates users
-- Maintains trust & quality
-- Manages platform rules
+**For Recruiters:**
+- ⚡ Find top-tier developers faster
+- 🔍 See real code quality before contacting
+- 🎯 Filter by tech stack and skill levels
+- 📈 Make data-driven hiring decisions
 
 ---
 
-## 5. Core Features
+## ✨ Features
 
-### 5.1 GitHub Repository Analysis (UI Scope)
+### 🧠 AI-Powered Code Analysis
+- **Code Quality** (30%): Clean code practices, maintainability, complexity
+- **Architecture** (20%): Design patterns, structure, scalability
+- **Security** (20%): Vulnerability detection, best practices
+- **Git Practices** (15%): Commit quality, branching, collaboration
+- **Documentation** (15%): README quality, inline comments, API docs
 
-**Frontend Capabilities**
+### 👨‍💻 Developer Dashboard
+- Analyze GitHub repositories with one-click
+- View detailed score breakdowns with explanations
+- Control recruiter visibility with "Open to Recruiters" toggle
+- Manage incoming contact requests (accept/reject)
+- Privacy-first: Contact info shared only after approval
 
-- Input GitHub repository URL
-- Show analysis progress
-- Display AI-generated insights
+### 🧑‍💼 Recruiter Discovery
+- Browse high-scoring developers (≥80 score)
+- Filter by technologies, frameworks, and score ranges
+- View public developer profiles with code insights
+- Send personalized contact requests
+- Consent-based outreach system
 
-**Displayed Metrics**
+### 🏆 Developer Score System
 
-- Code Quality
-- Architecture & Structure
-- Security Practices
-- Documentation
-- Git Activity
-
----
-
-### 5.2 Developer Score System
-
-**Score Range:** 0 – 100
-
-| Category      | Weight |
-| ------------- | ------ |
-| Code Quality  | 30%    |
-| Architecture  | 20%    |
-| Security      | 20%    |
-| Git Practices | 15%    |
-| Documentation | 15%    |
-
-**Score Labels**
-
-- 90–100 → Excellent
-- 80–89 → Strong
-- 60–79 → Average
-- <60 → Needs Improvement
+| Score Range | Label | Description |
+|------------|-------|-------------|
+| 90-100 | 🌟 Excellent | Outstanding code quality and practices |
+| 80-89 | 💪 Strong | Solid developer with great fundamentals |
+| 60-79 | ⚡ Average | Good foundation, room for growth |
+| <60 | 📚 Needs Improvement | Focus on core skills development |
 
 ---
 
-### 5.3 Developer Visibility & Consent
+## 🛠️ Tech Stack
 
-Developers control whether recruiters can see and contact them.
+### Frontend
+- **Framework**: [Next.js 16.1](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript 5.9](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/)
+- **UI Components**: [Radix UI](https://www.radix-ui.com/), [shadcn/ui](https://ui.shadcn.com/)
+- **State Management**: [Jotai](https://jotai.org/)
+- **Data Fetching**: [TanStack Query](https://tanstack.com/query)
+- **Forms**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
+- **Animations**: [Motion](https://motion.dev/)
+- **Icons**: [Lucide React](https://lucide.dev/), [Tabler Icons](https://tabler.io/icons)
 
-**UI Features**
+### Backend & Database
+- **ORM**: [Drizzle ORM](https://orm.drizzle.team/)
+- **Database**: [Neon Serverless Postgres](https://neon.tech/)
+- **Authentication**: [Better Auth](https://www.better-auth.com/)
+- **API**: [Elysia](https://elysiajs.com/)
 
-- “Open to Recruiters” toggle
-- Add contact info (email / LinkedIn)
-- Visibility badge
+### AI & Analytics
+- **AI SDK**: [Vercel AI SDK](https://sdk.vercel.ai/)
+- **LLM Provider**: [Groq](https://groq.com/)
+- **Charts**: [Recharts](https://recharts.org/)
+- **Flow Diagrams**: [XYFlow](https://reactflow.dev/)
 
-**Rules**
-
-- Only developers with score ≥ 80 are visible
-- Opt-in required
-
----
-
-### 5.4 Recruiter Discover Experience
-
-Recruiters can:
-
-- Browse high-scoring developers
-- Filter by score & tech stack
-- View public developer profiles
-
-**Contact Flow**
-
-- Click “Contact Developer”
-- Write message in modal
-- Request sent for approval
-
----
-
-### 5.5 Contact Requests (Developer Inbox)
-
-Developers can:
-
-- View recruiter messages
-- Accept or reject requests
-- Share contact info only after acceptance
+### Development Tools
+- **Build System**: [Turborepo](https://turbo.build/)
+- **Package Manager**: [Bun](https://bun.sh/)
+- **Linting**: [ESLint 9](https://eslint.org/)
+- **Formatting**: [Prettier](https://prettier.io/)
+- **Git Hooks**: [Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged)
 
 ---
 
-## 6. User Flows
+## 🚀 Getting Started
 
-### Developer Flow
+### Prerequisites
 
-1. Sign up / Login
-2. Analyze GitHub repository
-3. View Developer Score
-4. Enable recruiter visibility
-5. Receive & manage contact requests
+- **Node.js**: >=18.0.0
+- **Bun**: 1.2.22 or higher
+- **Git**: Latest version
 
-### Recruiter Flow
+### Installation
 
-1. Sign up / Login
-2. Discover top developers
-3. Filter candidates
-4. Send contact request
-5. Await developer approval
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/dev0jha/HireXAI.git
+   cd HireXAI
+   ```
 
----
+2. **Install dependencies**
+   ```bash
+   bun install
+   ```
 
-## 7. Landing Page Content
+3. **Set up environment variables**
+   ```bash
+   cp apps/web/.env.example apps/web/.env.local
+   ```
+   
+   Configure the following variables:
+   ```env
+   # Database
+   DATABASE_URL="your-neon-database-url"
+   
+   # Authentication
+   BETTER_AUTH_SECRET="your-secret-key"
+   BETTER_AUTH_URL="http://localhost:3000"
+   
+   # AI
+   GROQ_API_KEY="your-groq-api-key"
+   
+   ```
 
-### Sections
+4. **Run database migrations**
+   ```bash
+   bun run db:migrate
+   ```
 
-1. Hero (Headline, subheadline, CTAs)
-2. Problem statement
-3. How it works
-4. Developer Score explanation
-5. For Developers
-6. For Recruiters
-7. Trust signals
-8. FAQ
-9. Final CTA
+5. **Start the development server**
+   ```bash
+   bun dev
+   ```
 
----
+6. **Open your browser**
+   
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 8. Frontend Folder Structure (Next.js 14)
+### Available Scripts
 
-```txt
-hirexai/
-├── app/
-│   ├── page.tsx              # Landing page (/)
-│   ├── layout.tsx
-│   ├── globals.css
-│
-│   ├── pricing/
-│   │   └── page.tsx
-│
-│   ├── about/
-│   │   └── page.tsx
-│
-│   ├── (auth)/
-│   │   ├── login/
-│   │   │   └── page.tsx
-│   │   ├── register/
-│   │   │   └── page.tsx
-│   │   └── layout.tsx
-│
-│   ├── dashboard/
-│   │   ├── page.tsx
-│   │   ├── analyze/
-│   │   │   └── page.tsx
-│   │   ├── results/
-│   │   │   └── page.tsx
-│   │   ├── requests/
-│   │   │   └── page.tsx
-│   │   └── settings/
-│   │       └── page.tsx
-│
-│   ├── recruiter/
-│   │   ├── discover/
-│   │   │   └── page.tsx
-│   │   ├── candidates/
-│   │   │   └── page.tsx
-│   │   └── layout.tsx
-│
-│   ├── profile/
-│   │   └── [username]/
-│   │       └── page.tsx
-│
-│   └── not-found.tsx
-│
-├── components/
-│   ├── ui/                  # shadcn/ui
-│   ├── layout/              # Navbar, Footer, Sidebar
-│   ├── developer/           # Score, visibility, inbox
-│   ├── recruiter/           # Cards, filters, modals
-│   ├── analysis/            # Score breakdown UI
-│   └── shared/              # Loader, EmptyState
-│
-├── hooks/
-│   ├── useFilters.ts
-│   ├── useContactModal.ts
-│   └── useVisibility.ts
-│
-├── store/                   # Frontend state (Zustand)
-│   ├── user.store.ts
-│   ├── analysis.store.ts
-│   └── recruiter.store.ts
-│
-├── data/                    # Mock data
-│   ├── mockDevelopers.ts
-│   ├── mockAnalysis.ts
-│   └── mockRequests.ts
-│
-├── types/
-│   ├── user.ts
-│   ├── developer.ts
-│   ├── recruiter.ts
-│   └── analysis.ts
-│
-├── utils/
-│   ├── formatScore.ts
-│   ├── constants.ts
-│   └── cn.ts
-│
-├── public/
-│   ├── images/
-│   └── icons/
-│
-└── README.md
+```bash
+# Development
+bun dev              # Start all apps in dev mode
+bun run dev:web      # Start only web app
+
+# Building
+bun build            # Build all apps
+bun run build:web    # Build only web app
+
+# Code Quality
+bun lint             # Run ESLint across all packages
+bun format           # Format code with Prettier
+bun format:check     # Check code formatting
+bun check-types      # Type-check all packages
+
+# Database
+bun run db:generate  # Generate Drizzle migrations
+bun run db:migrate   # Run database migrations
+bun run db:studio    # Open Drizzle Studio
 ```
+
+---
+
+## 📁 Project Structure
+
+```
+HireXAI/
+├── apps/
+│   └── web/                    # Next.js 16 application
+│       ├── app/                # App Router pages
+│       │   ├── (auth)/        # Authentication routes
+│       │   ├── dashboard/     # Developer dashboard
+│       │   ├── recruiter/     # Recruiter portal
+│       │   ├── profile/       # Public profiles
+│       │   └── page.tsx       # Landing page
+│       ├── components/         # React components
+│       │   ├── ui/            # shadcn/ui components
+│       │   ├── layout/        # Navbar, Footer, Sidebar
+│       │   ├── developer/     # Developer-specific UI
+│       │   ├── recruiter/     # Recruiter-specific UI
+│       │   └── analysis/      # Score visualization
+│       ├── hooks/             # Custom React hooks
+│       ├── lib/               # Utilities & configs
+│       ├── store/             # Jotai state atoms
+│       ├── types/             # TypeScript definitions
+│       └── public/            # Static assets
+│
+├── packages/
+│   ├── ui/                    # Shared UI components
+│   ├── eslint-config/         # ESLint configurations
+│   └── typescript-config/     # TypeScript configs
+│
+├── turbo.json                 # Turborepo config
+├── package.json               # Root dependencies
+└── README.md                  # You are here!
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how you can help:
+
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Commit your changes**
+   ```bash
+   git commit -m "Add some amazing feature"
+   ```
+4. **Push to the branch**
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. **Open a Pull Request**
+
+### Development Guidelines
+
+- Follow the existing code style (enforced by ESLint/Prettier)
+- Write meaningful commit messages
+- Add tests for new features
+- Update documentation as needed
+- Ensure `bun lint` and `bun check-types` pass
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+
+</div>
