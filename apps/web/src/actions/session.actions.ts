@@ -15,7 +15,7 @@ export interface UserWithRole extends User {
 }
 
 export interface SessionWithRole {
-   sessison: Session
+   session: Session
    user: UserWithRole
 }
 
@@ -46,7 +46,7 @@ export async function checkSession(): Promise<ActionRes<SessionWithRole>> {
    return {
       success: true,
       data: {
-         sessison: session,
+         session: session,
          user: user,
       },
    }

@@ -3,31 +3,21 @@
 import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { contactRequestQueries, updateContactRequestMutation } from "@/lib/queries/queryOptions"
 
-import {
-   contactRequestQueryOptions,
-   updateContactRequestMutationOptions,
-} from "@/lib/queries/queryOptions"
-
-import type { ContactRequestQuery } from "@/lib/queries/queryOptions"
+import type { ContactRequestQuery } from "@/lib/queries/query.types"
 
 export function useContactRequests(query: ContactRequestQuery = {}) {
    const queryClient = useQueryClient()
-
-   const {
-      data: response,
-      isLoading,
-      error,
-      refetch,
-   } = useQuery(contactRequestQueryOptions.all(query))
+   const { data: response, isLoading, error, refetch } = useQuery(contactRequestQueries.list(query))
 
    const updateStatusMutation = useMutation({
-      ...updateContactRequestMutationOptions,
+      ...updateContactRequestMutation,
       onSuccess: updatedRequest => {
          queryClient.invalidateQueries({ queryKey: ["contact-requests"] })
 
          toast.success(
-            updatedRequest.status === "accepted"
+            updatedRequest?.status === "accepted"
                ? "Contact request accepted"
                : "Contact request declined"
          )
@@ -40,12 +30,12 @@ export function useContactRequests(query: ContactRequestQuery = {}) {
    const updateStatus = (requestId: string, status: "accepted" | "rejected") =>
       updateStatusMutation.mutate({ requestId, status })
 
-   const pendingRequests = response?.data.filter(r => r.status === "pending") ?? []
-   const acceptedRequests = response?.data.filter(r => r.status === "accepted") ?? []
-   const rejectedRequests = response?.data.filter(r => r.status === "rejected") ?? []
+   const pendingRequests = response?.data?.filter(r => r.status === "pending") ?? []
+   const acceptedRequests = response?.data?.filter(r => r.status === "accepted") ?? []
+   const rejectedRequests = response?.data?.filter(r => r.status === "rejected") ?? []
 
    return {
-      data: response?.data || [],
+      data: response?.data ?? [],
       meta: response?.meta,
       isLoading,
       error,

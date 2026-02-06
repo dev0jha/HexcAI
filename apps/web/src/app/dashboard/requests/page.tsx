@@ -6,7 +6,8 @@ import { Card } from "@/components/ui/card"
 import { CustomPagination } from "@/components/ui/custom-pagination"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useContactRequestsPagination } from "@/hooks/use-contact-requests"
-import type { ContactRequest } from "@/lib/queries/queryOptions"
+
+import type { ContactRequest } from "@/lib/queries/query.types"
 
 export default function RequestsPage() {
    const {

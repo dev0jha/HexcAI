@@ -27,7 +27,7 @@ interface ContactModalProps {
 }
 
 export function ContactModal({ developer, open, onOpenChange }: ContactModalProps) {
-   const [message, setMessage] = useState("")
+   const [message, setMessage] = useState<string>("")
    const { createContactRequest, isLoading, error } = useCreateContactRequest()
 
    async function handleSend(e: React.FormEvent) {

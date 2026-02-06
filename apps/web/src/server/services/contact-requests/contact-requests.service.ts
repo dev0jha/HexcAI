@@ -68,7 +68,7 @@ export class ContactRequestService {
 
       return {
          success: true,
-         data,
+         contactRequests: data,
          meta: {
             page,
             limit,
@@ -144,7 +144,7 @@ export class ContactRequestService {
 
       return {
          success: true,
-         data: createdRequest,
+         createdRequest,
       }
    }
 
@@ -223,7 +223,7 @@ export class ContactRequestService {
 
       return {
          success: true,
-         data: updated[0],
+         updatedRequest: updated[0],
       }
    }
 }

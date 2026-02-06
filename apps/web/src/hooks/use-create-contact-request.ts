@@ -3,20 +3,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-import { createContactRequestMutationOptions } from "@/lib/queries/queryOptions"
+import { createContactRequestMutation } from "@/lib/queries/queryOptions"
 
 export function useCreateContactRequest() {
    const queryClient = useQueryClient()
 
    const mutation = useMutation({
-      ...createContactRequestMutationOptions,
+      ...createContactRequestMutation,
       onSuccess: (data, _) => {
          toast.success("Contact request sent successfully!")
 
          queryClient.invalidateQueries({ queryKey: ["contact-requests"] })
 
          queryClient.invalidateQueries({
-            queryKey: ["contact-requests", "list", { recruiterId: data.recruiterId }],
+            queryKey: ["contact-requests", "list", { recruiterId: data?.recruiterId }],
          })
       },
       onError: (error: Error) => {

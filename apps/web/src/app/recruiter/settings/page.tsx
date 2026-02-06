@@ -1,7 +1,6 @@
 "use client"
 
 import { Camera, Loader2 } from "lucide-react"
-
 import Container from "@/components/core/Container"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -12,7 +11,8 @@ import {
    useRecruiterSaveSettingsAction,
    useRecruiterSaveSettingsStatus,
 } from "@/hooks/screens/recruiter-settings.hooks"
-import { useSession } from "@/lib/auth-client"
+import { useQuery } from "@tanstack/react-query"
+import { createUserQueryOptions } from "@/lib/queries/queryOptions"
 
 export default function RecruiterSettingsPage() {
    return (
@@ -31,11 +31,10 @@ export default function RecruiterSettingsPage() {
 }
 
 function RecruiterSettingsForm() {
-   const { data: session, isPending } = useSession()
-   const user = session?.user as any
+   const { data: user, isLoading } = useQuery(createUserQueryOptions())
    const { handleSave } = useRecruiterSaveSettingsAction()
 
-   if (isPending) {
+   if (isLoading) {
       return (
          <div className="flex h-64 items-center justify-center">
             <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
@@ -98,24 +97,25 @@ function RecruiterSettingsForm() {
                         className="bg-muted"
                      />
                   </div>
+
                   <div className="space-y-2">
                      <Label htmlFor="company">Company Name</Label>
                      {/* @ts-ignore */}
-                     <Input
+                     {/* <Input
                         id="company"
                         name="company"
                         defaultValue={user?.company || ""}
                         placeholder="TechCorp"
-                     />
+                     /> */}
                   </div>
                   <div className="space-y-2">
                      <Label htmlFor="position">Position</Label>
                      {/* @ts-ignore */}
-                     <Input
+                     {/* <Input
                         id="position"
                         defaultValue={user?.position || ""}
                         placeholder="Senior Technical Recruiter"
-                     />
+                     /> */}
                   </div>
                </div>
             </Card>
