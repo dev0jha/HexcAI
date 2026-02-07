@@ -40,7 +40,7 @@ export default function LogoutBtn({ className }: LogoutBtnProps) {
       <Button
          onClick={handleSignoutClick}
          className={cn(
-            "w-full cursor-pointer rounded-lg text-xs text-white shadow-xl dark:text-black",
+            "w-full cursor-pointer rounded-lg text-xs text-zinc-50 font-medium shadow-xl dark:text-black",
             className
          )}
       >

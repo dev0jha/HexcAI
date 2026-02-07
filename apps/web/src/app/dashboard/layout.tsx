@@ -1,22 +1,34 @@
+"use client"
+
 import type React from "react"
 
 import { DashboardHeader } from "@/components/layout/dashboard-header"
-import { DashboardSidebar } from "@/components/layout/sidebar/sidebar"
-import { SidebarContent, SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { Sidebar } from "@/components/ui/sidebar"
+import {
+   SidebarInset,
+   SidebarProvider,
+   Sidebar,
+   SidebarFooter,
+   SidebarHeader,
+} from "@/components/ui/sidebar"
+import { SiderbarFooterContent } from "@/components/layout/sidebar/sidebar-footer"
+import { SidebarHeaderContent } from "@/components/layout/sidebar/sidebar-header"
+import { CandidateSidebarMainContent } from "@/components/layout/sidebar/sidebar-maincontent"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
    return (
-      <SidebarProvider className="flex bg-[#121212]">
-         <div className="relative flex min-h-screen bg-[#121212]">
-            <Sidebar>
-               <SidebarContent className="bg-[#121212]">
-                  <DashboardSidebar />
-               </SidebarContent>
-            </Sidebar>
-         </div>
+      <SidebarProvider className="flex">
+         <Sidebar className="border-r border-[#2c2c2c]">
+            <SidebarHeader className="bg-[#191919]">
+               <SidebarHeaderContent />
+            </SidebarHeader>
 
-         <SidebarInset className="w-full gap-4 bg-[#121212] p-2 pt-20 sm:p-6 md:pt-6">
+            <CandidateSidebarMainContent />
+
+            <SidebarFooter className="bg-[#191919]">
+               <SiderbarFooterContent />
+            </SidebarFooter>
+         </Sidebar>
+         <SidebarInset className="w-full gap-4 bg-[#121212]">
             <DashboardHeader />
             <div className="p-2 sm:p-4">{children}</div>
          </SidebarInset>

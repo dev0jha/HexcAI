@@ -15,11 +15,11 @@ const navItems = [
    { href: "/dashboard/settings", label: "Settings", icon: IconSettings },
 ]
 
-export function MainContent({ collapsed }: { collapsed?: boolean }) {
+export function CandidateSidebarMainContent() {
    const pathname = usePathname()
 
    return (
-      <SidebarContent>
+      <SidebarContent className="bg-[#191919]">
          <nav className="flex-1 space-y-1 px-3 py-4">
             {navItems.map((item, idx) => {
                const isActive =
@@ -31,14 +31,13 @@ export function MainContent({ collapsed }: { collapsed?: boolean }) {
                      <div
                         className={cn(
                            "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors",
-                           collapsed && "justify-center px-2",
                            isActive
                               ? "bg-white/10 text-white"
                               : "text-zinc-400 hover:bg-white/5 hover:text-white"
                         )}
                      >
                         <item.icon className="h-4 w-4 shrink-0" />
-                        {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+                        <span className="text-sm font-medium">{item.label}</span>
                      </div>
                   </Link>
                )
