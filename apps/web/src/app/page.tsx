@@ -3,6 +3,7 @@ import { FeaturesSection } from "@/components/core/Features"
 import HeroSection from "@/components/core/Hero"
 import { HowItWorks } from "@/components/core/HowItWork"
 import { Navbar } from "@/components/core/Navbar"
+import { PricingSection } from "@/components/core/pricing-section"
 import Footer from "@/components/layout/footer"
 import { SchematicBackground } from "@/components/semantic-background"
 import ClientFeedback from "@/components/testimonial"
@@ -42,6 +43,7 @@ export default function page() {
                <HowItWorks />
                <FeaturesSection />
                <ClientFeedback />
+               <PricingSection />
                <Footer />
             </Container>
          </main>
