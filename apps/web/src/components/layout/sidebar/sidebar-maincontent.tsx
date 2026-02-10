@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-import { IconInbox, IconLayout, IconSearch, IconSettings } from "@tabler/icons-react"
+import { IconHistory, IconInbox, IconLayout, IconSearch, IconSettings } from "@tabler/icons-react"
 
 import { SidebarContent } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils"
 const navItems = [
    { href: "/dashboard", label: "Overview", icon: IconLayout },
    { href: "/dashboard/analysis", label: "Analyze Repo", icon: IconSearch },
+   { href: "/dashboard/history", label: "History", icon: IconHistory },
    { href: "/dashboard/requests", label: "Requests", icon: IconInbox },
    { href: "/dashboard/settings", label: "Settings", icon: IconSettings },
 ]
