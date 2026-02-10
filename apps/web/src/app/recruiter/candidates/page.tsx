@@ -33,6 +33,10 @@ import {
    SelectValue,
 } from "@/components/ui/select"
 
+type CandidateStatus = "interested" | "pending" | "not-interested"
+
+type CadidateStatusFilter = CandidateStatus | "all"
+
 interface Candidate {
    id: string
    name: string
@@ -42,7 +46,7 @@ interface Candidate {
    techStack: string[]
    location: string
    contactedDate: string
-   status: "pending" | "interested" | "not-interested"
+   status: CandidateStatus
 }
 
 const mockCandidates: Candidate[] = [
@@ -83,8 +87,8 @@ const mockCandidates: Candidate[] = [
 
 export default function CandidatesPage() {
    const [candidates, setCandidates] = useState<Candidate[]>(mockCandidates)
-   const [searchQuery, setSearchQuery] = useState("")
-   const [statusFilter, setStatusFilter] = useState("all")
+   const [searchQuery, setSearchQuery] = useState<string>("")
+   const [statusFilter, setStatusFilter] = useState<CadidateStatusFilter>("all")
 
    const filteredCandidates = candidates.filter(candidate => {
       const matchesSearch =
@@ -100,29 +104,40 @@ export default function CandidatesPage() {
       setCandidates(candidates.filter(c => c.id !== id))
    }
 
-   const getStatusBadge = (status: string) => {
-      switch (status) {
-         case "interested":
-            return (
-               <Badge className="bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25 border-emerald-200">
-                  Interested
-               </Badge>
-            )
-         case "pending":
-            return (
-               <Badge variant="secondary" className="text-muted-foreground">
-                  Pending
-               </Badge>
-            )
-         case "not-interested":
-            return (
-               <Badge variant="outline" className="text-muted-foreground">
-                  Passed
-               </Badge>
-            )
-         default:
-            return <Badge variant="outline">{status}</Badge>
-      }
+   function handleExportCSV() {
+      const headers = [
+         "Name",
+         "Username",
+         "Score",
+         "Tech Stack",
+         "Location",
+         "Status",
+         "Contacted Date",
+      ]
+      const csvContent = [
+         headers.join(","),
+         ...filteredCandidates.map(candidate =>
+            [
+               candidate.name,
+               candidate.username,
+               candidate.score,
+               `"${candidate.techStack.join("; ")}"`,
+               `"${candidate.location}"`,
+               candidate.status,
+               candidate.contactedDate,
+            ].join(",")
+         ),
+      ].join("\n")
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+      const link = document.createElement("a")
+      const url = URL.createObjectURL(blob)
+      link.setAttribute("href", url)
+      link.setAttribute("download", `candidates-${new Date().toISOString().split("T")[0]}.csv`)
+      link.style.visibility = "hidden"
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
    }
 
    return (
@@ -136,7 +151,7 @@ export default function CandidatesPage() {
                </p>
             </div>
             <div className="flex items-center gap-2">
-               <Button variant="outline">
+               <Button variant="outline" onClick={handleExportCSV}>
                   <ExternalLink className="mr-2 h-4 w-4" />
                   Export CSV
                </Button>
@@ -173,16 +188,20 @@ export default function CandidatesPage() {
          </div>
 
          {/* Data Table */}
-         <div className="border rounded-md shadow-sm bg-card">
+         <div className="border rounded-md shadow-sm bg-neutral-900/80">
             <Table>
                <TableHeader>
-                  <TableRow>
-                     <TableHead className="w-75">Candidate</TableHead>
-                     <TableHead>Score</TableHead>
-                     <TableHead>Status</TableHead>
-                     <TableHead className="hidden md:table-cell">Tech Stack</TableHead>
-                     <TableHead className="hidden md:table-cell">Location</TableHead>
-                     <TableHead className="text-right">Actions</TableHead>
+                  <TableRow className="bg-neutral-900/50 text-xs">
+                     <TableHead className="w-75 uppercase font-bold">Candidate</TableHead>
+                     <TableHead className="uppercase font-bold">Score</TableHead>
+                     <TableHead className="uppercase font-bold">Status</TableHead>
+                     <TableHead className="hidden md:table-cell uppercase font-bold">
+                        Tech Stack
+                     </TableHead>
+                     <TableHead className="hidden md:table-cell uppercase font-bold">
+                        Location
+                     </TableHead>
+                     <TableHead className="text-right uppercase font-bold">Actions</TableHead>
                   </TableRow>
                </TableHeader>
                <TableBody>
@@ -305,4 +324,29 @@ export default function CandidatesPage() {
          </div>
       </Container>
    )
+}
+
+const getStatusBadge = (status: string) => {
+   switch (status) {
+      case "interested":
+         return (
+            <Badge className="bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25 border-emerald-200/30 border-2 p-1 text-xs">
+               Interested
+            </Badge>
+         )
+      case "pending":
+         return (
+            <Badge variant="secondary" className="text-muted-foreground">
+               Pending
+            </Badge>
+         )
+      case "not-interested":
+         return (
+            <Badge variant="outline" className="text-muted-foreground">
+               Passed
+            </Badge>
+         )
+      default:
+         return <Badge variant="outline">{status}</Badge>
+   }
 }
