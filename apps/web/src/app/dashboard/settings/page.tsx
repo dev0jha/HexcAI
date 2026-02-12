@@ -10,21 +10,44 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { mockDevelopers } from "@/data/mock-data"
 import { SettingStore } from "@/hooks/scopedstores/settings.store"
 import {
    useOpenToRecuiterSetting,
    useSaveSettingsAction,
    useSaveSettingsStatus,
+   useSettingsFormFields,
 } from "@/hooks/screens/settings.hooks"
+import { useReactiveSession } from "@/lib/auth-client"
+import { grabUserNameInitials } from "@/lib/info"
 
 export default function SettingsPage() {
-   const developer = mockDevelopers[0]
+   const { data: session, isLoading } = useReactiveSession()
+
+   if (isLoading) {
+      return (
+         <Container className="py-12">
+            <div className="mx-auto max-w-2xl flex items-center justify-center min-h-100">
+               <Loader2 className="h-8 w-8 animate-spin text-zinc-500" />
+            </div>
+         </Container>
+      )
+   }
+
+   if (!session?.user) {
+      return (
+         <Container className="py-12">
+            <div className="mx-auto max-w-2xl text-center text-zinc-500">
+               Please sign in to access settings.
+            </div>
+         </Container>
+      )
+   }
 
    return (
       <SettingStore.Provider
          defaults={{
-            isOpenToRecruiters: developer.isOpenToRecruiters,
+            isOpenToRecruiters: true,
+            name: session.user.name || "",
          }}
       >
          <Container className="py-12">
@@ -36,16 +59,25 @@ export default function SettingsPage() {
                   </p>
                </div>
 
-               <SettingsFormContent developer={developer} />
+               <SettingsFormContent user={session.user} />
             </div>
          </Container>
       </SettingStore.Provider>
    )
 }
 
-function SettingsFormContent({ developer }: { developer: (typeof mockDevelopers)[0] }) {
+interface User {
+   id: string
+   name: string
+   email: string
+   image?: string | null
+}
+
+function SettingsFormContent({ user }: { user: User }) {
    const { handleSave } = useSaveSettingsAction()
    const { isOpenToRecruiters, setIsOpenToRecruiters } = useOpenToRecuiterSetting()
+   const { name, setName, location, setLocation, portfolio, setPortfolio, bio, setBio } =
+      useSettingsFormFields()
 
    return (
       <form onSubmit={handleSave} className="space-y-8">
@@ -53,9 +85,9 @@ function SettingsFormContent({ developer }: { developer: (typeof mockDevelopers)
          <div className="flex items-center gap-6">
             <div className="group relative">
                <Avatar className="h-20 w-20 border-2 border-zinc-800">
-                  <AvatarImage src={developer.avatar} alt={developer.name} />
+                  <AvatarImage src={user.image ?? ""} alt={user.name} />
                   <AvatarFallback className="bg-zinc-900 text-zinc-500">
-                     {developer.name.substring(0, 2).toUpperCase()}
+                     {grabUserNameInitials(user.name)}
                   </AvatarFallback>
                </Avatar>
                <Button
@@ -68,8 +100,8 @@ function SettingsFormContent({ developer }: { developer: (typeof mockDevelopers)
                </Button>
             </div>
             <div className="space-y-1">
-               <h3 className="font-medium text-white text-lg">{developer.name}</h3>
-               <p className="text-zinc-500 text-sm">@{developer.username}</p>
+               <h3 className="font-medium text-white text-lg">{name || user.name}</h3>
+               <p className="text-zinc-500 text-sm">{user.email}</p>
             </div>
          </div>
 
@@ -81,35 +113,43 @@ function SettingsFormContent({ developer }: { developer: (typeof mockDevelopers)
                <div className="space-y-2">
                   <Label className="text-xs text-zinc-500 font-normal">Full Name</Label>
                   <Input
-                     defaultValue={developer.name}
+                     value={name}
+                     onChange={e => setName(e.target.value)}
                      className="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 focus:ring-0 h-10"
                   />
                </div>
                <div className="space-y-2">
                   <Label className="text-xs text-zinc-500 font-normal">Email Address</Label>
                   <Input
-                     defaultValue={developer.email}
-                     className="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 focus:ring-0 h-10"
+                     value={user.email}
+                     disabled
+                     className="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 focus:ring-0 h-10 disabled:opacity-50"
                   />
                </div>
                <div className="space-y-2">
                   <Label className="text-xs text-zinc-500 font-normal">Location</Label>
                   <Input
-                     defaultValue={developer.location}
+                     value={location}
+                     onChange={e => setLocation(e.target.value)}
+                     placeholder="e.g. San Francisco, CA"
                      className="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 focus:ring-0 h-10"
                   />
                </div>
                <div className="space-y-2">
                   <Label className="text-xs text-zinc-500 font-normal">Portfolio</Label>
                   <Input
-                     defaultValue={developer.website}
+                     value={portfolio}
+                     onChange={e => setPortfolio(e.target.value)}
+                     placeholder="e.g. yoursite.dev"
                      className="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 focus:ring-0 h-10"
                   />
                </div>
                <div className="col-span-2 space-y-2">
                   <Label className="text-xs text-zinc-500 font-normal">Bio</Label>
                   <Textarea
-                     defaultValue={developer.bio}
+                     value={bio}
+                     onChange={e => setBio(e.target.value)}
+                     placeholder="Tell us about yourself..."
                      className="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 focus:ring-0 resize-none min-h-20"
                   />
                </div>

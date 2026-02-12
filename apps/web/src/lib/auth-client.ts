@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createAuthClient } from "better-auth/react"
 
 export const authClient = createAuthClient({
@@ -23,6 +23,24 @@ function useReactiveSession() {
    })
 }
 
+function useUpdateUser() {
+   const queryClient = useQueryClient()
+
+   return useMutation({
+      mutationFn: async (data: { name?: string; image?: string | null }) => {
+         const { data: result, error } = await authClient.updateUser(data)
+         if (error) {
+            throw error
+         }
+         return result
+      },
+      onSuccess: () => {
+         // Invalidate session to refresh user data everywhere
+         queryClient.invalidateQueries({ queryKey: ["session"] })
+      },
+   })
+}
+
 const { signIn, signOut, signUp } = authClient
 
-export { signIn, signOut, signUp, useReactiveSession }
+export { signIn, signOut, signUp, useReactiveSession, useUpdateUser }
