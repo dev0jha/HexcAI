@@ -37,7 +37,7 @@ const ElectricLine = ({
             initial={{
                strokeDasharray: "20 1000",
                strokeDashoffset: 1020,
-               opacity: 0,
+               opacity: 0.6,
             }}
             animate={{
                strokeDashoffset: -1020,

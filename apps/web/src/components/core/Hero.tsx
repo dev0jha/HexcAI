@@ -64,7 +64,7 @@ export default function HeroSection() {
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
                transition={{ duration: 0.8, delay: 0.2 }}
-               className="mx-auto mb-10 max-w-2xl text-center text-sm leading-relaxed font-medium text-zinc-400/80 sm:text-xl"
+               className="mx-auto mb-10 max-w-2xl text-center text-sm leading-relaxed font-medium text-zinc-400/70 sm:text-lg"
             >
                Replace subjective hiring with cryptographic proof of skill. AI-driven assessments
                that parse logic, not keywords.

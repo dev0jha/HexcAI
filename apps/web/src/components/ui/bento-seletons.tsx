@@ -43,7 +43,7 @@ export const SystemLogs = () => {
          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[24px_24px]" />
 
          <div className="relative z-10 mb-4 flex items-center gap-2 text-zinc-500">
-            <Badge className="border-emerald-gray/10 broder-dashed border bg-black p-3 text-xs font-semibold tracking-widest text-neutral-50/80">
+            <Badge className="border-emerald-gray/10 broder-dashed border bg-[#121212] p-3 text-xs font-semibold tracking-widest text-neutral-50/80">
                Live Stream
             </Badge>
             <div className="ml-auto flex items-center gap-1.5">
@@ -64,7 +64,7 @@ export const SystemLogs = () => {
                   className="group relative pb-4 pl-6 last:pb-0"
                >
                   <div
-                     className={`absolute top-1.5 -left-1.25 z-20 h-2.5 w-2.5 rounded-full border-2 border-black ${
+                     className={`absolute top-1.5 -left-1.25 z-20 h-2.5 w-2.5 rounded-full border-2 border-[#121212] ${
                         log.status === "processing"
                            ? "bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"
                            : "bg-emerald-500/20"
@@ -113,7 +113,7 @@ export const SystemLogs = () => {
             ))}
          </div>
 
-         <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-20 h-16 bg-linear-to-t from-black via-black/80 to-transparent" />
+         <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-20 h-16 bg-linear-to-t from-[#121212] via-[#121212]/80 to-transparent" />
       </div>
    )
 }
@@ -123,7 +123,7 @@ export const DevIdCardSkeleton = ({ className }: { className?: string }) => {
       <div
          className={cn(
             "relative h-55 w-full max-w-87.5 overflow-hidden",
-            "border border-zinc-800 bg-black",
+            "border border-zinc-800 bg-[#121212]",
             "before:absolute before:inset-0 before:bg-linear-to-tr before:from-zinc-900/50 before:via-transparent before:to-zinc-900/50 before:opacity-50",
             className
          )}
@@ -157,7 +157,7 @@ export const DevIdCardSkeleton = ({ className }: { className?: string }) => {
                   <div className="h-14 w-14 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
                      <div className="absolute inset-0 animate-pulse bg-zinc-800" />
                   </div>
-                  <div className="absolute -right-0.5 -bottom-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-black">
+                  <div className="absolute -right-0.5 -bottom-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#121212]">
                      <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-zinc-700" />
                   </div>
                </div>
@@ -327,11 +327,11 @@ export const SecurityHash = () => {
          onMouseEnter={() => setIsHovered(true)}
          onMouseLeave={() => setIsHovered(false)}
       >
-         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] mask-[radial-gradient(black,transparent_70%)] bg-size-[16px_16px]" />
+         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] mask-[radial-gradient(#121212,transparent_70%)] bg-size-[16px_16px]" />
 
          <div className="relative z-10">
             <motion.div
-               className="flex items-center gap-2 rounded-md border border-zinc-800 bg-black px-3 py-2 shadow-2xl"
+               className="flex items-center gap-2 rounded-md border border-zinc-800 bg-[#121212] px-3 py-2 shadow-2xl"
                animate={{
                   borderColor: isHovered ? "rgba(16, 185, 129, 0.3)" : "rgba(39, 39, 42, 1)",
                }}

@@ -36,16 +36,17 @@ export function Navbar({
 
    return (
       <div className={cn("fixed top-0 right-0 left-0 z-50", className)}>
-         <header className="relative w-full border-b border-white/5 bg-black/10">
-            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 backdrop-blur-md sm:px-6">
-               <PlusIcon className="absolute -bottom-1.5 -left-1.5 text-white/30" />
-               <PlusIcon className="absolute -right-1.5 -bottom-1.5 text-white/30" />
+         <header className="relative w-full border-b border-white/5 overflow-hidden">
+            <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4 backdrop-blur-md md:justify-around sm:px-6">
+               <PlusIcon className="hidden md:block absolute -bottom-1.5 -left-1.5 text-white/30" />
+               <PlusIcon className="hidden md:block absolute -right-1.5 -bottom-1.5 text-white/30" />
+
                <div className="flex items-center gap-2">
                   <Logo />
                </div>
 
-               <nav className="absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-                  <ul className="flex items-center gap-1 rounded-xl border-2 bg-black/30 border-dashed border-neutral-50/10 px-2 py-1">
+               <nav className="hidden md:block">
+                  <ul className="flex items-center gap-1 rounded px-2 py-1">
                      {items.map((item, idx) => {
                         const isActive =
                            pathname === item.href ||
@@ -56,7 +57,7 @@ export function Navbar({
                               <Link
                                  href={item.href}
                                  className={cn(
-                                    "relative block rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-200",
+                                    "relative block rounded-full px-4 py-1.5 text-xs font-bold transition-colors duration-200 uppercase",
                                     isActive
                                        ? "font-bold text-white"
                                        : "text-zinc-400 hover:text-zinc-100"
@@ -76,10 +77,11 @@ export function Navbar({
                <div className="flex items-center gap-3">
                   <Link href="/signin">
                      <Button
+                        variant="outline"
                         className={cn(
                            "relative hidden items-center justify-center px-4 py-1.5 sm:flex",
-                           "text-shadow-xl rounded-md text-sm font-medium tracking-wide shadow-lg transition-all duration-300 text-shadow-black/70",
-                           "bg-white text-black hover:bg-zinc-200 hover:shadow-[0_0_15px_rgba(255,255,255,0.4)]"
+                           "text-shadow-xl rounded-sm text-sm font-medium tracking-wide shadow-lg transition-all duration-300 text-shadow-black/70",
+                           "bg-white text-white hover:bg-zinc-200 hover:shadow-[0_0_15px_rgba(255,255,255,0.4)] uppercase bold"
                         )}
                      >
                         Login
@@ -102,7 +104,7 @@ export function Navbar({
                      animate={{ height: "auto", opacity: 1 }}
                      exit={{ height: 0, opacity: 0 }}
                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                     className="overflow-hidden border-b border-white/10 bg-black md:hidden"
+                     className="overflow-hidden border-b border-white/10 md:hidden"
                   >
                      <ul className="flex flex-col gap-2 p-4">
                         {items.map((item, idx) => {

@@ -13,7 +13,6 @@ const hashStr = (str: string) => {
    return Math.abs(hash)
 }
 
-
 const ElectricLine = ({
    d,
    delay = 0,
@@ -148,7 +147,7 @@ export const SchematicBackground = () => {
             </svg>
          </div>
 
-         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)] opacity-80" />
+         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#171717%)] opacity-80" />
       </div>
    )
 }

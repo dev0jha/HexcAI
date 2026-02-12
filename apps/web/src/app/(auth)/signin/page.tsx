@@ -3,6 +3,7 @@
 import Link from "next/link"
 
 import { AuthBackgroundsPatterns } from "@/components/auth-bg-patterns"
+import { IconArrowLeft } from "@tabler/icons-react"
 import EmailField from "@/components/auth/primitives/email-field"
 import PassField from "@/components/auth/primitives/pass-fields"
 import { Button } from "@/components/ui/button"
@@ -11,6 +12,7 @@ import { Form } from "@/components/ui/form"
 import { useSignIn } from "@/hooks/screens/signIn.hooks"
 import { cn } from "@/lib/utils"
 import Logo from "@/components/Logo"
+import BackBtn from "@/components/back-btn"
 
 export default function SignInPage() {
    const { form, onSubmitFormAction } = useSignIn()
@@ -20,10 +22,12 @@ export default function SignInPage() {
 
    return (
       <Form {...form}>
-         <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black p-4">
+         <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#121212] p-4">
+            {/* Back Button */}
+            <BackBtn />
             <div className="absolute inset-0 z-0">
                <AuthBackgroundsPatterns />
-               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)]" />
+               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#121212_100%)]" />
             </div>
 
             <div className="relative z-10 w-full max-w-100">

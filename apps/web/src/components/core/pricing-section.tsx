@@ -69,7 +69,7 @@ export function PricingSection() {
    ]
 
    return (
-      <section className="relative w-full border-t border-zinc-900 bg-black py-24 lg:py-32">
+      <section className="relative w-full border-t border-zinc-900 bg-[#121212] py-24 lg:py-32">
          <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
             <h2 className="font-poppins mb-5 text-4xl font-semibold tracking-tight text-white md:text-5xl">
                Transparent Pricing

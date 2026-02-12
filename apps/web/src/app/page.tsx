@@ -4,6 +4,7 @@ import HeroSection from "@/components/core/Hero"
 import { HowItWorks } from "@/components/core/HowItWork"
 import { Navbar } from "@/components/core/Navbar"
 import { PricingSection } from "@/components/core/pricing-section"
+import { Divider } from "@/components/divider"
 import Footer from "@/components/layout/footer"
 import { SchematicBackground } from "@/components/semantic-background"
 import ClientFeedback from "@/components/testimonial"
@@ -12,13 +13,13 @@ import { cn } from "@/lib/utils"
 export default function page() {
    return (
       <>
-         <main className="relative bg-black">
+         <main className="relative bg-[#121212]">
             <SchematicBackground />
             <Container>
                <div
                   className={cn(
                      "pointer-events-none",
-                     "absolute inset-y-0 left-0",
+                     "absolute inset-y-0 left-0 hidden sm:block",
                      "z-10",
                      "-translate-x-14",
                      "h-full w-10 sm:w-14",
@@ -30,7 +31,7 @@ export default function page() {
                <div
                   className={cn(
                      "pointer-events-none",
-                     "absolute inset-y-0 right-0",
+                     "absolute inset-y-0 right-0 hidden sm:block",
                      "z-10",
                      "translate-x-14",
                      "h-full w-10 sm:w-14",
@@ -40,9 +41,14 @@ export default function page() {
                />
                <Navbar />
                <HeroSection />
+               <Divider />
                <HowItWorks />
+
+               <Divider />
                <FeaturesSection />
+
                <ClientFeedback />
+               <Divider />
                <PricingSection />
                <Footer />
             </Container>

@@ -17,7 +17,7 @@ interface TechCardProps {
 
 function TechCard({ title, description, icon: Icon }: TechCardProps) {
    return (
-      <div className="group relative flex flex-col justify-between bg-neutral-900/10 p-6 transition-all hover:bg-zinc-900/40 sm:p-8">
+      <div className="group relative flex flex-col justify-between p-6 transition-all bg-zinc-900/40 sm:p-8">
          <div className="pointer-events-none absolute inset-0 border border-dashed border-zinc-800/60" />
 
          <PlusIcon className="absolute -top-1 -left-1 text-white/50" />
@@ -27,7 +27,7 @@ function TechCard({ title, description, icon: Icon }: TechCardProps) {
 
          <div>
             <div className="mb-4 flex items-center gap-3">
-               <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950/80 text-zinc-400 transition-colors group-hover:border-zinc-700 group-hover:text-white">
+               <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950/30 text-zinc-400 transition-colors group-hover:border-zinc-700 group-hover:text-white">
                   <Icon size={18} strokeWidth={1.5} />
                </div>
                <h3 className="font-medium text-zinc-100">{title}</h3>
@@ -97,7 +97,7 @@ const recruiterFeatures = [
 
 export function FeaturesSection() {
    return (
-      <section className="relative w-full border-t border-zinc-900 bg-black py-24 lg:py-32">
+      <section className="relative w-full border-t border-zinc-900 bg-[#121212] py-24 lg:py-32">
          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {/* Section Header */}
             <h2 className="mb-16 text-4xl font-semibold tracking-tight text-white md:text-5xl">

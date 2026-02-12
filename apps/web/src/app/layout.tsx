@@ -29,7 +29,20 @@ export default function RootLayout({
             <QueryProvider>
                <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
                   {children}
-                  <Toaster theme="dark" />
+                  <Toaster
+                     theme="system"
+                     className="toaster group"
+                     toastOptions={{
+                        classNames: {
+                           toast: "group toast group-[.toaster]:bg-popover group-[.toaster]:text-popover-foreground group-[.toaster]:border group-[.toaster]:shadow-lg",
+                           description: "group-[.toaster]:text-muted-foreground",
+                           actionButton:
+                              "group-[.toaster]:bg-primary group-[.toaster]:text-primary-foreground",
+                           cancelButton:
+                              "group-[.toaster]:bg-muted group-[.toaster]:text-muted-foreground",
+                        },
+                     }}
+                  />
                </ThemeProvider>
             </QueryProvider>
          </body>

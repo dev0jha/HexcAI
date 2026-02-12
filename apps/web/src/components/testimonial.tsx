@@ -129,7 +129,7 @@ function ClientFeedback() {
                      animationNum={i + 2}
                      customVariants={revealVariants}
                      timelineRef={testimonialRef}
-                     className={`bg-black p-5 text-white ${cardBase}`}
+                     className={`bg-[#121212] p-5 text-white ${cardBase}`}
                   >
                      <article className="mt-auto">
                         <p className="text-sm 2xl:text-base">&quot;{item.text}&quot;</p>

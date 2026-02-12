@@ -65,7 +65,7 @@ const features: BentoCardProps[] = [
 
 export function HowItWorks() {
    return (
-      <section className="relative w-full border-t border-zinc-900 bg-black py-24 lg:py-32">
+      <section className="relative w-full border-t border-zinc-900 bg-[#121212] py-24 lg:py-32">
          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-16">
                <h2 className="mb-6 text-4xl font-semibold tracking-tight text-white md:text-5xl">
