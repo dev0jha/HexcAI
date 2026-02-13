@@ -1,9 +1,10 @@
-import { SettingStore } from "@/hooks/scopedstores/settings.store"
-import { useUpdateUser } from "@/lib/auth-client"
+import { toast } from "sonner"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-/*
- * Hook to get saving settings status
- * **/
+import { SettingStore } from "@/hooks/scopedstores/settings.store"
+import { updateUserMutation } from "@/lib/queries/queryOptions"
+import { queryKeys } from "@/lib/queries/queryKeys"
+
 export function useSaveSettingsStatus() {
    const [isSaving, setIsSaving] = SettingStore.useAtom("isSaving")
    return {
@@ -12,10 +13,6 @@ export function useSaveSettingsStatus() {
    }
 }
 
-/**
- *
- * Is open to recruiters toggle hook
- * **/
 export function useOpenToRecuiterSetting() {
    const [isOpenToRecruiters, setIsOpenToRecruiters] = SettingStore.useAtom("isOpenToRecruiters")
    return {
@@ -24,51 +21,46 @@ export function useOpenToRecuiterSetting() {
    }
 }
 
-/**
- * Form field hooks
- * **/
-export function useSettingsFormFields() {
-   const [name, setName] = SettingStore.useAtom("name")
-   const [location, setLocation] = SettingStore.useAtom("location")
-   const [portfolio, setPortfolio] = SettingStore.useAtom("portfolio")
-   const [bio, setBio] = SettingStore.useAtom("bio")
-
-   return {
-      name,
-      setName,
-      location,
-      setLocation,
-      portfolio,
-      setPortfolio,
-      bio,
-      setBio,
-   }
-}
-
-/*
- *  Hook to handle saving settings action
- * **/
 export function useSaveSettingsAction() {
-   const { isSaving, setIsSaving } = useSaveSettingsStatus()
-   const { name } = useSettingsFormFields()
-   const updateUserMutation = useUpdateUser()
+   const { setIsSaving } = useSaveSettingsStatus()
+   const { isOpenToRecruiters } = useOpenToRecuiterSetting()
+   const queryClient = useQueryClient()
+
+   const mutation = useMutation({
+      ...updateUserMutation,
+      onMutate: () => {
+         setIsSaving(true)
+      },
+      onSuccess: () => {
+         toast.success("Profile updated successfully!")
+         queryClient.invalidateQueries({ queryKey: queryKeys.user() })
+      },
+      onError: (error: Error) => {
+         toast.error(error.message || "Failed to update profile")
+      },
+      onSettled: () => {
+         setIsSaving(false)
+      },
+   })
 
    async function handleSave(e: React.FormEvent) {
       e.preventDefault()
-      setIsSaving(true)
+      const formData = new FormData(e.target as HTMLFormElement)
+      const name = formData.get("name") as string
+      const location = formData.get("location") as string
+      const bio = formData.get("bio") as string
 
-      try {
-         await updateUserMutation.mutateAsync({ name })
-      } catch (error) {
-         console.error("Failed to save settings:", error)
-      } finally {
-         setIsSaving(false)
-      }
+      mutation.mutate({
+         name,
+         location,
+         bio,
+         isOpenToRecruiters,
+      })
    }
 
    return {
       handleSave,
-      isSaving,
+      isSaving: mutation.isPending,
       setIsSaving,
    }
 }

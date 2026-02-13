@@ -1,18 +1,21 @@
-import { atom } from "jotai"
-import type { PrimitiveAtom } from "jotai"
+import { Atom } from "jotai"
 
-import { createScopedAtoms } from "@/lib/state/scoped-stores"
+import { atomizeValues, createScopedAtoms } from "@/lib/state/scoped-stores"
 
-interface RecruiterSettingAtoms {
-   isSaving: PrimitiveAtom<boolean>
-   name: PrimitiveAtom<string>
-   company: PrimitiveAtom<string>
-   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-   [key: string]: PrimitiveAtom<any>
+interface RecruiterSettingStoreState {
+   isSaving: Atom<boolean>
+   name: Atom<string>
+   company: Atom<string>
+   isPublicProfile: Atom<boolean>
 }
 
-export const RecruiterSettingStore = createScopedAtoms<RecruiterSettingAtoms>(defaults => ({
-   isSaving: atom<boolean>(defaults?.isSaving ?? false),
-   name: atom<string>(defaults?.name ?? ""),
-   company: atom<string>(defaults?.company ?? ""),
-}))
+export const RecruiterSettingStore = createScopedAtoms<RecruiterSettingStoreState>(
+   defaults =>
+      atomizeValues({
+         isSaving: false,
+         name: "",
+         company: "",
+         isPublicProfile: true,
+         ...defaults,
+      }) satisfies RecruiterSettingStoreState
+)

@@ -205,3 +205,22 @@ export const createUserQueryOptions = () =>
       staleTime: 1000 * 60 * 5,
       placeholderData: keepPreviousData,
    })
+
+export const updateUserMutation = {
+   mutationFn: async (payload: {
+      name?: string
+      company?: string
+      position?: string
+      bio?: string
+      location?: string
+      isOpenToRecruiters?: boolean
+   }) => {
+      const { data, error } = await apiClient.user.patch(payload)
+
+      if (error || (data && !data.success)) {
+         throw new Error((data as any)?.message ?? "Failed to update user")
+      }
+
+      return data
+   },
+}

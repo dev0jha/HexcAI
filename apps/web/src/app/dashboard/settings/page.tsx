@@ -1,6 +1,7 @@
 "use client"
 
 import { Camera, Loader2 } from "lucide-react"
+import { useQuery } from "@tanstack/react-query"
 
 import Container from "@/components/core/Container"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -15,39 +16,28 @@ import {
    useOpenToRecuiterSetting,
    useSaveSettingsAction,
    useSaveSettingsStatus,
-   useSettingsFormFields,
 } from "@/hooks/screens/settings.hooks"
-import { useReactiveSession } from "@/lib/auth-client"
-import { grabUserNameInitials } from "@/lib/info"
+import { createUserQueryOptions } from "@/lib/queries/queryOptions"
+
+interface UserData {
+   name?: string
+   email?: string
+   image?: string
+   username?: string
+   bio?: string
+   location?: string
+   isOpenToRecruiters?: boolean
+}
 
 export default function SettingsPage() {
-   const { data: session, isLoading } = useReactiveSession()
-
-   if (isLoading) {
-      return (
-         <Container className="py-12">
-            <div className="mx-auto max-w-2xl flex items-center justify-center min-h-100">
-               <Loader2 className="h-8 w-8 animate-spin text-zinc-500" />
-            </div>
-         </Container>
-      )
-   }
-
-   if (!session?.user) {
-      return (
-         <Container className="py-12">
-            <div className="mx-auto max-w-2xl text-center text-zinc-500">
-               Please sign in to access settings.
-            </div>
-         </Container>
-      )
-   }
+   const { data, isLoading } = useQuery(createUserQueryOptions())
+   const user = data as UserData | undefined
 
    return (
       <SettingStore.Provider
          defaults={{
-            isOpenToRecruiters: true,
-            name: session.user.name || "",
+            isSaving: false,
+            isOpenToRecruiters: user?.isOpenToRecruiters ?? false,
          }}
       >
          <Container className="py-12">
@@ -59,35 +49,31 @@ export default function SettingsPage() {
                   </p>
                </div>
 
-               <SettingsFormContent user={session.user} />
+               {isLoading ? (
+                  <div className="flex h-64 items-center justify-center">
+                     <Loader2 className="text-zinc-500 h-6 w-6 animate-spin" />
+                  </div>
+               ) : (
+                  <SettingsFormContent user={user} />
+               )}
             </div>
          </Container>
       </SettingStore.Provider>
    )
 }
 
-interface User {
-   id: string
-   name: string
-   email: string
-   image?: string | null
-}
-
-function SettingsFormContent({ user }: { user: User }) {
+function SettingsFormContent({ user }: { user?: UserData }) {
    const { handleSave } = useSaveSettingsAction()
    const { isOpenToRecruiters, setIsOpenToRecruiters } = useOpenToRecuiterSetting()
-   const { name, setName, location, setLocation, portfolio, setPortfolio, bio, setBio } =
-      useSettingsFormFields()
 
    return (
       <form onSubmit={handleSave} className="space-y-8">
-         {/* 1. IDENTITY (Clean Row) */}
          <div className="flex items-center gap-6">
             <div className="group relative">
                <Avatar className="h-20 w-20 border-2 border-zinc-800">
-                  <AvatarImage src={user.image ?? ""} alt={user.name} />
+                  <AvatarImage src={user?.image} alt={user?.name || "User"} />
                   <AvatarFallback className="bg-zinc-900 text-zinc-500">
-                     {grabUserNameInitials(user.name)}
+                     {user?.name?.substring(0, 2).toUpperCase() || "US"}
                   </AvatarFallback>
                </Avatar>
                <Button
@@ -100,56 +86,51 @@ function SettingsFormContent({ user }: { user: User }) {
                </Button>
             </div>
             <div className="space-y-1">
-               <h3 className="font-medium text-white text-lg">{name || user.name}</h3>
-               <p className="text-zinc-500 text-sm">{user.email}</p>
+               <h3 className="font-medium text-white text-lg">{user?.name || "User"}</h3>
+               <p className="text-zinc-500 text-sm">@{user?.username || "username"}</p>
             </div>
          </div>
 
          <Separator className="bg-zinc-800" />
 
-         {/* 2. FORM GRID (Flat) */}
          <div className="space-y-6">
             <div className="grid gap-x-6 gap-y-5 md:grid-cols-2">
                <div className="space-y-2">
                   <Label className="text-xs text-zinc-500 font-normal">Full Name</Label>
                   <Input
-                     value={name}
-                     onChange={e => setName(e.target.value)}
+                     name="name"
+                     defaultValue={user?.name || ""}
                      className="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 focus:ring-0 h-10"
                   />
                </div>
                <div className="space-y-2">
                   <Label className="text-xs text-zinc-500 font-normal">Email Address</Label>
                   <Input
-                     value={user.email}
+                     defaultValue={user?.email || ""}
                      disabled
-                     className="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 focus:ring-0 h-10 disabled:opacity-50"
+                     className="bg-zinc-900/50 border-zinc-800 text-zinc-500 focus:border-zinc-700 focus:ring-0 h-10 opacity-60 cursor-not-allowed"
                   />
                </div>
                <div className="space-y-2">
                   <Label className="text-xs text-zinc-500 font-normal">Location</Label>
                   <Input
-                     value={location}
-                     onChange={e => setLocation(e.target.value)}
-                     placeholder="e.g. San Francisco, CA"
+                     name="location"
+                     defaultValue={user?.location || ""}
                      className="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 focus:ring-0 h-10"
                   />
                </div>
                <div className="space-y-2">
                   <Label className="text-xs text-zinc-500 font-normal">Portfolio</Label>
                   <Input
-                     value={portfolio}
-                     onChange={e => setPortfolio(e.target.value)}
-                     placeholder="e.g. yoursite.dev"
+                     name="website"
                      className="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 focus:ring-0 h-10"
                   />
                </div>
                <div className="col-span-2 space-y-2">
                   <Label className="text-xs text-zinc-500 font-normal">Bio</Label>
                   <Textarea
-                     value={bio}
-                     onChange={e => setBio(e.target.value)}
-                     placeholder="Tell us about yourself..."
+                     name="bio"
+                     defaultValue={user?.bio || ""}
                      className="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 focus:ring-0 resize-none min-h-20"
                   />
                </div>
@@ -158,7 +139,6 @@ function SettingsFormContent({ user }: { user: User }) {
 
          <Separator className="bg-zinc-800" />
 
-         {/* 3. VISIBILITY (Minimal Toggle) */}
          <div className="flex items-center justify-between">
             <div className="space-y-1">
                <p className="text-sm font-medium text-zinc-200">Recruiter Visibility</p>
@@ -180,7 +160,6 @@ function SettingsFormContent({ user }: { user: User }) {
             </div>
          </div>
 
-         {/* 4. ACTIONS */}
          <div className="pt-4">
             <SaveButton />
          </div>
