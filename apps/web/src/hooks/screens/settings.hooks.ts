@@ -1,8 +1,10 @@
-import { SettingStore } from "@/hooks/scopedstores/settings.store"
+import { toast } from "sonner"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-/*
- * Hook to get saving settings status
- * **/
+import { SettingStore } from "@/hooks/scopedstores/settings.store"
+import { updateUserMutation } from "@/lib/queries/queryOptions"
+import { queryKeys } from "@/lib/queries/queryKeys"
+
 export function useSaveSettingsStatus() {
    const [isSaving, setIsSaving] = SettingStore.useAtom("isSaving")
    return {
@@ -11,10 +13,6 @@ export function useSaveSettingsStatus() {
    }
 }
 
-/**
- *
- * Is open to recruiters toggle hook
- * **/
 export function useOpenToRecuiterSetting() {
    const [isOpenToRecruiters, setIsOpenToRecruiters] = SettingStore.useAtom("isOpenToRecruiters")
    return {
@@ -23,22 +21,46 @@ export function useOpenToRecuiterSetting() {
    }
 }
 
-/*
- *  Hook to handle saving settings action
- * **/
 export function useSaveSettingsAction() {
-   const { isSaving, setIsSaving } = useSaveSettingsStatus()
+   const { setIsSaving } = useSaveSettingsStatus()
+   const { isOpenToRecruiters } = useOpenToRecuiterSetting()
+   const queryClient = useQueryClient()
+
+   const mutation = useMutation({
+      ...updateUserMutation,
+      onMutate: () => {
+         setIsSaving(true)
+      },
+      onSuccess: () => {
+         toast.success("Profile updated successfully!")
+         queryClient.invalidateQueries({ queryKey: queryKeys.user() })
+      },
+      onError: (error: Error) => {
+         toast.error(error.message || "Failed to update profile")
+      },
+      onSettled: () => {
+         setIsSaving(false)
+      },
+   })
 
    async function handleSave(e: React.FormEvent) {
       e.preventDefault()
-      setIsSaving(true)
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setIsSaving(false)
+      const formData = new FormData(e.target as HTMLFormElement)
+      const name = formData.get("name") as string
+      const location = formData.get("location") as string
+      const bio = formData.get("bio") as string
+
+      mutation.mutate({
+         name,
+         location,
+         bio,
+         isOpenToRecruiters,
+      })
    }
 
    return {
       handleSave,
-      isSaving,
+      isSaving: mutation.isPending,
       setIsSaving,
    }
 }

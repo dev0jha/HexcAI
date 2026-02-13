@@ -1,8 +1,11 @@
 import type React from "react"
 
 import { toast } from "sonner"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { RecruiterSettingStore } from "@/hooks/scopedstores/recruiter-settings.store"
+import { updateUserMutation } from "@/lib/queries/queryOptions"
+import { queryKeys } from "@/lib/queries/queryKeys"
 
 export function useRecruiterSaveSettingsStatus() {
    const [isSaving, setIsSaving] = RecruiterSettingStore.useAtom("isSaving")
@@ -12,38 +15,42 @@ export function useRecruiterSaveSettingsStatus() {
    }
 }
 
+export function useRecruiterPublicProfileSetting() {
+   const [isPublicProfile, setIsPublicProfile] = RecruiterSettingStore.useAtom("isPublicProfile")
+   return {
+      isPublicProfile,
+      setIsPublicProfile,
+   }
+}
+
 export function useRecruiterSaveSettingsAction() {
-   const { isSaving, setIsSaving } = useRecruiterSaveSettingsStatus()
-   const [, setName] = RecruiterSettingStore.useAtom("name")
-   const [, setCompany] = RecruiterSettingStore.useAtom("company")
+   const { setIsSaving } = useRecruiterSaveSettingsStatus()
+   const queryClient = useQueryClient()
 
-   async function handleSave(e: React.FormEvent) {
-      e.preventDefault()
-      setIsSaving(true)
+   const mutation = useMutation({
+      ...updateUserMutation,
+      onMutate: () => {
+         setIsSaving(true)
+      },
+      onSuccess: data => {
+         toast.success("Profile updated successfully!")
+         queryClient.invalidateQueries({ queryKey: queryKeys.user() })
+      },
+      onError: (error: Error) => {
+         toast.error(error.message || "Failed to update profile")
+      },
+      onSettled: () => {
+         setIsSaving(false)
+      },
+   })
 
-      // Harvest values from form
-      const formData = new FormData(e.target as HTMLFormElement)
-      const name = formData.get("name") as string
-      const company = formData.get("company") as string
-
-      // Mimic API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // Commit to local store to update UI immediately
-      if (name) {
-         setName(name)
-      }
-      if (company) {
-         setCompany(company)
-      }
-
-      setIsSaving(false)
-      toast.success("Profile updated successfully!")
+   function handleSave(payload: { name?: string; company?: string; position?: string }) {
+      mutation.mutate(payload)
    }
 
    return {
       handleSave,
-      isSaving,
+      isSaving: mutation.isPending,
       setIsSaving,
    }
 }

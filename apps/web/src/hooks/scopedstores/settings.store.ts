@@ -1,17 +1,17 @@
-import { atom } from "jotai"
-import type { Atom } from "jotai"
+import { Atom } from "jotai"
 
-import { createScopedAtoms } from "@/lib/state/scoped-stores"
+import { atomizeValues, createScopedAtoms } from "@/lib/state/scoped-stores"
 
-interface SettingAtoms {
+interface SettingStoreState {
    isSaving: Atom<boolean>
    isOpenToRecruiters: Atom<boolean>
 }
 
-/*
- * Component level scoped store for settings page
- * **/
-export const SettingStore = createScopedAtoms<SettingAtoms>(defaults => ({
-   isSaving: atom<boolean>(defaults?.isSaving ?? false),
-   isOpenToRecruiters: atom<boolean>(defaults?.isOpenToRecruiters ?? false),
-}))
+export const SettingStore = createScopedAtoms<SettingStoreState>(
+   defaults =>
+      atomizeValues({
+         isSaving: false,
+         isOpenToRecruiters: false,
+         ...defaults,
+      }) satisfies SettingStoreState
+)

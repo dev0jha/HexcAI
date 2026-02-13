@@ -15,8 +15,10 @@ import { Switch } from "@/components/ui/switch"
 import {
    useRecruiterSaveSettingsAction,
    useRecruiterSaveSettingsStatus,
+   useRecruiterPublicProfileSetting,
 } from "@/hooks/screens/recruiter-settings.hooks"
 import { createUserQueryOptions } from "@/lib/queries/queryOptions"
+import { RecruiterSettingStore } from "@/hooks/scopedstores/recruiter-settings.store"
 
 interface UserData {
    name?: string
@@ -28,19 +30,29 @@ interface UserData {
 
 export default function RecruiterSettingsPage() {
    return (
-      <Container className="py-12">
-         <div className="mx-auto max-w-2xl">
-            {/* Header */}
-            <div className="mb-10">
-               <h1 className="text-2xl font-bold tracking-tight text-white">Recruiter Profile</h1>
-               <p className="text-zinc-500 text-sm">
-                  Manage your company details and account settings.
-               </p>
-            </div>
+      <RecruiterSettingStore.Provider
+         defaults={{
+            isSaving: false,
+            name: "",
+            company: "",
+            isPublicProfile: true,
+         }}
+      >
+         <Container className="py-12">
+            <div className="mx-auto max-w-2xl">
+               <div className="mb-10">
+                  <h1 className="text-2xl font-bold tracking-tight text-white">
+                     Recruiter Profile
+                  </h1>
+                  <p className="text-zinc-500 text-sm">
+                     Manage your company details and account settings.
+                  </p>
+               </div>
 
-            <RecruiterSettingsForm />
-         </div>
-      </Container>
+               <RecruiterSettingsForm />
+            </div>
+         </Container>
+      </RecruiterSettingStore.Provider>
    )
 }
 
@@ -60,7 +72,7 @@ function RecruiterSettingsForm() {
          position: formData.get("position") as string,
       }
 
-      handleSave(payload as any)
+      handleSave(payload)
    }
 
    if (isLoading) {
@@ -73,7 +85,6 @@ function RecruiterSettingsForm() {
 
    return (
       <form onSubmit={handleSubmit} className="space-y-8">
-         {/* 1. IDENTITY (Clean Row) */}
          <div className="flex items-center gap-6">
             <div className="group relative">
                <Avatar className="h-20 w-20 border-2 border-zinc-800">
@@ -103,10 +114,8 @@ function RecruiterSettingsForm() {
 
          <Separator className="bg-zinc-800" />
 
-         {/* 2. FORM GRID (Flat & Spacious) */}
          <div className="space-y-6">
             <div className="grid gap-x-6 gap-y-5 md:grid-cols-2">
-               {/* Full Name */}
                <div className="space-y-2">
                   <Label htmlFor="name" className="text-xs text-zinc-500 font-normal">
                      Full Name
@@ -120,7 +129,6 @@ function RecruiterSettingsForm() {
                   />
                </div>
 
-               {/* Email (Disabled) */}
                <div className="space-y-2">
                   <Label htmlFor="email" className="text-xs text-zinc-500 font-normal">
                      Email Address
@@ -134,7 +142,6 @@ function RecruiterSettingsForm() {
                   />
                </div>
 
-               {/* Company Name */}
                <div className="space-y-2">
                   <Label htmlFor="company" className="text-xs text-zinc-500 font-normal">
                      Company Name
@@ -148,7 +155,6 @@ function RecruiterSettingsForm() {
                   />
                </div>
 
-               {/* Position */}
                <div className="space-y-2">
                   <Label htmlFor="position" className="text-xs text-zinc-500 font-normal">
                      Position
@@ -166,25 +172,39 @@ function RecruiterSettingsForm() {
 
          <Separator className="bg-zinc-800" />
 
-         {/* 3. SETTINGS (Toggle) */}
-         <div className="flex items-center justify-between">
-            <div className="space-y-1">
-               <p className="text-sm font-medium text-zinc-200">Public Profile</p>
-               <p className="text-xs text-zinc-500">
-                  Allow candidates to view your recruiter profile.
-               </p>
-            </div>
-            <div className="flex items-center gap-3">
-               <span className="text-xs font-medium text-emerald-500">Active</span>
-               <Switch defaultChecked className="data-[state=checked]:bg-emerald-600" />
-            </div>
-         </div>
+         <PublicProfileToggle />
 
-         {/* 4. ACTIONS */}
          <div className="pt-2">
             <SaveButton />
          </div>
       </form>
+   )
+}
+
+function PublicProfileToggle() {
+   const { isPublicProfile, setIsPublicProfile } = useRecruiterPublicProfileSetting()
+
+   return (
+      <div className="flex items-center justify-between">
+         <div className="space-y-1">
+            <p className="text-sm font-medium text-zinc-200">Public Profile</p>
+            <p className="text-xs text-zinc-500">
+               Allow candidates to view your recruiter profile.
+            </p>
+         </div>
+         <div className="flex items-center gap-3">
+            <span
+               className={`text-xs font-medium ${isPublicProfile ? "text-emerald-500" : "text-zinc-600"}`}
+            >
+               {isPublicProfile ? "Active" : "Hidden"}
+            </span>
+            <Switch
+               checked={isPublicProfile}
+               onCheckedChange={setIsPublicProfile}
+               className="data-[state=checked]:bg-emerald-600"
+            />
+         </div>
+      </div>
    )
 }
 

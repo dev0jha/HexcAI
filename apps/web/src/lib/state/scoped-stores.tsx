@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState } from "react"
 
-import { Provider as JotaiProvider, useAtom } from "jotai"
+import { atom, Provider as JotaiProvider, useAtom } from "jotai"
 import type { Atom, SetStateAction, WritableAtom } from "jotai"
 
 /*
@@ -32,6 +32,27 @@ type UseAtomReturn<A> =
         ? [V, React.Dispatch<SetStateAction<V>>]
         : never
 
+/*
+ * Atomized values
+ * **/
+type Atomized<T extends Record<string, any>> = {
+   [K in keyof T]: Atom<T[K]>
+}
+
+/*
+ *
+ * value atomizer
+ * **/
+export const atomizeValues = <T extends Record<string, any>>(values: T): Atomized<T> => {
+   const result = {} as Atomized<T>
+
+   for (const key in values) {
+      result[key] = atom(values[key])
+   }
+
+   return result
+}
+
 /**
  * Creates a **scoped atom registry**.
  *
@@ -56,10 +77,7 @@ type UseAtomReturn<A> =
  * - Provider: scopes the atom registry to a component tree
  * - useAtom: type-safe access to individual atoms by key
  */
-export function createScopedAtoms<
-   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-   T extends Record<string, WritableAtom<any, any[], any>>,
->(factory: (defaults?: AtomDefaults<T>) => T) {
+export function createScopedAtoms<T>(factory: (defaults?: AtomDefaults<T>) => T) {
    /**
     * Context holding the atom registry.
     *
@@ -117,7 +135,7 @@ export function createScopedAtoms<
          throw new Error("Scoped atoms used outside Provider")
       }
 
-      return useAtom(store[key]) as UseAtomReturn<T[K]>
+      return useAtom(store[key] as unknown as Atom<unknown>) as unknown as UseAtomReturn<T[K]>
    }
 
    /**

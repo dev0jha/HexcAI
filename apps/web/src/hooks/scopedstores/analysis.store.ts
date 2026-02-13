@@ -1,6 +1,6 @@
-import { atom } from "jotai"
+import { Atom } from "jotai"
 
-import { createScopedAtoms } from "@/lib/state/scoped-stores"
+import { atomizeValues, createScopedAtoms } from "@/lib/state/scoped-stores"
 import type { AnalyzedRepo } from "@/types"
 
 export type AnalysisState =
@@ -9,7 +9,16 @@ export type AnalysisState =
    | { status: "complete"; result: AnalyzedRepo }
    | { status: "error"; error: string }
 
-export const AnalysisStore = createScopedAtoms(() => ({
-   repoUrl: atom<string>(""),
-   state: atom<AnalysisState>({ status: "idle" }),
-}))
+interface AnalyisisStoreState {
+   repoUrl: Atom<string>
+   state: Atom<AnalysisState>
+}
+
+export const AnalysisStore = createScopedAtoms<AnalyisisStoreState>(
+   defaults =>
+      atomizeValues({
+         repoUrl: "",
+         state: { status: "idle" },
+         ...defaults,
+      }) satisfies AnalyisisStoreState
+)
