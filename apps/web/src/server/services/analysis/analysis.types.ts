@@ -7,3 +7,10 @@ export interface RepoFetchResult {
    forks_count?: number
    open_issues_count?: number
 }
+
+import type { Context } from "elysia"
+import type { RequestContext } from "@/server/services/types/context.types"
+
+export interface AnalyzeRepositoryContext extends RequestContext {
+   headers: Context["headers"]
+}

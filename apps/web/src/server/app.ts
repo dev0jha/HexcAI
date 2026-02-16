@@ -26,8 +26,8 @@ export const app = new Elysia({ prefix: "/api" })
    .post(
       "/user/image",
       async ({ user, set, request }) => {
-         const contentType = request.headers.get("content-type") || "image/jpeg"
-         const fileName = request.headers.get("x-file-name") || "image.jpg"
+         const contentType = request.headers.get("content-type") ?? "image/jpeg"
+         const fileName = request.headers.get("x-file-name") ?? "image.jpg"
 
          const arrayBuffer = await request.arrayBuffer()
 
@@ -49,6 +49,12 @@ export const app = new Elysia({ prefix: "/api" })
 
    .post("/analyze", AnalysisService.analyzeRepository, {
       body: repoAnalysisRequestBodySchema,
+      auth: true,
+   })
+   .get("/analyses", AnalysisService.getAnalysisHistory, {
+      auth: true,
+   })
+   .get("/analyses/:analysisId", AnalysisService.getAnalysisById, {
       auth: true,
    })
    .get("/contact-requests", ContactRequestService.getContactRequests, {

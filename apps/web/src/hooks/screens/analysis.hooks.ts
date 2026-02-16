@@ -19,12 +19,13 @@ export function useAnalysisInput() {
  * read operations for analysis state
  * **/
 export function useAnalysisState() {
-   const [state] = AnalysisStore.useAtom("state")
+   const [state, setState] = AnalysisStore.useAtom("state")
 
    const scores = state.status === "complete" ? state.result.scores : mockAnalysisResult.scores
 
    return {
       state,
+      setState,
       isAnalyzing: state.status === "responding",
       isComplete: state.status === "complete",
       isError: state.status === "error",
@@ -36,6 +37,11 @@ export function useAnalysisState() {
          scores.documentation,
       ],
    }
+}
+
+export function useAnalysisStateSetter() {
+   const [, setState] = AnalysisStore.useAtom("state")
+   return setState
 }
 
 /*

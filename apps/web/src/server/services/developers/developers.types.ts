@@ -1,3 +1,5 @@
+import { Developer } from "@/types"
+
 export type { DevelopersQuery, Developer, DevelopersResponse } from "@/lib/queries/query.types"
 
 export interface TechStackResponse {
@@ -5,7 +7,7 @@ export interface TechStackResponse {
 }
 
 export interface DeveloperByUsernameResponse {
-   developer: import("@/lib/queries/query.types").Developer | null
+   developer: Developer
 }
 
 export type GetDevelopersResponse = import("@/lib/queries/query.types").DevelopersResponse

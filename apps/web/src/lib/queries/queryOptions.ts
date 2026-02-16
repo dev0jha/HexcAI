@@ -13,6 +13,7 @@ import type {
    TechStackResponse,
    Developer,
 } from "@/lib/queries/query.types"
+import type { AnalyzedRepo } from "@/types"
 import { UpdateUserBody } from "@/server/services/user/user.types"
 
 export const contactRequestQueries = {
@@ -254,4 +255,58 @@ export const uploadProfileImageMutation = {
 
       return response.json()
    },
+}
+
+/* ---------------------------------- */
+/* Analysis Queries */
+/* ---------------------------------- */
+
+export const analysisQueries = {
+   list: () =>
+      queryOptions<{ success: boolean; analyses: AnalyzedRepo[] }>({
+         queryKey: queryKeys.analyses.lists(),
+         queryFn: async () => {
+            const response = await apiClient.analyses.get()
+
+            if (response.error) {
+               throw new Error("Failed to fetch analyses")
+            }
+
+            const data = response.data as {
+               success: boolean
+               analyses: AnalyzedRepo[]
+               error?: string
+            }
+            if (!data.success) {
+               throw new Error(data.error ?? "Failed to fetch analyses")
+            }
+
+            return data
+         },
+         staleTime: 1000 * 60 * 2,
+      }),
+
+   detail: (id: string) =>
+      queryOptions<{ success: boolean; analysis: AnalyzedRepo }>({
+         queryKey: queryKeys.analyses.detail(id),
+         queryFn: async () => {
+            const response = await apiClient.analyses({ analysisId: id }).get()
+
+            if (response.error) {
+               throw new Error("Failed to fetch analysis")
+            }
+
+            const data = response.data as {
+               success: boolean
+               analysis: AnalyzedRepo
+               error?: string
+            }
+            if (!data.success) {
+               throw new Error(data.error ?? "Failed to fetch analysis")
+            }
+
+            return data
+         },
+         staleTime: 1000 * 60 * 5,
+      }),
 }

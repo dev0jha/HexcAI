@@ -4,14 +4,19 @@ import { sse } from "elysia"
 import { Context } from "elysia"
 import { z } from "zod"
 
+import { eq, desc } from "drizzle-orm"
+
+import { db } from "@/db/drizzle"
+import { analysis as analysisTable } from "@/db/schema/analysis.schema"
 import { buildPrompt } from "@/server/prompt/prompt.builder"
 import { attempt, attemptSync, err, ok } from "@/utils/attempt"
 import type { PromiseRes, Result } from "@/utils/attempt"
 import { githubRepoSchema } from "@/utils/validation/github.validation"
 
-import type { RepoFetchResult } from "./analysis.types"
+import type { RepoFetchResult, AnalyzeRepositoryContext } from "./analysis.types"
 import { analysisResponse } from "./analysis.validation"
 import type { AnalysisResponse } from "./analysis.validation.ts"
+import type { AnalyzedRepo } from "@/types"
 
 export class AnalysisService {
    /*
@@ -202,7 +207,8 @@ export class AnalysisService {
    public static async *analyzeRepository({
       body,
       headers,
-   }: { body: { repoUrl: string } } & Context) {
+      user,
+   }: AnalyzeRepositoryContext & { body: { repoUrl: string } }) {
       headers["content-type"] = "text/event-stream"
 
       yield sse({ data: JSON.stringify({ status: "Starting analysis..." }) })
@@ -250,8 +256,10 @@ export class AnalysisService {
 
       const analysis = analysisRes.data
 
+      const resultId = `ar-${Date.now()}`
+
       const result = {
-         id: `ar-${Date.now()}`,
+         id: resultId,
          name: repoData.data.name,
          url: repoData.data.html_url,
          description: repoData.data.description,
@@ -263,6 +271,104 @@ export class AnalysisService {
          feedback: analysis.feedback,
       }
 
+      const insertRes = await attempt(() =>
+         db.insert(analysisTable).values({
+            id: resultId,
+            candidateId: user.id,
+            repoUrl: result.url,
+            name: result.name,
+            language: result.language,
+            stars: result.stars,
+            description: result.description ?? null,
+            scoreBreakdown: result.scores,
+            totalScore: result.totalScore,
+            feedback: result.feedback,
+            summary: analysis.feedback[0] ?? null,
+            createdAt: result.analyzedAt,
+         })
+      )
+
+      if (!insertRes.ok) {
+         console.error("Failed to save analysis:", insertRes.error)
+         yield sse({ data: JSON.stringify({ error: "Failed to save analysis" }) })
+         return
+      }
+
       yield sse({ data: JSON.stringify({ result }) })
+   }
+
+   static async getAnalysisHistory({ user, set }: AnalyzeRepositoryContext) {
+      const analysesRes = await attempt(() =>
+         db
+            .select()
+            .from(analysisTable)
+            .where(eq(analysisTable.candidateId, user.id))
+            .orderBy(desc(analysisTable.createdAt))
+      )
+
+      if (!analysesRes.ok) {
+         console.error("Failed to fetch analyses:", analysesRes.error)
+         set.status = 500
+         return { success: false, analyses: [] }
+      }
+
+      const analyses: AnalyzedRepo[] = analysesRes.data.map(a => ({
+         id: a.id,
+         name: a.name,
+         url: a.repoUrl,
+         description: a.description ?? undefined,
+         language: a.language ?? "Unknown",
+         stars: a.stars ?? 0,
+         analyzedAt: a.createdAt,
+         scores: a.scoreBreakdown as AnalyzedRepo["scores"],
+         totalScore: a.totalScore,
+         feedback: a.feedback as string[],
+      }))
+
+      set.status = 200
+      return { success: true, analyses }
+   }
+
+   static async getAnalysisById({
+      params,
+      user,
+      set,
+   }: AnalyzeRepositoryContext & { params: { analysisId: string } }) {
+      const analysisRes = await attempt(() =>
+         db.select().from(analysisTable).where(eq(analysisTable.id, params.analysisId)).limit(1)
+      )
+
+      if (!analysisRes.ok) {
+         set.status = 500
+         return { success: false, error: "Failed to fetch analysis" }
+      }
+
+      if (analysisRes.data.length === 0) {
+         set.status = 404
+         return { success: false, error: "Analysis not found" }
+      }
+
+      const a = analysisRes.data[0]
+
+      if (a.candidateId !== user.id) {
+         set.status = 403
+         return { success: false, error: "Not authorized to view this analysis" }
+      }
+
+      const analysis: AnalyzedRepo = {
+         id: a.id,
+         name: a.name,
+         url: a.repoUrl,
+         description: a.description ?? undefined,
+         language: a.language ?? "Unknown",
+         stars: a.stars ?? 0,
+         analyzedAt: a.createdAt,
+         scores: a.scoreBreakdown as AnalyzedRepo["scores"],
+         totalScore: a.totalScore,
+         feedback: a.feedback as string[],
+      }
+
+      set.status = 200
+      return { success: true, analysis }
    }
 }

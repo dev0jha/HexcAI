@@ -41,7 +41,11 @@ interface ProfilePageProps {
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
    const { username } = await params
-   const result = await DevelopersService.getDeveloperByUsername({ params: { username } })
+   const result = await DevelopersService.getDeveloperByUsername({
+      params: {
+         username,
+      },
+   })
 
    if (!result.success || !result.data.developer) {
       notFound()
@@ -76,7 +80,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
                <div className="space-y-6">
                   {/* Top Section */}
-                  <ProfileHeader developer={developer} />
+                  <ProfileHeader developer={developer!} />
 
                   {/* Grid Layout: Stats & Projects */}
                   <div className="grid gap-6 md:grid-cols-12">
@@ -92,7 +96,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                         <FeaturedProject project={mockAnalysisResult} />
 
                         <HiringCallToAction
-                           isOpen={developer.isOpenToRecruiters}
+                           isOpen={developer.isOpenToRecruiters!}
                            score={developer.score}
                            firstName={developer.name.split(" ")[0]}
                         />

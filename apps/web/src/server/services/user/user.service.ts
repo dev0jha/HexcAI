@@ -209,6 +209,7 @@ export abstract class UserService {
       body: { imageBuffer: ArrayBuffer; contentType: string; fileName: string }
    }): Promise<UploadProfileImageResponse> {
       const key = `${sessionUser.id}/${Date.now()}-${body.fileName}`
+
       const imageUploadRes = await attempt(() =>
          staticAssetStorage.uploadAsset(key, Buffer.from(body.imageBuffer), body.contentType)
       )

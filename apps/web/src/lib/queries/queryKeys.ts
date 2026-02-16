@@ -23,4 +23,10 @@ export const queryKeys = {
       details: () => [...queryKeys.contactRequests.all(), "detail"],
       detail: (id: string) => [...queryKeys.contactRequests.details(), id],
    },
+   analyses: {
+      all: () => ["analyses"],
+      lists: () => [...queryKeys.analyses.all(), "list"],
+      details: () => [...queryKeys.analyses.all(), "detail"],
+      detail: (id: string) => [...queryKeys.analyses.details(), id],
+   },
 }

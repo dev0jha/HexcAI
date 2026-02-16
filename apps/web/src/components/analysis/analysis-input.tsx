@@ -11,7 +11,7 @@ export function AnalysisInputTrigger() {
    const { handleAnalyze, repoUrl, setRepoURL } = useAnalysisActions()
 
    return (
-      <div className="relative w-full space-y-4">
+      <div className="relative w-full pt-4 pb-0">
          <form onSubmit={handleAnalyze} className="relative group w-full z-20">
             <div
                className={cn(
@@ -64,14 +64,14 @@ export function AnalysisInputTrigger() {
             </div>
          </form>
 
-         <div className="relative z-10 min-h-15">
-            {state.status === "responding" && (
+         {state.status === "responding" && (
+            <div className="relative z-10 min-h-10">
                <div className="animate-in slide-in-from-top-2 fade-in duration-500 absolute inset-0 flex items-center justify-start gap-2">
                   <Separator orientation="vertical" />
                   <StatusStreamer statusText={state.currentStatus} />
                </div>
-            )}
-         </div>
+            </div>
+         )}
       </div>
    )
 }

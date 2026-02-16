@@ -1,0 +1,1 @@
+ALTER TABLE "analysis" ALTER COLUMN "total_score" SET DATA TYPE real;

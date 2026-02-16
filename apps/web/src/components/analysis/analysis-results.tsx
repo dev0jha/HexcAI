@@ -9,11 +9,12 @@ import {
    IconBrandGithub,
    IconStar,
    IconCircle,
+   IconX,
 } from "@tabler/icons-react"
 import { motion, Variants } from "motion/react"
 
 import AnalysisCanvas from "@/components/analysis/analysis-canvas"
-import { useAnalysisState } from "@/hooks/screens/analysis.hooks"
+import { useAnalysisInput, useAnalysisState } from "@/hooks/screens/analysis.hooks"
 import { cn } from "@/lib/utils"
 
 const scoreCategories = [
@@ -54,7 +55,7 @@ const lineVariants: Variants = {
 }
 
 export function Results() {
-   const { state, isComplete, scoreValues } = useAnalysisState()
+   const { state, isComplete, scoreValues, setState } = useAnalysisState()
 
    if (!isComplete || state.status !== "complete") return null
 
@@ -63,9 +64,21 @@ export function Results() {
          variants={containerVariants}
          initial="hidden"
          animate="visible"
-         className="mx-auto max-w-6xl xl:max-w-full pb-2 sm:pb-1 px-0 sm:px-8 lg:px-16 xl:px-44 p-3"
+         className="mx-auto max-w-6xl xl:max-w-full pb-2 sm:pb-1 px-0 sm:px-8 lg:px-16 xl:px-44"
       >
          <div className="relative mb-8 px-4">
+            <div className="w-full flex items-center justify-end gap-4">
+               <button
+                  onClick={() => {
+                     setState({ status: "idle" })
+                  }}
+                  className="flex h-8 w-8 items-center justify-center border-2 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors bg-neutral-500/10"
+                  aria-label="Close results"
+               >
+                  <IconX className="h-4 w-4" />
+               </button>
+            </div>
+
             <motion.div
                variants={itemVariants}
                className="flex flex-col items-start justify-between gap-6 pb-6 lg:flex-row lg:items-end lg:gap-0"
@@ -153,7 +166,7 @@ export function Results() {
                               </span>
                            </div>
                            {/* Slim Progress Bar */}
-                           <div className="h-1 w-full overflow-hidden rounded-full bg-zinc-800/50">
+                           <div className="h-2 w-full overflow-hidden rounded-md bg-zinc-800/50">
                               <motion.div
                                  initial={{ width: 0 }}
                                  animate={{ width: `${scoreValues[index]}%` }}
@@ -163,12 +176,12 @@ export function Results() {
                                     ease: "circOut",
                                  }}
                                  className={cn(
-                                    "h-full rounded-full",
+                                    "h-full rounded-md",
                                     scoreValues[index] >= 80
-                                       ? "bg-emerald-500"
+                                       ? "bg-emerald-500/80"
                                        : scoreValues[index] >= 50
-                                         ? "bg-amber-500"
-                                         : "bg-rose-500"
+                                         ? "bg-amber-500/80"
+                                         : "bg-rose-500/80"
                                  )}
                               />
                            </div>

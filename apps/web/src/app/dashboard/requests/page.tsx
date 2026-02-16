@@ -2,7 +2,6 @@
 
 import { IconMailForward } from "@tabler/icons-react"
 import { RequestCard } from "@/components/requests/request-card"
-import { Card } from "@/components/ui/card"
 import { CustomPagination } from "@/components/ui/custom-pagination"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useContactRequestsPagination } from "@/hooks/use-contact-requests"
@@ -24,71 +23,62 @@ export default function RequestsPage() {
       goToPage,
    } = useContactRequestsPagination()
 
-   switch (true) {
-      case isLoading:
-         return <LoadingState />
+   if (isLoading) return <LoadingState />
 
-      case !!error:
-         return <ErrorState />
+   if (!!error) return <ErrorState />
 
-      default:
-         return (
-            <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-               <div className="space-y-6">
-                  <Tabs defaultValue="pending" className="w-full mt-12">
-                     <div className="mb-6 flex items-center border-b border-zinc-800 pb-4">
-                        <TabsList className="h-9 w-full gap-2 bg-transparent p-0">
-                           <TabItem
-                              value="pending"
-                              count={pendingRequests.length}
-                              label="Pending"
-                           />
-                           <TabItem value="accepted" count={0} label="Accepted" />
-                           <TabItem value="rejected" count={0} label="Declined" />
-                        </TabsList>
-                     </div>
-
-                     <TabsContent value="pending">
-                        <RequestGrid
-                           requests={pendingRequests}
-                           emptyMsg="No pending requests"
-                           onUpdate={updateStatus}
-                        />
-                        {meta && meta.totalPages > 1 && pendingRequests.length > 0 && (
-                           <div className="mt-8">
-                              <CustomPagination
-                                 currentPage={currentPage}
-                                 totalPages={meta.totalPages}
-                                 hasNext={meta.hasNext}
-                                 hasPrev={meta.hasPrev}
-                                 onPageChange={goToPage}
-                                 onNext={nextPage}
-                                 onPrevious={prevPage}
-                              />
-                           </div>
-                        )}
-                     </TabsContent>
-
-                     <TabsContent value="accepted">
-                        <RequestGrid
-                           requests={acceptedRequests}
-                           emptyMsg="No accepted requests"
-                           onUpdate={updateStatus}
-                        />
-                     </TabsContent>
-
-                     <TabsContent value="rejected">
-                        <RequestGrid
-                           requests={rejectedRequests}
-                           emptyMsg="No declined requests"
-                           onUpdate={updateStatus}
-                        />
-                     </TabsContent>
-                  </Tabs>
+   return (
+      <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+         <div className="space-y-6">
+            <Tabs defaultValue="pending" className="w-full mt-12">
+               <div className="mb-6 flex items-center border-b border-zinc-800 pb-4">
+                  <TabsList className="h-11 w-full gap-2 bg-transparent p-0 border-2 border-neutral-700/50 px-1">
+                     <TabItem value="pending" count={pendingRequests.length} label="Pending" />
+                     <TabItem value="accepted" count={0} label="Accepted" />
+                     <TabItem value="rejected" count={0} label="Declined" />
+                  </TabsList>
                </div>
-            </div>
-         )
-   }
+
+               <TabsContent value="pending">
+                  <RequestGrid
+                     requests={pendingRequests}
+                     emptyMsg="No pending requests"
+                     onUpdate={updateStatus}
+                  />
+                  {meta && meta.totalPages > 1 && pendingRequests.length > 0 && (
+                     <div className="mt-8">
+                        <CustomPagination
+                           currentPage={currentPage}
+                           totalPages={meta.totalPages}
+                           hasNext={meta.hasNext}
+                           hasPrev={meta.hasPrev}
+                           onPageChange={goToPage}
+                           onNext={nextPage}
+                           onPrevious={prevPage}
+                        />
+                     </div>
+                  )}
+               </TabsContent>
+
+               <TabsContent value="accepted">
+                  <RequestGrid
+                     requests={acceptedRequests}
+                     emptyMsg="No accepted requests"
+                     onUpdate={updateStatus}
+                  />
+               </TabsContent>
+
+               <TabsContent value="rejected">
+                  <RequestGrid
+                     requests={rejectedRequests}
+                     emptyMsg="No declined requests"
+                     onUpdate={updateStatus}
+                  />
+               </TabsContent>
+            </Tabs>
+         </div>
+      </div>
+   )
 }
 
 const RequestGrid = ({
@@ -114,7 +104,7 @@ const RequestGrid = ({
 const TabItem = ({ value, count, label }: { value: string; count: number; label: string }) => (
    <TabsTrigger
       value={value}
-      className="rounded-md px-4 py-2 text-xs font-medium text-zinc-400 transition-all data-[state=active]:bg-zinc-800 data-[state=active]:text-zinc-100"
+      className="rounded-md border-2 border-neutral-800/35  px-4 py-2 text-xs font-medium text-zinc-400 transition-all data-[state=active]:bg-zinc-800 data-[state=active]:text-zinc-100"
    >
       {label}
       {count > 0 && value === "pending" && (
@@ -126,12 +116,12 @@ const TabItem = ({ value, count, label }: { value: string; count: number; label:
 )
 
 const EmptyState = ({ message }: { message: string }) => (
-   <Card className="flex h-48 flex-col items-center justify-center gap-3 border-dashed border-zinc-800 bg-zinc-900/20 text-center">
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800/50">
+   <div className="flex h-48 flex-col items-center justify-center gap-3 border-zinc-800 bg-zinc-500/10 border-2 text-center shadow-none rounded-md">
+      <div className="flex h-10 w-10 items-center justify-center rounded-md bg-zinc-800/50">
          <IconMailForward className="h-5 w-5 text-zinc-500" />
       </div>
       <p className="text-sm text-zinc-500">{message}</p>
-   </Card>
+   </div>
 )
 
 const LoadingState = () => (

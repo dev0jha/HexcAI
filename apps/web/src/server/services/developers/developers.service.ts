@@ -196,7 +196,7 @@ export abstract class DevelopersService {
             .where(
                and(
                   eq(user.role, "candidate"),
-                  eq(candidateProfiles.githubUsername, params.username),
+                  eq(user.name, params.username),
                   eq(candidateProfiles.isVisible, true)
                )
             )

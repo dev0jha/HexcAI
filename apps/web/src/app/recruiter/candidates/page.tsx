@@ -31,11 +31,8 @@ import {
    SelectValue,
 } from "@/components/ui/select"
 import { SearchInputGroup } from "@/components/search/search-input-group"
-import {
-   CadidateStatusFilter,
-   Candidate,
-   useCandidatesPage,
-} from "@/hooks/screens/candidates.hooks"
+import { CadidateStatusFilter, useCandidatesPage } from "@/hooks/screens/candidates.hooks"
+import { Candidate } from "@/lib/queries/query.types"
 
 export default function CandidatesPage() {
    const {
@@ -200,7 +197,7 @@ function DataTable({
                         <TableCell>
                            <div className="flex items-center gap-3">
                               <Avatar className="h-9 w-9 border">
-                                 <AvatarImage src={candidate.avatar} alt={candidate.name} />
+                                 <AvatarImage src={candidate.avatar!} alt={candidate.name} />
                                  <AvatarFallback>
                                     {candidate.name.substring(0, 2).toUpperCase()}
                                  </AvatarFallback>
@@ -259,7 +256,7 @@ function DataTable({
                            <div className="flex flex-col">
                               <span className="text-sm text-foreground">{candidate.location}</span>
                               <span className="text-xs text-muted-foreground">
-                                 {new Date(candidate.contactedDate).toLocaleDateString()}
+                                 {new Date(candidate.contactedDate!).toLocaleDateString()}
                               </span>
                            </div>
                         </TableCell>
@@ -275,7 +272,7 @@ function DataTable({
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                 <Link href={`/profile/${candidate.username}`}>
+                                 <Link href={`/profile/${candidate.name}`}>
                                     <DropdownMenuItem>
                                        <ExternalLink className="mr-2 h-4 w-4" />
                                        View Profile

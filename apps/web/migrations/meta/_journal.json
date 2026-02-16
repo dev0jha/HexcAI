@@ -36,6 +36,20 @@
       "when": 1771072207640,
       "tag": "0004_moved_website_column_from_user_to_candidate_profiles",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1771085995206,
+      "tag": "0005_analysis_field_addition",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1771260818261,
+      "tag": "0006_change_score_column_to_float_type",
+      "breakpoints": true
     }
   ]
 }
