@@ -13,6 +13,8 @@ export const candidateProfiles = pgTable("candidate_profiles", {
    location: text("location"),
    website: text("website"),
    isVisible: boolean("is_visible").default(false).notNull(),
+   profileViews: integer("profile_views").default(0).notNull(),
+   searchAppearances: integer("search_appearances").default(0).notNull(),
 })
 
 export type CandidateProfile = typeof candidateProfiles.$inferSelect

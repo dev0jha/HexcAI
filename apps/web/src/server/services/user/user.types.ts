@@ -14,6 +14,8 @@ export type GetUserResponse =
            isOpenToRecruiters?: boolean
            score?: number
            techStack?: string[]
+           profileViews?: number
+           searchAppearances?: number
         }
      }
    | {
