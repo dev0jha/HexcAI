@@ -1,23 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import {
-   IconAnalyze,
-   IconArrowUpRight,
-   IconBriefcase,
-   IconCheck,
-   IconCode,
-   IconEye,
-   IconSearch,
-   IconUser,
-   IconX,
-} from "@tabler/icons-react"
+import { IconAnalyze, IconCode, IconEye, IconSearch, IconUser } from "@tabler/icons-react"
 
 import { DeveloperRadarChart } from "@/components/discover/radar-chart"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
-import { mockContactRequests, mockDevelopers } from "@/data/mock-data"
+import { DashboardRequests } from "@/components/dashboard/dashboard-requests"
+import { mockDevelopers } from "@/data/mock-data"
 import type { Developer } from "@/types"
 import { useReactiveSession } from "@/lib/auth-client"
 
@@ -33,7 +23,6 @@ export default function DashboardPage() {
    const { session } = useReactiveSession()
 
    const developer = mockDevelopers[0]
-   const pendingRequests = mockContactRequests.filter(r => r.status === "pending")
    const stats = getDeveloperStats(developer)
 
    return (
@@ -107,7 +96,7 @@ export default function DashboardPage() {
                            Visual breakdown of your engineering strengths.
                         </p>
                      </div>
-                     <div className="flex items-center justify-center p-6">
+                     <div className="flex items-center justify-center p-6 py-11">
                         <div className="h-75 w-full">
                            <DeveloperRadarChart />
                         </div>
@@ -142,89 +131,7 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Requests / Inbox */}
-                  <div className="flex flex-col rounded-xl border border-zinc-800 bg-neutral-800/20 backdrop-blur-sm">
-                     <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
-                        <h3 className="text-base font-semibold text-zinc-100 flex items-center gap-2">
-                           <IconBriefcase className="h-4 w-4 text-zinc-400" />
-                           Requests
-                        </h3>
-                        {pendingRequests.length > 0 && (
-                           <span className="rounded-full bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-bold text-blue-400">
-                              {pendingRequests.length} New
-                           </span>
-                        )}
-                     </div>
-
-                     <div className="flex-1 overflow-hidden">
-                        {pendingRequests.length > 0 ? (
-                           <div className="divide-y divide-zinc-800/50">
-                              {pendingRequests.map(req => (
-                                 <div
-                                    key={req.id}
-                                    className="p-4 hover:bg-zinc-900/20 transition-colors"
-                                 >
-                                    <div className="flex items-start gap-3">
-                                       <Avatar className="h-8 w-8 border border-zinc-800">
-                                          <AvatarImage
-                                             src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${req.recruiterName}`}
-                                          />
-                                          <AvatarFallback>RC</AvatarFallback>
-                                       </Avatar>
-                                       <div className="flex-1 min-w-0">
-                                          <div className="flex items-center justify-between mb-1">
-                                             <p className="text-sm font-medium text-zinc-200 truncate">
-                                                {req.recruiterName}
-                                             </p>
-                                             <span className="text-[10px] text-zinc-500">
-                                                2h ago
-                                             </span>
-                                          </div>
-                                          <p className="text-xs text-zinc-400 mb-3 truncate">
-                                             Software Engineer @ TechCorp
-                                          </p>
-
-                                          <div className="flex gap-2">
-                                             <Button
-                                                size="sm"
-                                                className="h-7 flex-1 bg-zinc-50 text-zinc-900 hover:bg-zinc-200 text-xs"
-                                             >
-                                                <IconCheck className="mr-1.5 h-3 w-3" />
-                                                Accept
-                                             </Button>
-                                             <Button
-                                                size="sm"
-                                                variant="outline"
-                                                className="h-7 flex-1 border-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs hover:bg-zinc-800"
-                                             >
-                                                <IconX className="mr-1.5 h-3 w-3" />
-                                                Ignore
-                                             </Button>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                              ))}
-                           </div>
-                        ) : (
-                           <div className="flex flex-col items-center justify-center py-12 text-center">
-                              <div className="h-12 w-12 rounded-full bg-zinc-900 flex items-center justify-center mb-3 border border-zinc-800">
-                                 <IconCheck className="h-6 w-6 text-zinc-600" />
-                              </div>
-                              <p className="text-sm text-zinc-500">All caught up!</p>
-                           </div>
-                        )}
-                     </div>
-
-                     <div className="border-t border-zinc-800 p-2">
-                        <Button
-                           variant="ghost"
-                           className="w-full text-xs text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50 h-8"
-                        >
-                           View Request History
-                           <IconArrowUpRight className="ml-2 h-3 w-3" />
-                        </Button>
-                     </div>
-                  </div>
+                  <DashboardRequests />
                </div>
             </div>
          </div>
