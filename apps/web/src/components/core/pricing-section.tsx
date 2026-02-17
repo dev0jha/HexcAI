@@ -70,7 +70,7 @@ export function PricingSection() {
    ]
 
    return (
-      <section className="relative w-full bg-[#121212] py-24 lg:py-32">
+      <section id="pricing" className="relative w-full bg-[#121212] py-24 lg:py-32">
          <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-8">
             <SectionHeader title="Transparent Pricing" subtitle="Built for every scale" />
          </div>

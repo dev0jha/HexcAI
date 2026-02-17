@@ -68,7 +68,7 @@ const features: BentoCardProps[] = [
 
 export function HowItWorks() {
    return (
-      <section className="relative w-full bg-[#121212] py-24 lg:py-32">
+      <section id="how-it-works" className="relative w-full bg-[#121212] py-24 lg:py-32">
          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeader title="Built for precision." subtitle="Designed for privacy." />
             <BentoGrid>

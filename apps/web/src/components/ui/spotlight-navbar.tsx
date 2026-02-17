@@ -26,7 +26,7 @@ export interface NavbarProps {
 export function Navbar({
    items = [
       { label: "Home", href: "#home" },
-      { label: "About", href: "#about" },
+      { label: "About", href: "#how-it-works" },
       { label: "Pricing", href: "#pricing" },
    ],
    className,
