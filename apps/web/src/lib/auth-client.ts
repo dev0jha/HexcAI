@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createAuthClient } from "better-auth/react"
+import { useRouter } from "next/navigation"
 import { useEffect, useRef } from "react"
 
 export const authClient = createAuthClient({
@@ -7,12 +8,17 @@ export const authClient = createAuthClient({
 })
 
 function useReactiveSession() {
+   const router = useRouter()
    const { data: session, error, refetch, isPending, isRefetching } = authClient.useSession()
    const initialRetried = useRef<boolean>(false)
 
    const isSessionLoading = isPending || isRefetching
 
    useEffect(() => {
+      if (error && initialRetried.current) {
+         router.refresh()
+      }
+
       if (!session && !initialRetried.current) {
          refetch()
 
