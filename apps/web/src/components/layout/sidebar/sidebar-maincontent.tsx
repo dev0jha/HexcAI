@@ -11,6 +11,7 @@ import {
    IconSearch,
    IconSettings,
    IconGitBranch,
+   IconMessage,
 } from "@tabler/icons-react"
 
 import { SidebarContent } from "@/components/ui/sidebar"
@@ -49,6 +50,7 @@ const navGroups = [
             icon: IconSettings,
             url: "#",
             items: [
+               { title: "Messages", url: "/dashboard/messages", icon: IconMessage },
                { title: "Requests", url: "/dashboard/requests", icon: IconInbox },
                { title: "Settings", url: "/dashboard/settings", icon: IconSettings },
             ],

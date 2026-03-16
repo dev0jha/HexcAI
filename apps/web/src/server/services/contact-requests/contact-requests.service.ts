@@ -1,7 +1,9 @@
 import { eq, and, desc, count } from "drizzle-orm"
 import { db } from "@/db/drizzle"
-import { contactRequests, recruitersProfiles, user } from "@/db/schema"
+import { contactRequests, recruitersProfiles, user, candidateProfiles } from "@/db/schema"
 import { attempt } from "@/utils/attempt"
+
+import { ConversationService } from "../messaging/messaging.service"
 
 import type {
    GetContactReqCtx,
@@ -174,6 +176,8 @@ export class ContactRequestService {
          }
       }
 
+      const existingRequest = reqCheckRes.data[0]
+
       const updateRes = await attempt(() =>
          db.update(contactRequests).set({ status }).where(eq(contactRequests.id, requestId))
       )
@@ -184,6 +188,14 @@ export class ContactRequestService {
             success: false,
             message: "Failed to update contact request",
          }
+      }
+
+      if (status === "accepted") {
+         await ConversationService.createConversationForContactRequest({
+            contactRequestId: requestId,
+            candidateId: existingRequest.candidateId,
+            recruiterId: existingRequest.recruiterId,
+         })
       }
 
       const updatedRecordsRes = await attempt(() =>
@@ -223,6 +235,71 @@ export class ContactRequestService {
       return {
          success: true,
          updatedRequest: updated[0],
+      }
+   }
+
+   static async getSentContactRequests({ set, query, user: authContextUser }: GetContactReqCtx) {
+      const userId = authContextUser.id
+
+      const page = Math.max(1, query.page || 1)
+      const limit = Math.min(50, Math.max(1, query.limit || 10))
+      const offset = (page - 1) * limit
+
+      const whereConditions = [eq(contactRequests.recruiterId, userId)]
+
+      if (query.status) {
+         whereConditions.push(eq(contactRequests.status, query.status))
+      }
+
+      const totalCountPromise = db
+         .select({ count: count() })
+         .from(contactRequests)
+         .where(and(...whereConditions))
+
+      const requestsDataPromise = db
+         .select({
+            id: contactRequests.id,
+            recruiterId: contactRequests.recruiterId,
+            candidateId: contactRequests.candidateId,
+            message: contactRequests.message,
+            status: contactRequests.status,
+            createdAt: contactRequests.createdAt,
+            candidateName: user.name,
+            candidateGithub: candidateProfiles.githubUsername,
+         })
+         .from(contactRequests)
+         .leftJoin(user, eq(contactRequests.candidateId, user.id))
+         .leftJoin(candidateProfiles, eq(contactRequests.candidateId, candidateProfiles.userId))
+         .where(and(...whereConditions))
+         .orderBy(desc(contactRequests.createdAt))
+         .limit(limit)
+         .offset(offset)
+
+      const queryRes = await attempt(() => Promise.all([totalCountPromise, requestsDataPromise]))
+      if (!queryRes.ok) {
+         console.error("Error fetching sent contact requests:", queryRes.error)
+         set.status = 500
+         return {
+            success: false,
+            message: "Failed to fetch sent contact requests",
+         }
+      }
+
+      const [[{ count: total }], data] = queryRes.data
+
+      const totalPages = Math.ceil(total / limit)
+
+      return {
+         success: true,
+         contactRequests: data,
+         meta: {
+            page,
+            limit,
+            total,
+            totalPages,
+            hasNext: page < totalPages,
+            hasPrev: page > 1,
+         },
       }
    }
 }

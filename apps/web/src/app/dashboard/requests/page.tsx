@@ -1,27 +1,40 @@
 "use client"
 
+import { useQuery } from "@tanstack/react-query"
 import { IconMailForward } from "@tabler/icons-react"
 import { RequestCard } from "@/components/requests/request-card"
 import { CustomPagination } from "@/components/ui/custom-pagination"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useContactRequestsPagination } from "@/hooks/use-contact-requests"
+import { useSentContactRequestsPagination } from "@/hooks/use-sent-contact-requests"
+import { createUserSettingsQueryOptions } from "@/lib/queries/queryOptions"
 
 import type { ContactRequest } from "@/lib/queries/query.types"
 
 export default function RequestsPage() {
-   const {
-      meta,
-      isLoading,
-      error,
-      updateStatus,
-      pendingRequests,
-      acceptedRequests,
-      rejectedRequests,
-      currentPage,
-      nextPage,
-      prevPage,
-      goToPage,
-   } = useContactRequestsPagination()
+   const { data: userSettings } = useQuery(createUserSettingsQueryOptions())
+   const isRecruiter = !!(userSettings?.success && userSettings.settings?.role === "recruiter")
+
+   const receivedRequests = useContactRequestsPagination()
+   const sentRequests = useSentContactRequestsPagination()
+
+   const pendingRequests = isRecruiter
+      ? sentRequests.pendingRequests
+      : receivedRequests.pendingRequests
+   const acceptedRequests = isRecruiter
+      ? sentRequests.acceptedRequests
+      : receivedRequests.acceptedRequests
+   const rejectedRequests = isRecruiter
+      ? sentRequests.rejectedRequests
+      : receivedRequests.rejectedRequests
+   const isLoading = isRecruiter ? sentRequests.isLoading : receivedRequests.isLoading
+   const error = isRecruiter ? sentRequests.error : receivedRequests.error
+   const meta = isRecruiter ? sentRequests.meta : receivedRequests.meta
+   const currentPage = isRecruiter ? sentRequests.currentPage : receivedRequests.currentPage
+   const nextPage = isRecruiter ? sentRequests.nextPage : receivedRequests.nextPage
+   const prevPage = isRecruiter ? sentRequests.prevPage : receivedRequests.prevPage
+   const goToPage = isRecruiter ? sentRequests.goToPage : receivedRequests.goToPage
+   const updateStatus = isRecruiter ? () => {} : receivedRequests.updateStatus
 
    if (isLoading) return <LoadingState />
 
@@ -34,16 +47,18 @@ export default function RequestsPage() {
                <div className="mb-6 flex items-center border-b border-zinc-800 pb-4">
                   <TabsList className="h-11 w-full gap-2 bg-transparent p-0 border-2 border-neutral-700/50 px-1">
                      <TabItem value="pending" count={pendingRequests.length} label="Pending" />
-                     <TabItem value="accepted" count={0} label="Accepted" />
-                     <TabItem value="rejected" count={0} label="Declined" />
+                     <TabItem value="accepted" count={acceptedRequests.length} label="Accepted" />
+                     <TabItem value="rejected" count={rejectedRequests.length} label="Declined" />
                   </TabsList>
                </div>
 
                <TabsContent value="pending">
                   <RequestGrid
                      requests={pendingRequests}
-                     emptyMsg="No pending requests"
+                     emptyMsg={isRecruiter ? "No sent requests" : "No pending requests"}
                      onUpdate={updateStatus}
+                     showMessageButton={false}
+                     isSentRequest={isRecruiter}
                   />
                   {meta && meta.totalPages > 1 && pendingRequests.length > 0 && (
                      <div className="mt-8">
@@ -63,16 +78,20 @@ export default function RequestsPage() {
                <TabsContent value="accepted">
                   <RequestGrid
                      requests={acceptedRequests}
-                     emptyMsg="No accepted requests"
+                     emptyMsg={isRecruiter ? "No accepted requests" : "No accepted requests"}
                      onUpdate={updateStatus}
+                     showMessageButton={true}
+                     isSentRequest={isRecruiter}
                   />
                </TabsContent>
 
                <TabsContent value="rejected">
                   <RequestGrid
                      requests={rejectedRequests}
-                     emptyMsg="No declined requests"
+                     emptyMsg={isRecruiter ? "No declined requests" : "No declined requests"}
                      onUpdate={updateStatus}
+                     showMessageButton={false}
+                     isSentRequest={isRecruiter}
                   />
                </TabsContent>
             </Tabs>
@@ -85,17 +104,26 @@ const RequestGrid = ({
    requests,
    emptyMsg,
    onUpdate,
+   showMessageButton,
+   isSentRequest,
 }: {
-   requests: ContactRequest[]
+   requests: any[]
    emptyMsg: string
    onUpdate: any
+   showMessageButton: boolean
+   isSentRequest: boolean
 }) => {
    if (requests.length === 0) return <EmptyState message={emptyMsg} />
 
    return (
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
          {requests.map(request => (
-            <RequestCard key={request.id} request={request} onUpdateStatus={onUpdate} />
+            <RequestCard
+               key={request.id}
+               request={request}
+               onUpdateStatus={onUpdate}
+               isSentRequest={isSentRequest}
+            />
          ))}
       </div>
    )

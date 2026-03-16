@@ -12,13 +12,14 @@ import {
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { IconSearch, IconSettings, IconUsers } from "@tabler/icons-react"
+import { IconSearch, IconSettings, IconUsers, IconMessage } from "@tabler/icons-react"
 import { SidebarHeaderContent } from "@/components/layout/sidebar/sidebar-header"
 import { SiderbarFooterContent } from "@/components/layout/sidebar/sidebar-footer"
 
 const navItems = [
    { href: "/recruiter/discover", label: "Discover", icon: IconSearch },
    { href: "/recruiter/candidates", label: "My Candidates", icon: IconUsers },
+   { href: "/recruiter/messages", label: "Messages", icon: IconMessage },
    { href: "/recruiter/settings", label: "Settings", icon: IconSettings },
 ]
 

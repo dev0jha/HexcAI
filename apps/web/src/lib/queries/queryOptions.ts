@@ -16,9 +16,87 @@ import type {
 import type { AnalyzedRepo } from "@/types"
 import { UpdateUserBody } from "@/server/services/user/user.types"
 
+export interface Conversation {
+   id: string
+   contactRequestId: string
+   candidateId: string
+   recruiterId: string
+   lastMessageAt: Date
+   createdAt: Date
+   candidateName: string | null
+   candidateGithub: string | null
+   recruiterName: string | null
+   recruiterCompany: string | null
+}
+
+export interface Message {
+   id: string
+   conversationId: string
+   senderId: string
+   content: string
+   createdAt: Date
+   senderName: string | null
+}
+
+export const conversationQueries = {
+   list: () =>
+      queryOptions({
+         queryKey: ["conversations"],
+         queryFn: async () => {
+            const response = await apiClient.conversations.get()
+
+            if (response.error) {
+               throw new Error("Failed to fetch conversations")
+            }
+
+            const data = response.data
+            if (!data.success) {
+               throw new Error(data.message ?? "Failed to fetch conversations")
+            }
+
+            return data as { success: boolean; conversations: Conversation[] }
+         },
+         staleTime: 1000 * 60 * 2,
+      }),
+}
+
+export const messageQueries = {
+   list: (conversationId: string) =>
+      queryOptions({
+         queryKey: ["messages", conversationId],
+         queryFn: async () => {
+            const response = await apiClient.conversations({ conversationId }).messages.get()
+
+            if (response.error) {
+               throw new Error("Failed to fetch messages")
+            }
+
+            const data = response.data
+            if (!data.success) {
+               throw new Error(data.message ?? "Failed to fetch messages")
+            }
+
+            return data as { success: boolean; messages: Message[] }
+         },
+         staleTime: 1000 * 30,
+      }),
+}
+
+export const sendMessageMutation = {
+   mutationFn: async ({ conversationId, content }: { conversationId: string; content: string }) => {
+      const response = await apiClient.conversations({ conversationId }).messages.post({ content })
+
+      if (response.error || !response.data.success) {
+         throw new Error((response.data?.message as string) ?? "Failed to send message")
+      }
+
+      return response.data.message as Message
+   },
+}
+
 export const contactRequestQueries = {
    list: (query: ContactRequestQuery = {}) =>
-      queryOptions<ContactRequestResponse>({
+      queryOptions({
          queryKey: queryKeys.contactRequests.list(query),
          queryFn: async () => {
             const response = await apiClient["contact-requests"].get({ query })
@@ -27,13 +105,32 @@ export const contactRequestQueries = {
                throw new Error("Failed to fetch contact requests")
             }
 
-            if (!response.data.success) {
-               throw new Error(response.data.message ?? "Failed to fetch contact requests")
+            const respRes = response.data
+            if (!respRes.success) {
+               throw new Error(respRes.message ?? "Failed to fetch contact requests")
+            }
+
+            return {
+               data: respRes.contactRequests,
+               meta: respRes.meta,
+            }
+         },
+         staleTime: 1000 * 60 * 2,
+      }),
+
+   sent: (query: ContactRequestQuery = {}) =>
+      queryOptions({
+         queryKey: [...queryKeys.contactRequests.list(query), "sent"],
+         queryFn: async () => {
+            const response = await apiClient["contact-requests"]["sent"].get({ query })
+
+            if (response.error) {
+               throw new Error("Failed to fetch sent contact requests")
             }
 
             const respRes = response.data
             if (!respRes.success) {
-               throw new Error(respRes.message ?? "Failed to fetch contact requests")
+               throw new Error(respRes.message ?? "Failed to fetch sent contact requests")
             }
 
             return {

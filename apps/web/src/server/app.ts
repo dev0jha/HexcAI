@@ -1,8 +1,16 @@
 import { openapi } from "@elysiajs/openapi"
 import { Elysia, t } from "elysia"
+import { sse } from "elysia"
 
 import { betterAuthmiddleware } from "@/server/middlewares/auth.middleware"
-import { AnalysisService, HealthService, DevelopersService, UserService } from "@/server/services"
+import {
+   AnalysisService,
+   HealthService,
+   DevelopersService,
+   UserService,
+   ConversationService,
+   MessageService,
+} from "@/server/services"
 import { ContactRequestService } from "@/server/services/contact-requests/contact-requests.service"
 
 import { repoAnalysisRequestBodySchema } from "./services/analysis/analysis.validation"
@@ -13,6 +21,15 @@ import {
 } from "./services/contact-requests/contact-requests.validation"
 import { developersQuerySchema } from "./services/developers/developers.validation"
 import { updateUserBodySchema } from "@/server/services/user/user.validation"
+
+const sendMessageSchema = t.Object({
+   content: t.String({ minLength: 1 }),
+})
+
+const createConversationSchema = t.Object({
+   contactRequestId: t.String(),
+   initialMessage: t.Optional(t.String({ minLength: 1 })),
+})
 
 export const app = new Elysia({ prefix: "/api" })
    .use(openapi())
@@ -61,6 +78,10 @@ export const app = new Elysia({ prefix: "/api" })
       query: contactRequestQuerySchema,
       auth: true,
    })
+   .get("/contact-requests/sent", ContactRequestService.getSentContactRequests, {
+      query: contactRequestQuerySchema,
+      auth: true,
+   })
    .post("/contact-requests", ContactRequestService.createContactRequest, {
       body: createContactRequestSchema,
       auth: true,
@@ -75,5 +96,20 @@ export const app = new Elysia({ prefix: "/api" })
    })
    .get("/developers/:username", DevelopersService.getDeveloperByUsername, {})
    .get("/developers/tech-stacks", DevelopersService.getTechStacks, {})
+
+   .get("/conversations", ConversationService.getConversations, { auth: true })
+   .post("/conversations", ConversationService.createConversationWithMessage, {
+      body: createConversationSchema,
+      auth: true,
+   })
+   .get("/conversations/:conversationId/messages", MessageService.getMessages, { auth: true })
+   .post("/conversations/:conversationId/messages", MessageService.sendMessage, {
+      params: t.Object({ conversationId: t.String() }),
+      body: sendMessageSchema,
+      auth: true,
+   })
+   .get("/conversations/:conversationId/messages/stream", MessageService.streamMessages, {
+      auth: true,
+   })
 
 export type API = typeof app

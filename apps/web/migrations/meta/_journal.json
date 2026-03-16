@@ -50,6 +50,13 @@
       "when": 1771260818261,
       "tag": "0006_change_score_column_to_float_type",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1772957782597,
+      "tag": "0007_messages_and_conversations_addon",
+      "breakpoints": true
     }
   ]
 }

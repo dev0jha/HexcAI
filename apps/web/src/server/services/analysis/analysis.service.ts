@@ -1,7 +1,6 @@
 import { groq } from "@ai-sdk/groq"
 import { generateText, tool } from "ai"
 import { sse } from "elysia"
-import { Context } from "elysia"
 import { z } from "zod"
 
 import { eq, desc } from "drizzle-orm"
@@ -369,6 +368,9 @@ export class AnalysisService {
       }
 
       set.status = 200
-      return { success: true, analysis }
+      return {
+         success: true,
+         analysis,
+      }
    }
 }

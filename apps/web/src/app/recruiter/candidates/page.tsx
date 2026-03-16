@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useState } from "react"
 import { MoreHorizontal, ExternalLink, Mail, Search, Trash2, Filter } from "lucide-react"
 
 import Container from "@/components/core/Container"
@@ -31,8 +32,10 @@ import {
    SelectValue,
 } from "@/components/ui/select"
 import { SearchInputGroup } from "@/components/search/search-input-group"
+import { ContactModal } from "@/components/recruiter/contact-modal"
 import { CadidateStatusFilter, useCandidatesPage } from "@/hooks/screens/candidates.hooks"
 import { Candidate } from "@/lib/queries/query.types"
+import type { Developer } from "@/types"
 
 export default function CandidatesPage() {
    const {
@@ -44,6 +47,14 @@ export default function CandidatesPage() {
       setStatusFilter,
       handleRemove,
    } = useCandidatesPage()
+
+   const [contactModalOpen, setContactModalOpen] = useState(false)
+   const [selectedCandidate, setSelectedCandidate] = useState<Developer | null>(null)
+
+   const handleMessageClick = (candidate: Candidate) => {
+      setSelectedCandidate(candidate as unknown as Developer)
+      setContactModalOpen(true)
+   }
 
    return (
       <Container className="py-8 max-w-7xl">
@@ -59,7 +70,18 @@ export default function CandidatesPage() {
          />
 
          {/* Data Table */}
-         <DataTable filteredCandidates={filteredCandidates} onRemove={handleRemove} />
+         <DataTable
+            filteredCandidates={filteredCandidates}
+            onRemove={handleRemove}
+            onMessageClick={handleMessageClick}
+         />
+
+         {/* Contact Modal */}
+         <ContactModal
+            developer={selectedCandidate}
+            open={contactModalOpen}
+            onOpenChange={setContactModalOpen}
+         />
       </Container>
    )
 }
@@ -167,9 +189,11 @@ function FiltersToolbar({
 function DataTable({
    filteredCandidates,
    onRemove,
+   onMessageClick,
 }: {
    filteredCandidates: Candidate[]
    onRemove: (id: string) => void
+   onMessageClick: (candidate: Candidate) => void
 }) {
    return (
       <div className="border rounded-md shadow-sm bg-neutral-900/80 shadow-neutral-900/20 border-neutral-500/10">
@@ -284,7 +308,7 @@ function DataTable({
                                        View Profile
                                     </DropdownMenuItem>
                                  </Link>
-                                 <DropdownMenuItem>
+                                 <DropdownMenuItem onClick={() => onMessageClick(candidate)}>
                                     <Mail className="mr-2 h-4 w-4" />
                                     Message
                                  </DropdownMenuItem>
