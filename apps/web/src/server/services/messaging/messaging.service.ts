@@ -14,6 +14,7 @@ import { alias } from "drizzle-orm/pg-core"
 import { sse } from "elysia"
 
 class MessageEventEmitter extends EventEmitter {}
+
 const messageEmitter = new MessageEventEmitter()
 
 export function emitNewMessage(conversationId: string, message: any) {
@@ -127,13 +128,26 @@ export class ConversationService {
       candidateId: string
       recruiterId: string
    }) {
+      // Check if conversation already exists between this candidate and recruiter
       const existingRes = await db
          .select()
          .from(conversations)
-         .where(eq(conversations.contactRequestId, contactRequestId))
+         .where(
+            and(
+               eq(conversations.candidateId, candidateId),
+               eq(conversations.recruiterId, recruiterId)
+            )
+         )
          .limit(1)
 
       if (existingRes.length > 0) {
+         // If contactRequestId is different, update it to link to this conversation
+         if (existingRes[0].contactRequestId !== contactRequestId) {
+            await db
+               .update(conversations)
+               .set({ contactRequestId })
+               .where(eq(conversations.id, existingRes[0].id))
+         }
          return { success: true, conversation: existingRes[0] }
       }
 
@@ -182,13 +196,27 @@ export class ConversationService {
          return { success: false, message: "Contact request must be accepted first" }
       }
 
+      // Check if conversation already exists between this candidate and recruiter
       const existingRes = await db
          .select()
          .from(conversations)
-         .where(eq(conversations.contactRequestId, contactRequestId))
+         .where(
+            and(
+               eq(conversations.candidateId, contactReq.candidateId),
+               eq(conversations.recruiterId, contactReq.recruiterId)
+            )
+         )
          .limit(1)
 
       if (existingRes.length > 0) {
+         // Update contactRequestId if different
+         if (existingRes[0].contactRequestId !== contactRequestId) {
+            await db
+               .update(conversations)
+               .set({ contactRequestId })
+               .where(eq(conversations.id, existingRes[0].id))
+         }
+
          if (initialMessage) {
             await db.insert(messages).values({
                id: crypto.randomUUID(),

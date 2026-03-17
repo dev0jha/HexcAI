@@ -9,7 +9,6 @@ import {
    conversationQueries,
    messageQueries,
    sendMessageMutation,
-   type Conversation,
    type Message,
 } from "@/lib/queries/queryOptions"
 import { attemptSync } from "@/utils/attempt"
@@ -20,32 +19,49 @@ export function useMessageStream(
 ) {
    const eventSourceRef = useRef<EventSource | null>(null)
    const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+   const onNewMessageRef = useRef(onNewMessage)
+
+   useEffect(() => {
+      onNewMessageRef.current = onNewMessage
+   }, [onNewMessage])
 
    const connect = useCallback(() => {
       if (!conversationId) return
 
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+      if (eventSourceRef.current) {
+         eventSourceRef.current.close()
+         eventSourceRef.current = null
+      }
+
+      const baseUrl =
+         typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"
       const url = `${baseUrl}/api/conversations/${conversationId}/messages/stream`
 
-      const eventSource = new EventSource(url, {
-         withCredentials: true,
-      })
+      console.log("[SSE] Connecting to:", url)
+
+      const eventSource = new EventSource(url)
+
+      eventSource.onopen = () => {
+         console.log("[SSE] Connected to stream for conversation:", conversationId)
+      }
 
       eventSource.onmessage = event => {
-         const parseAttempt = attemptSync(() => JSON.parse(event.data))
-         if (!parseAttempt.ok) {
-            console.error("Error parsing SSE message:", parseAttempt.error)
-            return
-         }
-
-         const { data } = parseAttempt
-
-         if (data.type === "new_message" && data.message) {
-            onNewMessage(data.message)
+         console.log("[SSE] Received message:", event.data)
+         try {
+            const data = JSON.parse(event.data)
+            if (data.type === "new_message" && data.message) {
+               console.log("[SSE] New message received:", data.message)
+               onNewMessageRef.current(data.message)
+            } else {
+               console.log("[SSE] Other event:", data)
+            }
+         } catch (e) {
+            console.error("[SSE] Error parsing message:", e)
          }
       }
 
-      eventSource.onerror = () => {
+      eventSource.onerror = err => {
+         console.error("[SSE] Error:", err)
          eventSource.close()
 
          if (reconnectTimeoutRef.current) {
@@ -53,25 +69,31 @@ export function useMessageStream(
          }
 
          reconnectTimeoutRef.current = setTimeout(() => {
+            console.log("[SSE] Reconnecting...")
             connect()
          }, 3000)
       }
 
       eventSourceRef.current = eventSource
-   }, [conversationId, onNewMessage])
+   }, [conversationId])
 
    useEffect(() => {
-      connect()
+      if (conversationId) {
+         connect()
+      }
 
       return () => {
+         console.log("[SSE] Cleaning up SSE connection")
          if (eventSourceRef.current) {
             eventSourceRef.current.close()
+            eventSourceRef.current = null
          }
          if (reconnectTimeoutRef.current) {
             clearTimeout(reconnectTimeoutRef.current)
+            reconnectTimeoutRef.current = null
          }
       }
-   }, [connect])
+   }, [conversationId, connect])
 
    return {
       isConnected: eventSourceRef.current?.readyState === EventSource.OPEN,
@@ -102,19 +124,45 @@ export function useMessages(conversationId: string | null) {
            }
    )
 
-   const handleNewMessage = useCallback((message: Message) => {
-      setStreamMessages(prev => {
-         const exists = prev.some(m => m.id === message.id)
-         if (exists) return prev
-         return [...prev, message]
-      })
-   }, [])
+   const handleNewMessage = useCallback(
+      (message: Message) => {
+         console.log("[useMessages] New message from SSE:", message)
+         setStreamMessages(prev => {
+            const exists = prev.some(m => m.id === message.id)
+            if (exists) return prev
+            return [...prev, message]
+         })
+         // Also refetch to ensure we have latest
+         refetch()
+      },
+      [refetch]
+   )
 
    useMessageStream(conversationId, handleNewMessage)
 
    useEffect(() => {
       setStreamMessages([])
    }, [conversationId])
+
+   // Also refetch when window gains focus (handles case when user switches tabs)
+   useEffect(() => {
+      const handleFocus = () => {
+         refetch()
+      }
+      window.addEventListener("focus", handleFocus)
+      return () => window.removeEventListener("focus", handleFocus)
+   }, [refetch])
+
+   // Polling fallback - refetch every 5 seconds as backup
+   useEffect(() => {
+      if (!conversationId) return
+
+      const interval = setInterval(() => {
+         refetch()
+      }, 5000)
+
+      return () => clearInterval(interval)
+   }, [conversationId, refetch])
 
    const allMessages = [...(data?.messages ?? []), ...streamMessages]
 

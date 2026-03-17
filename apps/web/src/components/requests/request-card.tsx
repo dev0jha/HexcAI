@@ -1,25 +1,25 @@
-import { Building2, Clock, Mail, X } from "lucide-react"
+import { Building2, Clock, X } from "lucide-react"
 import { IconMessage } from "@tabler/icons-react"
 import Link from "next/link"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-
-import type { ContactRequest } from "@/types"
 
 export function RequestCard({
    request,
    onUpdateStatus,
    isSentRequest = false,
+   hasConversation = false,
 }: {
    request: any
    onUpdateStatus: (requestId: string, status: "accepted" | "rejected") => void
    isSentRequest?: boolean
+   hasConversation?: boolean
 }) {
    const isPending = request.status === "pending"
+   const isAccepted = request.status === "accepted"
 
    const displayName = isSentRequest
       ? request.candidateName || request.candidateGithub || "Unknown"
@@ -30,32 +30,36 @@ export function RequestCard({
    const avatarInitials = isSentRequest
       ? displayName
            ?.split(" ")
-           .map(n => n[0])
+           .map((n: string) => n[0])
            .join("") || "C"
       : displayName
            ?.split(" ")
-           .map(n => n[0])
+           .map((n: string) => n[0])
            .join("") || "R"
 
+   const messageLink = isSentRequest
+      ? `/recruiter/messages?contactRequestId=${request.id}`
+      : `/dashboard/messages?contactRequestId=${request.id}`
+
    return (
-      <div className="group relative flex flex-col justify-between gap-3 overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/40 p-4 transition-all hover:border-zinc-700 hover:bg-zinc-900/80 hover:shadow-md">
+      <div className="group relative flex flex-col justify-between gap-3 overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900/40 p-4 transition-all hover:border-neutral-700 hover:bg-neutral-900/80 hover:shadow-md">
          {/* Top Row: User Info & Date */}
          <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-               <Avatar className="h-9 w-9 shrink-0 border border-zinc-800">
+               <Avatar className="h-9 w-9 shrink-0 border border-neutral-800">
                   <AvatarImage
                      src="/recruiter-portrait-male-professional.jpg"
                      alt={displayName}
                      className="object-cover"
                   />
-                  <AvatarFallback className="bg-zinc-800 text-xs font-medium text-zinc-400">
+                  <AvatarFallback className="bg-neutral-800 text-xs font-medium text-neutral-400">
                      {avatarInitials}
                   </AvatarFallback>
                </Avatar>
 
                <div className="flex flex-col">
-                  <h3 className="text-sm font-semibold text-zinc-100">{displayName}</h3>
-                  <div className="flex items-center gap-1 text-xs text-zinc-500">
+                  <h3 className="text-sm font-semibold text-neutral-100">{displayName}</h3>
+                  <div className="flex items-center gap-1 text-xs text-neutral-500">
                      <Building2 className="h-3 w-3 shrink-0" />
                      <span className="max-w-30 truncate">{displaySubtitle}</span>
                   </div>
@@ -63,7 +67,7 @@ export function RequestCard({
             </div>
 
             {/* Date - Pushed to top right */}
-            <div className="flex shrink-0 items-center gap-1 text-[10px] font-medium text-zinc-600 uppercase tracking-wide">
+            <div className="flex shrink-0 items-center gap-1 text-[10px] font-medium text-neutral-600 uppercase tracking-wide">
                <Clock className="h-3 w-3" />
                <span>
                   {new Date(request.createdAt).toLocaleDateString("en-US", {
@@ -79,56 +83,40 @@ export function RequestCard({
             <TooltipProvider>
                <Tooltip>
                   <TooltipTrigger>
-                     <p className="line-clamp-2 text-xs leading-relaxed text-zinc-400 cursor-default">
+                     <p className="line-clamp-2 text-xs leading-relaxed text-neutral-400 cursor-default">
                         {request.message}
                      </p>
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-xs bg-zinc-950 border-zinc-800 text-zinc-300">
+                  <TooltipContent className="max-w-xs bg-neutral-950 border-neutral-800 text-neutral-300">
                      <p>{request.message}</p>
                   </TooltipContent>
                </Tooltip>
             </TooltipProvider>
          </div>
 
-         <div className="mt-1 flex items-center justify-between pt-2 border-t border-zinc-800/50">
-            {/* Status Badge */}
-            {!isPending && (
-               <Badge
-                  variant="outline"
-                  className={cn(
-                     "h-6 px-2 text-[10px] uppercase tracking-wider",
-                     getBadgeStyle(request.status)
-                  )}
-               >
-                  {request.status}
-               </Badge>
-            )}
-
+         <div className="mt-1 flex items-center justify-between pt-2 border-t border-neutral-800/50">
             {/* Content based on status */}
-            {request.status === "accepted" ? (
+            {isAccepted ? (
                <Link
-                  href={`/dashboard/messages?contactRequestId=${request.id}`}
-                  className="ml-auto flex items-center gap-2 rounded bg-emerald-950/20 px-3 py-1.5 transition-colors hover:bg-emerald-950/30"
+                  href={messageLink}
+                  className="ml-auto flex items-center gap-2 rounded-md bg-neutral-200/80 px-3 py-1.5 transition-all hover:bg-neutral-100/90 border border-neutral-400/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]"
                >
-                  <IconMessage className="h-3.5 w-3.5 shrink-0 text-emerald-500" />
-                  <span className="text-xs font-medium text-emerald-200/90">Message</span>
+                  <IconMessage className="h-3.5 w-3.5 shrink-0 text-neutral-700" />
+                  <span className="text-xs font-medium text-neutral-800 text-shadow-sm">
+                     {hasConversation ? "Go to chat" : "Message"}
+                  </span>
                </Link>
             ) : request.status === "rejected" ? (
-               <span className="text-xs text-zinc-600 italic ml-auto">Request declined</span>
-            ) : (
+               <span className="text-xs text-neutral-600 italic ml-auto">Request declined</span>
+            ) : isPending ? (
                <div className="flex w-full items-center justify-between gap-2">
-                  <Badge
-                     variant="outline"
-                     className="border-zinc-800 bg-zinc-900 text-zinc-500 hover:bg-zinc-900"
-                  >
-                     Pending
-                  </Badge>
+                  <span className="text-xs text-neutral-500 italic">Pending</span>
                   <div className="flex gap-2">
                      <Button
                         size="sm"
                         variant="outline"
                         onClick={() => onUpdateStatus(request.id, "rejected")}
-                        className="rounded-full p-3 text-zinc-500 hover:bg-red-500/10 hover:text-red-400"
+                        className="rounded-full p-3 text-neutral-500 hover:bg-red-500/10 hover:text-red-400 border-neutral-700"
                      >
                         <X className="h-4 w-4" />
                         Decline
@@ -136,25 +124,14 @@ export function RequestCard({
                      <Button
                         size="sm"
                         onClick={() => onUpdateStatus(request.id, "accepted")}
-                        className="h-7 rounded-full bg-zinc-100 px-3 text-xs font-semibold text-zinc-950 hover:bg-zinc-300"
+                        className="h-7 rounded-full bg-neutral-100 px-3 text-xs font-semibold text-neutral-950 hover:bg-neutral-300"
                      >
                         Accept
                      </Button>
                   </div>
                </div>
-            )}
+            ) : null}
          </div>
       </div>
    )
-}
-
-const getBadgeStyle = (status: string) => {
-   switch (status) {
-      case "accepted":
-         return "bg-emerald-500/5 text-emerald-500 border-emerald-500/20"
-      case "rejected":
-         return "bg-red-500/5 text-red-500 border-red-500/20"
-      default:
-         return "bg-zinc-800 text-zinc-400 border-zinc-700"
-   }
 }

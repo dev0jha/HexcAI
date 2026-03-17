@@ -88,6 +88,7 @@ export class ContactRequestService {
       const recruiterId = user.id
       const { candidateId, message } = body
 
+      // Check if any contact request already exists (regardless of status)
       const existingRequestRes = await attempt(() =>
          db
             .select()
@@ -95,8 +96,7 @@ export class ContactRequestService {
             .where(
                and(
                   eq(contactRequests.recruiterId, recruiterId),
-                  eq(contactRequests.candidateId, candidateId),
-                  eq(contactRequests.status, "pending")
+                  eq(contactRequests.candidateId, candidateId)
                )
             )
             .limit(1)
@@ -112,11 +112,21 @@ export class ContactRequestService {
       }
 
       if (existingRequestRes.data.length > 0) {
-         set.status = 400
-         return {
-            success: false,
-            errror: "A pending contact request already exists for this candidate",
+         const existingRequest = existingRequestRes.data[0]
+         if (existingRequest.status === "pending") {
+            set.status = 400
+            return {
+               success: false,
+               error: "A pending contact request already exists for this candidate",
+            }
+         } else if (existingRequest.status === "accepted") {
+            set.status = 400
+            return {
+               success: false,
+               error: "You already have an active conversation with this candidate",
+            }
          }
+         // If rejected, allow sending a new request
       }
 
       const createRes = await attempt(() =>
