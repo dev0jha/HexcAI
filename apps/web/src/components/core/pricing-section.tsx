@@ -86,13 +86,13 @@ export function PricingSection() {
                      className={cn(
                         "relative z-10",
                         "bg-zinc-900/95 backdrop-blur supports-backdrop-filter:bg-neutral-800/90",
-                        "border border-zinc-200/20"
+                        "border border-white/10"
                      )}
                   >
                      <PricingCard.Plan>
                         <PricingCard.PlanName>
                            {plan.icon}
-                           <span className="text-muted-foreground">{plan.name}</span>
+                           <span className="text-zinc-300">{plan.name}</span>
                         </PricingCard.PlanName>
                         {plan.badge && <PricingCard.Badge>{plan.badge}</PricingCard.Badge>}
                      </PricingCard.Plan>
@@ -127,7 +127,7 @@ export function PricingSection() {
                         <PricingCard.List>
                            {plan.features.map(item => (
                               <PricingCard.ListItem className="text-xs" key={item}>
-                                 <CheckCircle2 className="h-4 w-4 text-foreground" />
+                                 <CheckCircle2 className="h-4 w-4 text-white" />
                                  <span>{item}</span>
                               </PricingCard.ListItem>
                            ))}

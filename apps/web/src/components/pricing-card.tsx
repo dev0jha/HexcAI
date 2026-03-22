@@ -5,7 +5,7 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
    return (
       <div
          className={cn(
-            "relative w-full max-w-xs rounded-xl border bg-card dark:bg-transparent",
+            "relative w-full max-w-xs rounded-xl border border-white/10 bg-zinc-900/40 text-white",
             "p-1.5 shadow-xs backdrop-blur-xl",
             className
          )}
@@ -24,7 +24,7 @@ function Header({
 }) {
    return (
       <div
-         className={cn("relative mb-4 rounded-xl border bg-muted/50 p-4 shadow-sm", className)}
+         className={cn("relative mb-4 rounded-xl border border-white/10 bg-zinc-800/50 p-4 shadow-sm", className)}
          {...props}
       >
          {/* Top glass gradient */}
@@ -48,14 +48,14 @@ function Plan({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function Description({ className, ...props }: React.ComponentProps<"p">) {
-   return <p className={cn("text-muted-foreground text-xs", className)} {...props} />
+   return <p className={cn("text-zinc-400 text-xs", className)} {...props} />
 }
 
 function PlanName({ className, ...props }: React.ComponentProps<"div">) {
    return (
       <div
          className={cn(
-            "flex items-center gap-2 font-medium text-muted-foreground text-sm [&_svg:not([class*='size-'])]:size-4",
+            "flex items-center gap-2 font-medium text-zinc-300 text-sm [&_svg:not([class*='size-'])]:size-4",
             className
          )}
          {...props}
@@ -67,7 +67,7 @@ function Badge({ className, ...props }: React.ComponentProps<"span">) {
    return (
       <span
          className={cn(
-            "rounded-full border border-foreground/20 px-2 py-0.5 text-foreground/80 text-xs",
+            "rounded-full border border-white/20 px-2 py-0.5 text-white/80 text-xs",
             className
          )}
          {...props}
@@ -84,13 +84,13 @@ function MainPrice({ className, ...props }: React.ComponentProps<"span">) {
 }
 
 function Period({ className, ...props }: React.ComponentProps<"span">) {
-   return <span className={cn("pb-1 text-foreground/80 text-sm", className)} {...props} />
+   return <span className={cn("pb-1 text-zinc-400 text-sm", className)} {...props} />
 }
 
 function OriginalPrice({ className, ...props }: React.ComponentProps<"span">) {
    return (
       <span
-         className={cn("mr-1 ml-auto text-lg text-muted-foreground line-through", className)}
+         className={cn("mr-1 ml-auto text-lg text-zinc-500 line-through", className)}
          {...props}
       />
    )
@@ -107,7 +107,7 @@ function List({ className, ...props }: React.ComponentProps<"ul">) {
 function ListItem({ className, ...props }: React.ComponentProps<"li">) {
    return (
       <li
-         className={cn("flex items-start gap-3 text-muted-foreground text-sm", className)}
+         className={cn("flex items-start gap-3 text-zinc-300 text-sm", className)}
          {...props}
       />
    )
@@ -123,12 +123,12 @@ function Separator({
 }) {
    return (
       <div
-         className={cn("flex items-center gap-3 text-muted-foreground text-sm", className)}
+         className={cn("flex items-center gap-3 text-zinc-400 text-sm", className)}
          {...props}
       >
-         <span className="h-[1px] flex-1 bg-muted-foreground/40" />
-         <span className="shrink-0 text-muted-foreground">{children}</span>
-         <span className="h-[1px] flex-1 bg-muted-foreground/40" />
+         <span className="h-[1px] flex-1 bg-zinc-700" />
+         <span className="shrink-0 text-zinc-400">{children}</span>
+         <span className="h-[1px] flex-1 bg-zinc-700" />
       </div>
    )
 }
