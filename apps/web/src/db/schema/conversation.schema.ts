@@ -20,6 +20,20 @@ export const conversations = pgTable("conversations", {
    createdAt: timestamp("created_at").defaultNow().notNull(),
 })
 
+export const conversationParticipants = pgTable("conversation_participants", {
+   id: text("id").primaryKey(),
+
+   conversationId: text("conversation_id")
+      .notNull()
+      .references(() => conversations.id, { onDelete: "cascade" }),
+
+   userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+
+   lastReadAt: timestamp("last_read_at"),
+})
+
 export const conversationRelations = relations(conversations, ({ many }) => ({
    messages: many(messages),
 }))

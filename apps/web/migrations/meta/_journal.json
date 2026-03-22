@@ -54,8 +54,8 @@
     {
       "idx": 7,
       "version": "7",
-      "when": 1772957782597,
-      "tag": "0007_messages_and_conversations_addon",
+      "when": 1774172567120,
+      "tag": "0007_add_table_conversation_participants",
       "breakpoints": true
     }
   ]

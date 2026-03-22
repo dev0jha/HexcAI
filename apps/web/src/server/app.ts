@@ -1,6 +1,5 @@
 import { openapi } from "@elysiajs/openapi"
 import { Elysia, t } from "elysia"
-import { sse } from "elysia"
 
 import { betterAuthmiddleware } from "@/server/middlewares/auth.middleware"
 import {

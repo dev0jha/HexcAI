@@ -9,7 +9,7 @@ import { Menu, X } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 
 import { PlusIcon } from "@/components/ui/plus-icon"
-import StripeButton from "@/components/pixel-perfect/stripe-button"
+import Button from "@/components/pixel-perfect/stripe-button"
 import { cn } from "@/lib/utils"
 import Logo from "@/components/Logo"
 
@@ -76,9 +76,9 @@ export function Navbar({
 
                <div className="flex items-center gap-3">
                   <Link href="/signin">
-                     <StripeButton className="hidden sm:flex uppercase font-bold text-shadow-xl shadow-lg transition-all duration-300">
+                     <Button className="hidden sm:flex uppercase font-bold text-shadow-xl shadow-lg transition-all duration-300">
                         Login
-                     </StripeButton>
+                     </Button>
                   </Link>
 
                   <button

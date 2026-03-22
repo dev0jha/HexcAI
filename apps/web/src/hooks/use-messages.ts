@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
@@ -25,7 +25,7 @@ export function useMessageStream(
       onNewMessageRef.current = onNewMessage
    }, [onNewMessage])
 
-   const connect = useCallback(() => {
+   const connect = () => {
       if (!conversationId) return
 
       if (eventSourceRef.current) {
@@ -37,31 +37,23 @@ export function useMessageStream(
          typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"
       const url = `${baseUrl}/api/conversations/${conversationId}/messages/stream`
 
-      console.log("[SSE] Connecting to:", url)
-
       const eventSource = new EventSource(url)
 
-      eventSource.onopen = () => {
-         console.log("[SSE] Connected to stream for conversation:", conversationId)
-      }
-
       eventSource.onmessage = event => {
-         console.log("[SSE] Received message:", event.data)
-         try {
-            const data = JSON.parse(event.data)
-            if (data.type === "new_message" && data.message) {
-               console.log("[SSE] New message received:", data.message)
-               onNewMessageRef.current(data.message)
-            } else {
-               console.log("[SSE] Other event:", data)
-            }
-         } catch (e) {
-            console.error("[SSE] Error parsing message:", e)
+         const dataAtt = attemptSync(() => JSON.parse(event.data))
+         if (!dataAtt.ok) {
+            console.error("[SSE] Error parsing message:", dataAtt.error)
+            return
+         }
+
+         const data = dataAtt.data
+
+         if (data.type === "new_message" && data.message) {
+            onNewMessageRef.current(data.message)
          }
       }
 
-      eventSource.onerror = err => {
-         console.error("[SSE] Error:", err)
+      eventSource.onerror = () => {
          eventSource.close()
 
          if (reconnectTimeoutRef.current) {
@@ -69,13 +61,12 @@ export function useMessageStream(
          }
 
          reconnectTimeoutRef.current = setTimeout(() => {
-            console.log("[SSE] Reconnecting...")
             connect()
          }, 3000)
       }
 
       eventSourceRef.current = eventSource
-   }, [conversationId])
+   }
 
    useEffect(() => {
       if (conversationId) {
@@ -83,7 +74,6 @@ export function useMessageStream(
       }
 
       return () => {
-         console.log("[SSE] Cleaning up SSE connection")
          if (eventSourceRef.current) {
             eventSourceRef.current.close()
             eventSourceRef.current = null
@@ -124,19 +114,14 @@ export function useMessages(conversationId: string | null) {
            }
    )
 
-   const handleNewMessage = useCallback(
-      (message: Message) => {
-         console.log("[useMessages] New message from SSE:", message)
-         setStreamMessages(prev => {
-            const exists = prev.some(m => m.id === message.id)
-            if (exists) return prev
-            return [...prev, message]
-         })
-         // Also refetch to ensure we have latest
-         refetch()
-      },
-      [refetch]
-   )
+   const handleNewMessage = (message: Message) => {
+      setStreamMessages(prev => {
+         const exists = prev.some(m => m.id === message.id)
+         if (exists) return prev
+         return [...prev, message]
+      })
+      refetch()
+   }
 
    useMessageStream(conversationId, handleNewMessage)
 
@@ -144,7 +129,6 @@ export function useMessages(conversationId: string | null) {
       setStreamMessages([])
    }, [conversationId])
 
-   // Also refetch when window gains focus (handles case when user switches tabs)
    useEffect(() => {
       const handleFocus = () => {
          refetch()
@@ -153,7 +137,6 @@ export function useMessages(conversationId: string | null) {
       return () => window.removeEventListener("focus", handleFocus)
    }, [refetch])
 
-   // Polling fallback - refetch every 5 seconds as backup
    useEffect(() => {
       if (!conversationId) return
 
