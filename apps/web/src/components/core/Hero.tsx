@@ -99,7 +99,7 @@ export default function HeroSection() {
                   </Button>
                </Link>
 
-               <Link href="#DiscoverProfile">
+               <Link href="/leaderboard">
                   <Button
                      variant="ghost"
                      className={cn(
