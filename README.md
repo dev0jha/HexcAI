@@ -127,8 +127,9 @@
 - **Node.js**: >=18.0.0
 - **Bun**: 1.2.22 or higher
 - **Git**: Latest version
+- **Docker & Docker Compose**: For local database and object storage
 
-### Installation
+### Quick Start
 
 1. **Clone the repository**
 
@@ -137,48 +138,91 @@
    cd HexcAI
    ```
 
-2. **Install dependencies**
+2. **Start local infrastructure (PostgreSQL + MinIO)**
+
+   ```bash
+   cd apps/web
+   docker-compose up -d
+   ```
+
+   This starts:
+   - **PostgreSQL** on port `5432` (credentials: `hirexai` / `hirexai_password`)
+   - **MinIO (Rustfs)** on port `9000` (console on `9001`)
+
+3. **Install dependencies**
 
    ```bash
    bun install
    ```
 
-3. **Set up environment variables**
+4. **Set up environment variables**
 
-   ```bash
-   cp apps/web/.env.example apps/web/.env.local
-   ```
-
-   Configure the following variables:
+   The `.env` file is already configured with default values:
 
    ```env
-   # Database
-   DATABASE_URL="your-neon-database-url"
-
-   # Authentication
-   BETTER_AUTH_SECRET="your-secret-key"
-   BETTER_AUTH_URL="http://localhost:3000"
-
-   # AI
-   GROQ_API_KEY="your-groq-api-key"
-
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
+   DATABASE_URL=postgresql://hirexai:hirexai_password@localhost:5432/hirexai_db
+   NODE_ENV=development
+   GROQ_API_KEY=your-groq-api-key
+   OBJECT_STORAGE_ENDPOINT=http://localhost:9000
    ```
 
-4. **Run database migrations**
+   > **Note**:
+   >
+   > - Get a free Groq API key at [groq.com](https://groq.com/)
+   > - Replace `your-groq-api-key` in `.env` with your actual key
+
+5. **Run database migrations**
 
    ```bash
    bun run db:migrate
    ```
 
-5. **Start the development server**
+6. **Seed the database with mock data**
+
+   ```bash
+   bun run db:seed
+   ```
+
+7. **Start the development server**
 
    ```bash
    bun dev
    ```
 
-6. **Open your browser**
+8. **Open your browser**
 
    Navigate to [http://localhost:3000](http://localhost:3000)
+
+---
+
+### 🔐 Test Accounts
+
+After running `bun run db:seed`, you can log in with:
+
+| Role      | Email                     | Password    |
+| --------- | ------------------------- | ----------- |
+| Candidate | john.doe@example.com      | password123 |
+| Candidate | jane.smith@example.com    | password123 |
+| Candidate | alex.j@example.com        | password123 |
+| Candidate | sarah.w@example.com       | password123 |
+| Candidate | michael.b@example.com     | password123 |
+| Recruiter | hr@techcorp.com           | password123 |
+| Recruiter | hiring@startupxyz.io      | password123 |
+| Recruiter | recruit@enterprisesol.com | password123 |
+
+---
+
+### 🪣 MinIO Bucket Setup
+
+The application automatically creates the `profile-pics` bucket when you first upload an image. No manual setup required.
+
+If you want to access the MinIO console:
+
+1. Open [http://localhost:9001](http://localhost:9001)
+2. Login with: `rustfsadmin` / `rustfsadmin`
+
+---
 
 ### Available Scripts
 
@@ -212,21 +256,14 @@ To populate the database with mock data for development:
 bun run db:seed
 ```
 
-This creates test users with password `password123`:
+This creates:
 
-**Candidates:**
+- **5 candidate users** with profile data, scores, and tech stacks
+- **3 recruiter users** with company information
+- Sample analysis results
+- Sample contact requests (some accepted, some pending, some rejected)
 
-- john.doe@example.com
-- jane.smith@example.com
-- alex.j@example.com
-- sarah.w@example.com
-- michael.b@example.com
-
-**Recruiters:**
-
-- hr@techcorp.com
-- hiring@startupxyz.io
-- recruit@enterprisesol.com
+All users have the password: `password123`
 
 ---
 
@@ -262,6 +299,45 @@ HexcAI/
 ├── turbo.json                 # Turborepo config
 ├── package.json               # Root dependencies
 └── README.md                  # You are here!
+```
+
+---
+
+## 🔧 Troubleshooting
+
+### Database Connection Issues
+
+If you get connection errors:
+
+```bash
+# Check if PostgreSQL container is running
+docker ps | grep postgres
+
+# Restart the container
+docker-compose restart postgres
+```
+
+### MinIO Connection Issues
+
+If image uploads fail:
+
+```bash
+# Check if MinIO container is running
+docker ps | grep rustfs
+
+# Restart the container
+docker-compose restart rustfs
+```
+
+### Reset Database
+
+To completely reset and reseed:
+
+```bash
+docker-compose down -v     # Remove volumes
+docker-compose up -d     # Restart containers
+bun run db:migrate        # Run migrations
+bun run db:seed          # Seed data
 ```
 
 ---

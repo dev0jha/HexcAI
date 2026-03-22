@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils"
 export default function page() {
    return (
       <>
-         <main className="relative bg-[#121212]">
+         <main className="dark relative bg-[#121212] text-foreground">
             <SchematicBackground />
             <Container>
                <div

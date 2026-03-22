@@ -8,8 +8,8 @@ import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 
-import { Button } from "@/components/ui/button"
 import { PlusIcon } from "@/components/ui/plus-icon"
+import StripeButton from "@/components/pixel-perfect/stripe-button"
 import { cn } from "@/lib/utils"
 import Logo from "@/components/Logo"
 
@@ -76,16 +76,9 @@ export function Navbar({
 
                <div className="flex items-center gap-3">
                   <Link href="/signin">
-                     <Button
-                        variant="outline"
-                        className={cn(
-                           "relative hidden items-center justify-center px-4 py-1.5 sm:flex",
-                           "text-shadow-xl rounded-sm text-shadow-md font-medium tracking-wide shadow-lg transition-all duration-300 text-shadow-black/70",
-                           "bg-white text-white hover:bg-zinc-200 hover:shadow-[0_0_15px_rgba(255,255,255,0.4)] uppercase bold"
-                        )}
-                     >
+                     <StripeButton className="hidden sm:flex uppercase font-bold text-shadow-xl shadow-lg transition-all duration-300">
                         Login
-                     </Button>
+                     </StripeButton>
                   </Link>
 
                   <button

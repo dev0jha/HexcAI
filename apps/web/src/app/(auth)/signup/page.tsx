@@ -7,7 +7,7 @@ import EmailField from "@/components/auth/primitives/email-field"
 import NameFields from "@/components/auth/primitives/name-fields"
 import PassField from "@/components/auth/primitives/pass-fields"
 import RoleSelectorField from "@/components/auth/primitives/role-selector"
-import { Button } from "@/components/ui/button"
+import StripeButton from "@/components/pixel-perfect/stripe-button"
 import { CornerDecorations } from "@/components/ui/corner-decorations"
 import { Form } from "@/components/ui/form"
 import { useSignUp } from "@/hooks/screens/signUp.hooks"
@@ -61,14 +61,13 @@ export default function SignUpPage() {
                      </div>
 
                      <div className="space-y-4 pt-2">
-                        <Button
+                        <StripeButton
                            type="submit"
-                           size="lg"
-                           className="w-full bg-white font-medium text-black transition-all duration-300 hover:bg-zinc-200 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+                           className="w-full"
                            disabled={isSubmitting}
                         >
                            {isSubmitting ? "Creating your account..." : "Create account"}
-                        </Button>
+                        </StripeButton>
 
                         <div className="text-center text-xs text-zinc-500">
                            Already verified?
