@@ -1,8 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import { Badge } from "@/components/ui/badge"
-import { getScoreLabel, type Developer } from "@/types"
+import { type Developer } from "@/types"
 
 interface LeaderboardProps {
    candidates: Developer[]
@@ -14,13 +13,31 @@ export function Leaderboard({ candidates }: LeaderboardProps) {
 
    return (
       <div className="space-y-8">
-         <div className="flex flex-col md:flex-row items-center md:items-end justify-center gap-4 md:gap-6 md:px-4">
-            {topThree.map((candidate, index) => (
-               <TopThreeCard key={candidate.id} candidate={candidate} rank={index + 1} />
-            ))}
+         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div>
+               <h1 className="font-poppins text-4xl md:text-5xl font-bold tracking-tight flex items-center gap-2">
+                  <span className="text-zinc-100">LEADER</span>
+                  <span className="text-[#71717B]">BOARD</span>
+               </h1>
+               <p className="mt-2 text-base" style={{ color: "#74747B" }}>
+                  A good developer doesn't need introduction
+               </p>
+            </div>
          </div>
 
-         <div className="space-y-3">
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 md:items-end">
+            {topThree[1] && <TopThreeCard candidate={topThree[1]} rank={2} />}
+
+            {topThree[0] && (
+               <div className="md:-mt-8 order-first md:order-0">
+                  <TopThreeCard candidate={topThree[0]} rank={1} isFirst />
+               </div>
+            )}
+
+            {topThree[2] && <TopThreeCard candidate={topThree[2]} rank={3} />}
+         </div>
+
+         <div className="flex flex-col gap-5">
             {rest.map((candidate, index) => (
                <LeaderboardRow key={candidate.id} candidate={candidate} rank={index + 4} />
             ))}
@@ -29,149 +46,98 @@ export function Leaderboard({ candidates }: LeaderboardProps) {
    )
 }
 
-function TopThreeCard({ candidate, rank }: { candidate: Developer; rank: number }) {
-   const barHeights = ["h-48", "h-36", "h-28"]
-   const barColors = ["bg-amber-500", "bg-zinc-400", "bg-amber-700"]
-   const iconColors = ["text-amber-400", "text-zinc-300", "text-amber-600"]
-
-   const orderClass = rank === 1 ? "order-2" : rank === 2 ? "order-1" : "order-3"
-
+function TopThreeCard({
+   candidate,
+   rank,
+   isFirst = false,
+}: {
+   candidate: Developer
+   rank: number
+   isFirst?: boolean
+}) {
    return (
-      <Link href={`/profile/${candidate.username}`} className={`w-full md:w-auto ${orderClass}`}>
+      <Link href={`/profile/${candidate.username}`}>
          <div
-            className={`w-full md:w-48 flex flex-col items-center p-4 rounded-xl border border-zinc-800 bg-neutral-900/40 hover:border-zinc-700 transition-colors cursor-pointer relative overflow-hidden`}
+            className={`relative rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 hover:border-zinc-700 transition-all group overflow-hidden ${
+               isFirst ? "md:p-6" : ""
+            }`}
          >
             <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.03)_0px,rgba(255,255,255,0.03)_1px,transparent_1px,transparent_6px)]"></div>
 
-            <div className="relative">
-               <RankIcon rank={rank} iconColor={iconColors[rank - 1]} />
+            <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
+               <div className="absolute top-2 right-2 w-2 h-2 bg-zinc-600 rounded-full opacity-60"></div>
+               <div className="absolute top-2 right-6 w-1 h-1 bg-zinc-600/40 rounded-full"></div>
+               <div className="absolute top-6 right-2 w-1 h-1 bg-zinc-600/40 rounded-full"></div>
             </div>
 
-            <div className="relative h-16 w-16 overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 mt-3 mb-4">
-               <Image
-                  src={candidate.avatar || "/placeholder.svg"}
-                  alt={candidate.name}
-                  fill
-                  unoptimized
-                  className="object-cover"
-               />
+            <div className="absolute top-4 left-4 flex items-center gap-1">
+               <span className="text-zinc-400 font-mono text-xs">0{rank}</span>
             </div>
 
-            <div className="text-center w-full relative">
-               <h3 className="font-semibold text-zinc-100 truncate w-full">{candidate.name}</h3>
-               <p className="text-xs text-zinc-500">@{candidate.username}</p>
-            </div>
+            <div className="flex flex-col items-center pt-4">
+               <div className={`relative ${isFirst ? "h-24 w-24" : "h-20 w-20"} mb-4`}>
+                  <div className="relative h-full w-full overflow-hidden rounded-xl border-2 border-zinc-700 bg-zinc-800">
+                     <Image
+                        src={candidate.avatar || "/placeholder.svg"}
+                        alt={candidate.name}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                     />
+                  </div>
 
-            <div className="w-full mt-4 relative">
-               <div
-                  className={`w-full ${barHeights[rank - 1]} ${barColors[rank - 1]} rounded-lg flex items-end justify-center pb-2`}
+                  {candidate.isOpenToRecruiters && candidate.score >= 80 && (
+                     <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-emerald-500 rounded-full border-2 border-zinc-900 flex items-center justify-center">
+                        <div className="h-2 w-2 bg-emerald-400 rounded-full"></div>
+                     </div>
+                  )}
+               </div>
+
+               <h3
+                  className={`font-bold text-zinc-100 uppercase tracking-wide ${isFirst ? "text-lg" : "text-base"}`}
                >
-                  <span className="text-xl font-bold text-zinc-900">{candidate.score}</span>
+                  {formatUsername(candidate.username)}
+               </h3>
+               <p className="text-xs text-zinc-500 mt-1 uppercase tracking-wider">
+                  {getRoleForCandidate(candidate)}
+               </p>
+
+               {/* Tech stack badges */}
+               <div className="flex flex-wrap justify-center gap-2 mt-3">
+                  {candidate.techStack?.map(tech => (
+                     <span
+                        key={tech}
+                        className="bg-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1 rounded-full border border-zinc-700"
+                     >
+                        {tech}
+                     </span>
+                  ))}
+               </div>
+               <div className="mt-4 flex items-center gap-2">
+                  <span className="text-xs text-zinc-500 font-mono">SCORE:</span>
+                  <span className="text-2xl font-bold text-zinc-100">{candidate.score}</span>
                </div>
             </div>
-
-            <div className="flex flex-wrap justify-center gap-1 mt-3 relative">
-               {candidate.techStack.slice(0, 2).map(tech => (
-                  <Badge
-                     key={tech}
-                     variant="secondary"
-                     size="sm"
-                     className="bg-zinc-800/50 text-zinc-400 border-zinc-800/50 text-xs"
-                  >
-                     {tech}
-                  </Badge>
-               ))}
-            </div>
-
-            {candidate.isOpenToRecruiters && candidate.score >= 80 && (
-               <div className="mt-3 flex items-center gap-1.5">
-                  <span className="relative flex h-2 w-2">
-                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
-                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  <span className="text-[10px] text-emerald-400">Open to hire</span>
-               </div>
-            )}
          </div>
       </Link>
    )
 }
 
-function RankIcon({ rank, iconColor }: { rank: number; iconBgColor?: string; iconColor: string }) {
-   const glassmorphismStyles = "backdrop-blur-md bg-white/10 border border-white/20"
-
-   return (
-      <div
-         className={`relative flex h-12 w-12 items-center justify-center rounded-xl ${glassmorphismStyles}`}
-      >
-         <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 256 256"
-            className={`h-7 w-7 ${iconColor}`}
-         >
-            <rect width="256" height="256" fill="none" />
-            <line
-               x1="96"
-               y1="224"
-               x2="160"
-               y2="224"
-               fill="none"
-               stroke="currentColor"
-               strokeLinecap="round"
-               strokeLinejoin="round"
-               strokeWidth="16"
-            />
-            <line
-               x1="128"
-               y1="184"
-               x2="128"
-               y2="224"
-               fill="none"
-               stroke="currentColor"
-               strokeLinecap="round"
-               strokeLinejoin="round"
-               strokeWidth="16"
-            />
-            <path
-               d="M58,128H48A32,32,0,0,1,16,96V80a8,8,0,0,1,8-8H56"
-               fill="none"
-               stroke="currentColor"
-               strokeLinecap="round"
-               strokeLinejoin="round"
-               strokeWidth="16"
-            />
-            <path
-               d="M198,128h10a32,32,0,0,0,32-32V80a8,8,0,0,0-8-8H200"
-               fill="none"
-               stroke="currentColor"
-               strokeLinecap="round"
-               strokeLinejoin="round"
-               strokeWidth="16"
-            />
-            <path
-               d="M56,48H200v63.1c0,39.7-31.75,72.6-71.45,72.9A72,72,0,0,1,56,112Z"
-               fill="none"
-               stroke="currentColor"
-               strokeLinecap="round"
-               strokeLinejoin="round"
-               strokeWidth="16"
-            />
-         </svg>
-      </div>
-   )
-}
-
 function LeaderboardRow({ candidate, rank }: { candidate: Developer; rank: number }) {
+   const percentage = Math.min(100, Math.max(0, candidate.score))
+
    return (
       <Link href={`/profile/${candidate.username}`}>
-         <div className="flex items-center gap-4 rounded-xl border border-zinc-800 bg-neutral-900/40 p-3 hover:border-zinc-700 transition-colors relative overflow-hidden">
+         <div className="relative flex items-center gap-4 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 hover:border-zinc-700 transition-all group overflow-hidden">
             <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.03)_0px,rgba(255,255,255,0.03)_1px,transparent_1px,transparent_6px)]"></div>
 
-            <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800/50 border border-zinc-700">
-               <span className="text-sm font-bold text-zinc-400">#{rank}</span>
+            <div className="relative w-10 text-center">
+               <span className="text-lg font-bold text-zinc-500 font-mono">
+                  {rank.toString().padStart(2, "0")}
+               </span>
             </div>
 
-            <div className="relative h-12 w-12 overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900">
+            <div className="relative h-12 w-12 overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800 shrink-0">
                <Image
                   src={candidate.avatar || "/placeholder.svg"}
                   alt={candidate.name}
@@ -183,7 +149,9 @@ function LeaderboardRow({ candidate, rank }: { candidate: Developer; rank: numbe
 
             <div className="relative flex-1 min-w-0">
                <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-zinc-100 truncate">{candidate.name}</h3>
+                  <h3 className="font-semibold text-zinc-100 uppercase tracking-wide text-sm">
+                     {formatUsername(candidate.username)}
+                  </h3>
                   {candidate.isOpenToRecruiters && candidate.score >= 80 && (
                      <span className="relative flex h-2 w-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
@@ -191,28 +159,59 @@ function LeaderboardRow({ candidate, rank }: { candidate: Developer; rank: numbe
                      </span>
                   )}
                </div>
-               <p className="text-xs text-zinc-500">@{candidate.username}</p>
+               <p className="text-xs text-zinc-500 uppercase tracking-wider">
+                  {getRoleForCandidate(candidate)}
+               </p>
+               {/* Tech stack badges */}
+               <div className="flex flex-wrap gap-2 mt-2">
+                  {candidate.techStack?.map(tech => (
+                     <span
+                        key={tech}
+                        className="bg-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1 rounded-full border border-zinc-700"
+                     >
+                        {tech}
+                     </span>
+                  ))}
+               </div>
             </div>
 
-            <div className="relative hidden sm:flex gap-1">
-               {candidate.techStack.slice(0, 2).map(tech => (
-                  <Badge
-                     key={tech}
-                     variant="secondary"
-                     size="sm"
-                     className="bg-zinc-800/50 text-zinc-400 border-zinc-800/50 text-xs"
-                  >
-                     {tech}
-                  </Badge>
-               ))}
+            <div className="relative hidden sm:flex flex-1 max-w-xs items-center gap-3">
+               <div className="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                  <div
+                     className="h-full bg-linear-to-r from-zinc-600 to-zinc-500 rounded-full transition-all duration-500"
+                     style={{ width: `${percentage}%` }}
+                  ></div>
+               </div>
+               <span className="text-xs text-zinc-400 font-mono w-10">{percentage}%</span>
             </div>
 
-            <div className="relative flex items-center gap-2">
-               <span className="text-xl font-bold text-zinc-100">{candidate.score}</span>
+            <div className="relative text-right">
+               <span className="text-2xl font-bold text-zinc-100">{candidate.score}</span>
             </div>
          </div>
       </Link>
    )
+}
+
+function formatUsername(username: string): string {
+   return username.toUpperCase().replace(/([a-z])([A-Z])/g, "$1_$2")
+}
+
+function getRoleForCandidate(candidate: Developer): string {
+   const tech = candidate.techStack[0]?.toLowerCase() || ""
+   if (tech.includes("react") || tech.includes("vue") || tech.includes("next")) {
+      return "FRONTEND DEVELOPER"
+   }
+   if (tech.includes("node") || tech.includes("go") || tech.includes("rust")) {
+      return "BACKEND DEVELOPER"
+   }
+   if (tech.includes("aws") || tech.includes("docker") || tech.includes("kubernetes")) {
+      return "DEVOPS SPECIALIST"
+   }
+   if (tech.includes("python") || tech.includes("tensorflow")) {
+      return "DATA ENGINEER"
+   }
+   return "SR DEVELOPER"
 }
 
 const mockCandidates: Developer[] = [
