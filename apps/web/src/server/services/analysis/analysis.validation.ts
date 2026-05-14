@@ -37,7 +37,9 @@ export const scoresSchema = z
 export const analysisResponse = z.object({
    scores: scoresSchema,
    feedback: z.array(z.string(), { message: "Invalid feedback array type" }),
-   totalScore: z.number({ message: "Invalid totalScore type" }),
+   totalScore: z.coerce.number({
+      message: "Invalid totalScore type",
+   }),
 })
 
 export type AnalysisResponse = z.infer<typeof analysisResponse>

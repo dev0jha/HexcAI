@@ -30,7 +30,7 @@ export function DashboardHeader({ userName, publicProfileUrl }: DashboardHeaderP
             </Link>
 
             <Link href="/dashboard/analysis" passHref>
-               <Button className="bg-neutral-800/80 text-zinc-200 hover:bg-zinc-700 shadow-lg border-2 border-zinc-800 h-11">
+               <Button className="text-zinc-200 hover:bg-zinc-700 bg-purple-700 border-2 border-purple-500 h-11">
                   <IconAnalyze className="mr-2 h-4 w-4" />
                   New Analysis
                </Button>

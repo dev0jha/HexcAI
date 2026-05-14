@@ -2,7 +2,7 @@ import { DeveloperRadarChart } from "@/components/discover/radar-chart"
 
 export function CompetencyMatrix() {
    return (
-      <div className="rounded-xl border border-zinc-800 bg-neutral-800/20 backdrop-blur-sm">
+      <div className="rounded-xl border border-neutral-50/10 bg-neutral-800/20">
          <div className="border-zinc-800 px-6 py-4">
             <h3 className="text-base font-semibold text-zinc-100">Competency Matrix</h3>
             <p className="text-sm text-zinc-500">Visual breakdown of your engineering strengths.</p>

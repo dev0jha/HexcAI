@@ -5,7 +5,6 @@ import { apiClient } from "@/lib/eden"
 import { queryKeys } from "./queryKeys"
 import type {
    ContactRequestQuery,
-   ContactRequestResponse,
    CandidatesQuery,
    CandidatesResponse,
    DevelopersQuery,
@@ -27,6 +26,7 @@ export interface Conversation {
    candidateGithub: string | null
    recruiterName: string | null
    recruiterCompany: string | null
+   unreadCount?: number
 }
 
 export interface Message {
@@ -57,6 +57,26 @@ export const conversationQueries = {
             return data as { success: boolean; conversations: Conversation[] }
          },
          staleTime: 1000 * 60 * 2,
+      }),
+
+   withUnread: () =>
+      queryOptions({
+         queryKey: ["conversations", "withUnread"],
+         queryFn: async () => {
+            const response = await apiClient["conversations"]["unread"].get()
+
+            if (response.error) {
+               throw new Error("Failed to fetch conversations with unread count")
+            }
+
+            const data = response.data
+            if (!data.success) {
+               throw new Error(data.message ?? "Failed to fetch conversations with unread count")
+            }
+
+            return data as { success: boolean; conversations: Conversation[]; totalUnread: number }
+         },
+         staleTime: 1000 * 30,
       }),
 }
 
@@ -91,6 +111,18 @@ export const sendMessageMutation = {
       }
 
       return response.data.message as Message
+   },
+}
+
+export const markConversationAsReadMutation = {
+   mutationFn: async ({ conversationId }: { conversationId: string }) => {
+      const response = await apiClient.conversations({ conversationId }).read.patch({})
+
+      if (response.error || !response.data.success) {
+         throw new Error(response.data?.message ?? "Failed to mark conversation as read")
+      }
+
+      return response.data
    },
 }
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { AnalysisInputTrigger } from "@/components/analysis/analysis-input"
+import { ErrorMessage } from "@/components/analysis/analysis-error"
 import { Results } from "@/components/analysis/analysis-results"
 import { AnalysisStore } from "@/hooks/scopedstores/analysis.store"
 
@@ -27,6 +28,10 @@ function AnalyzePageContent() {
 
             <div className="w-full px-0 sm:px-8 lg:px-16 xl:px-44">
                <AnalysisInputTrigger />
+            </div>
+
+            <div className="flex justify-center">
+               <ErrorMessage />
             </div>
 
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 max-w-6xl">

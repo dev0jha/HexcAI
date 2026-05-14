@@ -15,6 +15,7 @@ export type Conversation = {
    lastMessageAt: Date
    title: string
    subtitle: string
+   unreadCount?: number
 }
 
 export function MessagingLayout({ children }: { children: React.ReactNode }) {

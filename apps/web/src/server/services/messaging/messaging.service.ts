@@ -1,4 +1,4 @@
-import { eq, and, desc, or, sql } from "drizzle-orm"
+import { eq, and, desc, or, sql, count, gt } from "drizzle-orm"
 import { EventEmitter } from "events"
 import { db } from "@/db/drizzle"
 import {
@@ -8,6 +8,7 @@ import {
    recruitersProfiles,
    user,
    contactRequests,
+   conversationParticipants,
 } from "@/db/schema"
 import { attempt, attemptSync } from "@/utils/attempt"
 import { alias } from "drizzle-orm/pg-core"
@@ -16,9 +17,134 @@ import { sse } from "elysia"
 class MessageEventEmitter extends EventEmitter {}
 
 const messageEmitter = new MessageEventEmitter()
+const userUnreadEmitter = new Map<string, Set<(data: any) => void>>()
 
 export function emitNewMessage(conversationId: string, message: any) {
    messageEmitter.emit(`conversation:${conversationId}`, message)
+}
+
+function subscribeToUnreadUpdates(userId: string, sendFn: (data: any) => void) {
+   if (!userUnreadEmitter.has(userId)) {
+      userUnreadEmitter.set(userId, new Set())
+   }
+   userUnreadEmitter.get(userId)!.add(sendFn)
+}
+
+function unsubscribeFromUnreadUpdates(userId: string, sendFn: (data: any) => void) {
+   const subscribers = userUnreadEmitter.get(userId)
+   if (subscribers) {
+      subscribers.delete(sendFn)
+      if (subscribers.size === 0) {
+         userUnreadEmitter.delete(userId)
+      }
+   }
+}
+
+export async function emitUnreadUpdate(userId: string) {
+   const result = await getConversationsWithUnreadCountForUser(userId)
+   const data = JSON.stringify({
+      type: "unread_update",
+      conversations: result.conversations,
+      totalUnread: result.totalUnread,
+   })
+
+   const subscribers = userUnreadEmitter.get(userId)
+   if (subscribers) {
+      subscribers.forEach(sendFn => {
+         const sendAttempt = attemptSync(() => sendFn(data))
+         if (!sendAttempt.ok) {
+            console.error("[Unread SSE] Error sending update:", sendAttempt.error)
+         }
+      })
+   }
+}
+
+async function getConversationsWithUnreadCountForUser(userId: string) {
+   const conversationsRes = await attempt(() =>
+      db
+         .select({
+            id: conversations.id,
+            contactRequestId: conversations.contactRequestId,
+            candidateId: conversations.candidateId,
+            recruiterId: conversations.recruiterId,
+            lastMessageAt: conversations.lastMessageAt,
+            createdAt: conversations.createdAt,
+            candidateName: sql`${userCandidate.name}`,
+            candidateGithub: sql`${candidateProfiles.githubUsername}`,
+            recruiterName: sql`${userRecruiter.name}`,
+            recruiterCompany: sql`${recruitersProfiles.companyName}`,
+         })
+         .from(conversations)
+         .leftJoin(userCandidate, eq(conversations.candidateId, userCandidate.id))
+         .leftJoin(candidateProfiles, eq(conversations.candidateId, candidateProfiles.userId))
+         .leftJoin(userRecruiter, eq(conversations.recruiterId, userRecruiter.id))
+         .leftJoin(recruitersProfiles, eq(conversations.recruiterId, recruitersProfiles.userId))
+         .where(or(eq(conversations.candidateId, userId), eq(conversations.recruiterId, userId)))
+         .orderBy(desc(conversations.lastMessageAt))
+   )
+
+   if (!conversationsRes.ok || conversationsRes.data.length === 0) {
+      return { conversations: [], totalUnread: 0 }
+   }
+
+   const conversationsWithUnread = await Promise.all(
+      conversationsRes.data.map(async conv => {
+         const participantRes = await attempt(() =>
+            db
+               .select({ lastReadAt: conversationParticipants.lastReadAt })
+               .from(conversationParticipants)
+               .where(
+                  and(
+                     eq(conversationParticipants.conversationId, conv.id),
+                     eq(conversationParticipants.userId, userId)
+                  )
+               )
+               .limit(1)
+         )
+
+         let unreadCount = 0
+         const lastReadAt = participantRes.ok && participantRes.data[0]?.lastReadAt
+
+         if (lastReadAt) {
+            const unreadRes = await attempt(() =>
+               db
+                  .select({ count: count() })
+                  .from(messages)
+                  .where(
+                     and(
+                        eq(messages.conversationId, conv.id),
+                        sql`${messages.senderId} != ${userId}`,
+                        gt(messages.createdAt, lastReadAt)
+                     )
+                  )
+            )
+            if (unreadRes.ok) {
+               unreadCount = unreadRes.data[0]?.count || 0
+            }
+         } else {
+            const unreadRes = await attempt(() =>
+               db
+                  .select({ count: count() })
+                  .from(messages)
+                  .where(
+                     and(
+                        eq(messages.conversationId, conv.id),
+                        sql`${messages.senderId} != ${userId}`
+                     )
+                  )
+            )
+            if (unreadRes.ok) {
+               unreadCount = unreadRes.data[0]?.count || 0
+            }
+         }
+
+         return { ...conv, unreadCount }
+      })
+   )
+
+   const totalUnread = conversationsWithUnread.reduce((sum, conv) => sum + conv.unreadCount, 0)
+
+   return { conversations: conversationsWithUnread, totalUnread }
 }
 
 const userCandidate = alias(user, "candidateUser")
@@ -67,6 +193,185 @@ export class ConversationService {
          success: true,
          conversations: conversationsRes.data,
       }
+   }
+
+   static async getConversationsWithUnreadCount({
+      user: authContextUser,
+      set,
+   }: {
+      user: { id: string }
+      set: any
+   }) {
+      const userId = authContextUser.id
+
+      const conversationsRes = await attempt(() =>
+         db
+            .select({
+               id: conversations.id,
+               contactRequestId: conversations.contactRequestId,
+               candidateId: conversations.candidateId,
+               recruiterId: conversations.recruiterId,
+               lastMessageAt: conversations.lastMessageAt,
+               createdAt: conversations.createdAt,
+               candidateName: sql`${userCandidate.name}`,
+               candidateGithub: sql`${candidateProfiles.githubUsername}`,
+               recruiterName: sql`${userRecruiter.name}`,
+               recruiterCompany: sql`${recruitersProfiles.companyName}`,
+            })
+            .from(conversations)
+            .leftJoin(userCandidate, eq(conversations.candidateId, userCandidate.id))
+            .leftJoin(candidateProfiles, eq(conversations.candidateId, candidateProfiles.userId))
+            .leftJoin(userRecruiter, eq(conversations.recruiterId, userRecruiter.id))
+            .leftJoin(recruitersProfiles, eq(conversations.recruiterId, recruitersProfiles.userId))
+            .where(or(eq(conversations.candidateId, userId), eq(conversations.recruiterId, userId)))
+            .orderBy(desc(conversations.lastMessageAt))
+      )
+
+      if (!conversationsRes.ok) {
+         console.error("Error fetching conversations:", conversationsRes.error)
+         set.status = 500
+         return {
+            success: false,
+            message: "Failed to fetch conversations",
+         }
+      }
+
+      const conversationsWithUnread = await Promise.all(
+         conversationsRes.data.map(async conv => {
+            const participantRes = await attempt(() =>
+               db
+                  .select({ lastReadAt: conversationParticipants.lastReadAt })
+                  .from(conversationParticipants)
+                  .where(
+                     and(
+                        eq(conversationParticipants.conversationId, conv.id),
+                        eq(conversationParticipants.userId, userId)
+                     )
+                  )
+                  .limit(1)
+            )
+
+            let unreadCount = 0
+            const lastReadAt = participantRes.ok && participantRes.data[0]?.lastReadAt
+
+            if (lastReadAt) {
+               const unreadRes = await attempt(() =>
+                  db
+                     .select({ count: count() })
+                     .from(messages)
+                     .where(
+                        and(
+                           eq(messages.conversationId, conv.id),
+                           sql`${messages.senderId} != ${userId}`,
+                           gt(messages.createdAt, lastReadAt)
+                        )
+                     )
+               )
+               if (unreadRes.ok) {
+                  unreadCount = unreadRes.data[0]?.count || 0
+               }
+            } else {
+               const unreadRes = await attempt(() =>
+                  db
+                     .select({ count: count() })
+                     .from(messages)
+                     .where(
+                        and(
+                           eq(messages.conversationId, conv.id),
+                           sql`${messages.senderId} != ${userId}`
+                        )
+                     )
+               )
+               if (unreadRes.ok) {
+                  unreadCount = unreadRes.data[0]?.count || 0
+               }
+            }
+
+            return {
+               ...conv,
+               unreadCount,
+            }
+         })
+      )
+
+      const totalUnread = conversationsWithUnread.reduce((sum, conv) => sum + conv.unreadCount, 0)
+
+      return {
+         success: true,
+         conversations: conversationsWithUnread,
+         totalUnread,
+      }
+   }
+
+   static async markConversationAsRead({
+      user: authContextUser,
+      params,
+      set,
+   }: {
+      user: { id: string }
+      params: { conversationId: string }
+      set: any
+   }) {
+      const userId = authContextUser.id
+      const { conversationId } = params
+
+      const convCheckRes = await attempt(() =>
+         db
+            .select()
+            .from(conversations)
+            .where(
+               and(
+                  eq(conversations.id, conversationId),
+                  or(eq(conversations.candidateId, userId), eq(conversations.recruiterId, userId))
+               )
+            )
+            .limit(1)
+      )
+
+      if (!convCheckRes.ok || convCheckRes.data.length === 0) {
+         set.status = 403
+         return { success: false, message: "Conversation not found or access denied" }
+      }
+
+      const existingParticipantRes = await attempt(() =>
+         db
+            .select()
+            .from(conversationParticipants)
+            .where(
+               and(
+                  eq(conversationParticipants.conversationId, conversationId),
+                  eq(conversationParticipants.userId, userId)
+               )
+            )
+            .limit(1)
+      )
+
+      if (existingParticipantRes.ok && existingParticipantRes.data.length > 0) {
+         await attempt(() =>
+            db
+               .update(conversationParticipants)
+               .set({ lastReadAt: new Date() })
+               .where(
+                  and(
+                     eq(conversationParticipants.conversationId, conversationId),
+                     eq(conversationParticipants.userId, userId)
+                  )
+               )
+         )
+      } else {
+         await attempt(() =>
+            db.insert(conversationParticipants).values({
+               id: crypto.randomUUID(),
+               conversationId,
+               userId,
+               lastReadAt: new Date(),
+            })
+         )
+      }
+
+      await emitUnreadUpdate(userId)
+
+      return { success: true }
    }
 
    static async getOrCreateConversation({
@@ -128,7 +433,6 @@ export class ConversationService {
       candidateId: string
       recruiterId: string
    }) {
-      // Check if conversation already exists between this candidate and recruiter
       const existingRes = await db
          .select()
          .from(conversations)
@@ -141,14 +445,16 @@ export class ConversationService {
          .limit(1)
 
       if (existingRes.length > 0) {
-         // If contactRequestId is different, update it to link to this conversation
          if (existingRes[0].contactRequestId !== contactRequestId) {
             await db
                .update(conversations)
                .set({ contactRequestId })
                .where(eq(conversations.id, existingRes[0].id))
          }
-         return { success: true, conversation: existingRes[0] }
+         return {
+            success: true,
+            conversation: existingRes[0],
+         }
       }
 
       const createRes = await db
@@ -196,7 +502,6 @@ export class ConversationService {
          return { success: false, message: "Contact request must be accepted first" }
       }
 
-      // Check if conversation already exists between this candidate and recruiter
       const existingRes = await db
          .select()
          .from(conversations)
@@ -209,7 +514,6 @@ export class ConversationService {
          .limit(1)
 
       if (existingRes.length > 0) {
-         // Update contactRequestId if different
          if (existingRes[0].contactRequestId !== contactRequestId) {
             await db
                .update(conversations)
@@ -229,7 +533,10 @@ export class ConversationService {
                .set({ lastMessageAt: new Date() })
                .where(eq(conversations.id, existingRes[0].id))
          }
-         return { success: true, conversation: existingRes[0] }
+         return {
+            success: true,
+            conversation: existingRes[0],
+         }
       }
 
       const conversationId = crypto.randomUUID()
@@ -262,7 +569,19 @@ export class ConversationService {
             .where(eq(conversations.id, conversationId))
       }
 
-      return { success: true, conversation: createRes[0] }
+      await attempt(() =>
+         db.insert(conversationParticipants).values({
+            id: crypto.randomUUID(),
+            conversationId,
+            userId: senderId,
+            lastReadAt: new Date(),
+         })
+      )
+
+      return {
+         success: true,
+         conversation: createRes[0],
+      }
    }
 }
 
@@ -403,6 +722,10 @@ export class MessageService {
 
       emitNewMessage(conversationId, messageWithSender)
 
+      const conv = convCheckRes.data[0]
+      const recipientId = conv.candidateId === senderId ? conv.recruiterId : conv.candidateId
+      await emitUnreadUpdate(recipientId)
+
       return {
          success: true,
          message: messageWithSender,
@@ -435,6 +758,25 @@ export class MessageService {
       await attempt(() => new Promise(() => {}), {
          onTearDown: () => {
             messageEmitter.off(`conversation:${conversationId}`, messageHandler)
+         },
+      })
+   }
+
+   static async *streamUnreadUpdates({ user: authContextUser }: { user: { id: string } }) {
+      const userId = authContextUser.id
+
+      const initialData = await getConversationsWithUnreadCountForUser(userId)
+      yield sse({ data: JSON.stringify({ type: "initial", ...initialData }) })
+
+      const sendFn = (data: string) => {
+         return sse({ data })
+      }
+
+      subscribeToUnreadUpdates(userId, sendFn)
+
+      await attempt(() => new Promise(() => {}), {
+         onTearDown: () => {
+            unsubscribeFromUnreadUpdates(userId, sendFn)
          },
       })
    }

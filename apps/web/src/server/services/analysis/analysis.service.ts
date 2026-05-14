@@ -1,5 +1,5 @@
 import { groq } from "@ai-sdk/groq"
-import { generateText, tool } from "ai"
+import { generateText, tool, stepCountIs } from "ai"
 import { sse } from "elysia"
 import { z } from "zod"
 
@@ -11,6 +11,7 @@ import { buildPrompt } from "@/server/prompt/prompt.builder"
 import { attempt, attemptSync, err, ok } from "@/utils/attempt"
 import type { PromiseRes, Result } from "@/utils/attempt"
 import { githubRepoSchema } from "@/utils/validation/github.validation"
+import { ErrWith } from "@/lib/err"
 
 import type { RepoFetchResult, AnalyzeRepositoryContext } from "./analysis.types"
 import { analysisResponse } from "./analysis.validation"
@@ -27,7 +28,7 @@ export class AnalysisService {
       )
 
       if (!responseAttempt.ok) {
-         return err(new Error("Network error while reaching GitHub"))
+         return err(ErrWith({ message: "Network error while reaching GitHub" }))
       }
 
       const res = responseAttempt.data
@@ -35,17 +36,25 @@ export class AnalysisService {
       switch (res.status) {
          case 200:
             return ok(await res.json())
-
          case 301:
          case 302:
-            return err(new Error("Repository was moved (redirect). Use the canonical GitHub URL."))
-
+            return err(
+               ErrWith({
+                  message: "Repository was moved (redirect). Use the canonical GitHub URL.",
+               })
+            )
          case 400:
-            return err(new Error("Bad request to GitHub. Check the owner/repo format."))
-
+            return err(
+               ErrWith({
+                  message: "Bad request to GitHub. Check the owner/repo format.",
+               })
+            )
          case 401:
-            return err(new Error("Unauthorized GitHub request. Server token may be invalid."))
-
+            return err(
+               ErrWith({
+                  message: "Unauthorized GitHub request. Server token may be invalid.",
+               })
+            )
          case 403: {
             const rateLimit = res.headers.get("x-ratelimit-remaining")
 
@@ -53,26 +62,45 @@ export class AnalysisService {
                const reset = res.headers.get("x-ratelimit-reset")
                const resetAt = reset ? new Date(Number(reset) * 1000).toLocaleTimeString() : "soon"
 
-               return err(new Error(`GitHub rate limit exceeded. Try again after ${resetAt}.`))
+               return err(
+                  ErrWith({
+                     message: `GitHub rate limit exceeded. Try again after ${resetAt}.`,
+                  })
+               )
             }
-
-            return err(new Error("Access forbidden. Repo may be private."))
+            return err(
+               ErrWith({
+                  message: "Access forbidden. Repo may be private.",
+               })
+            )
          }
-
          case 404:
-            return err(new Error("Repo not found. Make sure it exists and is public."))
-
+            return err(
+               ErrWith({
+                  message: "Repo not found. Make sure it exists and is public.",
+               })
+            )
          case 451:
-            return err(new Error("Repository unavailable for legal reasons."))
-
+            return err(
+               ErrWith({
+                  message: "Repository unavailable for legal reasons.",
+               })
+            )
          case 500:
          case 502:
          case 503:
          case 504:
-            return err(new Error("GitHub is having server issues. Try again later."))
-
+            return err(
+               ErrWith({
+                  message: "GitHub is having server issues. Try again later.",
+               })
+            )
          default:
-            return err(new Error(`GitHub error: HTTP ${res.status}`))
+            return err(
+               ErrWith({
+                  message: `GitHub error: HTTP ${res.status}`,
+               })
+            )
       }
    }
 
@@ -86,7 +114,11 @@ export class AnalysisService {
       )
       if (!response.ok) {
          console.error("Failed to fetch README:", response.error)
-         return err(new Error("Failed to fetch README"))
+         return err(
+            ErrWith({
+               message: "Failed to fetch README",
+            })
+         )
       }
 
       const data = await response.data.json()
@@ -104,7 +136,11 @@ export class AnalysisService {
          Buffer.from((data as { content: string }).content, "base64").toString("utf-8")
       )
       if (!content.ok) {
-         return err(new Error("Failed to decode README content"))
+         return err(
+            ErrWith({
+               message: "Failed to decode README content",
+            })
+         )
       }
       return ok(content.data)
    }
@@ -122,7 +158,11 @@ export class AnalysisService {
       )
       if (!response.ok) {
          console.error("Failed to fetch languages:", response.error)
-         return err(new Error("Failed to fetch languages"))
+         return err(
+            ErrWith({
+               message: "Failed to fetch languages",
+            })
+         )
       }
 
       const data = await response.data.json()
@@ -142,7 +182,7 @@ export class AnalysisService {
 
       const resultAttempt = await attempt(() =>
          generateText({
-            model: groq("moonshotai/kimi-k2-instruct-0905"),
+            model: groq("openai/gpt-oss-20b"),
             prompt: `${prompt}\n\nReturn only a valid JSON object matching the required schema. Do not include any additional text, explanations, or formatting.`,
             tools: {
                fetchReadme: tool({
@@ -162,18 +202,29 @@ export class AnalysisService {
                   },
                }),
             },
+            stopWhen: stepCountIs(5),
          })
       )
 
       if (!resultAttempt.ok) {
          console.error("AI generation error:", resultAttempt.error)
-         return err(new Error("Failed to generate AI analysis"))
+         return err(
+            ErrWith({
+               message: "Failed to generate AI analysis",
+            })
+         )
       }
 
       const result = resultAttempt.data
 
+      console.error("Raw AI response:", result.content)
+
       if (!result.text || result.text.trim() === "") {
-         return err(new Error("AI returned empty response"))
+         return err(
+            ErrWith({
+               message: "AI returned empty response",
+            })
+         )
       }
 
       const jsonMatch = result.text.match(/\{[\s\S]*\}/)
@@ -187,13 +238,20 @@ export class AnalysisService {
       const analysis = attemptSync(() => JSON.parse(jsonText))
       if (!analysis.ok) {
          console.error("[PARSE ERROR]:", analysis.error)
-         console.error("Raw response:", result.text)
-         return err(new Error("Failed to parse analysis result"))
+         return err(
+            ErrWith({
+               message: "Failed to parse analysis result",
+            })
+         )
       }
 
       const formatValidation = analysisResponse.safeParse(analysis.data)
       if (!formatValidation.success) {
-         return err(new Error(formatValidation.error.issues[0].message))
+         return err(
+            ErrWith({
+               message: formatValidation.error.issues[0].message,
+            })
+         )
       }
 
       return ok(formatValidation.data)
@@ -210,12 +268,18 @@ export class AnalysisService {
    }: AnalyzeRepositoryContext & { body: { repoUrl: string } }) {
       headers["content-type"] = "text/event-stream"
 
-      yield sse({ data: JSON.stringify({ status: "Starting analysis..." }) })
+      yield sse({
+         data: JSON.stringify({
+            status: "Starting analysis...",
+         }),
+      })
 
       const urlMatch = body.repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/)
       if (!urlMatch) {
          yield sse({
-            data: JSON.stringify({ error: "Invalid GitHub URL format" }),
+            data: JSON.stringify({
+               error: "Invalid GitHub URL format",
+            }),
          })
          return
       }
@@ -239,16 +303,26 @@ export class AnalysisService {
 
       const repoData = await AnalysisService.fetchGitHubRepo(owner, repo)
       if (!repoData.ok) {
-         yield sse({ data: JSON.stringify({ error: repoData.error.message }) })
+         yield sse({
+            data: JSON.stringify({
+               error: repoData.error.message,
+            }),
+         })
          return
       }
 
-      yield sse({ data: JSON.stringify({ status: "Analyzing with AI..." }) })
+      yield sse({
+         data: JSON.stringify({
+            status: "Analyzing with AI...",
+         }),
+      })
 
       const analysisRes = await AnalysisService.analyze(owner, repo, repoData.data)
       if (!analysisRes.ok) {
          yield sse({
-            data: JSON.stringify({ error: analysisRes.error.message }),
+            data: JSON.stringify({
+               error: analysisRes.error.message,
+            }),
          })
          return
       }
@@ -289,11 +363,19 @@ export class AnalysisService {
 
       if (!insertRes.ok) {
          console.error("Failed to save analysis:", insertRes.error)
-         yield sse({ data: JSON.stringify({ error: "Failed to save analysis" }) })
+         yield sse({
+            data: JSON.stringify({
+               error: "Failed to save analysis",
+            }),
+         })
          return
       }
 
-      yield sse({ data: JSON.stringify({ result }) })
+      yield sse({
+         data: JSON.stringify({
+            result,
+         }),
+      })
    }
 
    static async getAnalysisHistory({ user, set }: AnalyzeRepositoryContext) {
@@ -308,7 +390,10 @@ export class AnalysisService {
       if (!analysesRes.ok) {
          console.error("Failed to fetch analyses:", analysesRes.error)
          set.status = 500
-         return { success: false, analyses: [] }
+         return {
+            success: false,
+            analyses: [],
+         }
       }
 
       const analyses: AnalyzedRepo[] = analysesRes.data.map(a => ({
@@ -325,7 +410,10 @@ export class AnalysisService {
       }))
 
       set.status = 200
-      return { success: true, analyses }
+      return {
+         success: true,
+         analyses,
+      }
    }
 
    static async getAnalysisById({
@@ -339,19 +427,28 @@ export class AnalysisService {
 
       if (!analysisRes.ok) {
          set.status = 500
-         return { success: false, error: "Failed to fetch analysis" }
+         return {
+            success: false,
+            error: "Failed to fetch analysis",
+         }
       }
 
       if (analysisRes.data.length === 0) {
          set.status = 404
-         return { success: false, error: "Analysis not found" }
+         return {
+            success: false,
+            error: "Analysis not found",
+         }
       }
 
       const a = analysisRes.data[0]
 
       if (a.candidateId !== user.id) {
          set.status = 403
-         return { success: false, error: "Not authorized to view this analysis" }
+         return {
+            success: false,
+            error: "Not authorized to view this analysis",
+         }
       }
 
       const analysis: AnalyzedRepo = {

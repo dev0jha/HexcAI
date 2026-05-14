@@ -9,8 +9,10 @@ import {
    conversationQueries,
    messageQueries,
    sendMessageMutation,
+   markConversationAsReadMutation,
    type Message,
 } from "@/lib/queries/queryOptions"
+import { useUnreadStream } from "@/hooks/use-unread-stream"
 import { attemptSync } from "@/utils/attempt"
 
 export function useMessageStream(
@@ -101,6 +103,19 @@ export function useConversations() {
    }
 }
 
+export function useConversationsWithUnread() {
+   const markAsReadMutation = useMutation(markConversationAsReadMutation)
+
+   const markConversationAsRead = (conversationId: string) => {
+      markAsReadMutation.mutate({ conversationId })
+   }
+
+   return {
+      markConversationAsRead,
+      isMarkingAsRead: markAsReadMutation.isPending,
+   }
+}
+
 export function useMessages(conversationId: string | null) {
    const queryClient = useQueryClient()
    const [streamMessages, setStreamMessages] = useState<Message[]>([])
@@ -182,11 +197,8 @@ export function useMessagesPage(contactRequestId?: string | null) {
    const [pendingContactRequestId, setPendingContactRequestId] = useState<string | null>(null)
    const queryClient = useQueryClient()
 
-   const {
-      conversations,
-      isLoading: isLoadingConversations,
-      refetch: refetchConversations,
-   } = useConversations()
+   const { conversations, totalUnread, refetch: refetchConversations } = useUnreadStream()
+   const { markConversationAsRead } = useConversationsWithUnread()
    const {
       messages,
       isLoading: isLoadingMessages,
@@ -245,6 +257,15 @@ export function useMessagesPage(contactRequestId?: string | null) {
       }
    }, [conversations, contactRequestId, selectedConversationId, pendingContactRequestId])
 
+   const lastMarkedConversationRef = useRef<string | null>(null)
+
+   useEffect(() => {
+      if (selectedConversationId && selectedConversationId !== lastMarkedConversationRef.current) {
+         lastMarkedConversationRef.current = selectedConversationId
+         markConversationAsRead(selectedConversationId)
+      }
+   }, [selectedConversationId, markConversationAsRead])
+
    const selectConversation = (id: string | null) => {
       setSelectedConversationId(id)
       setPendingContactRequestId(null)
@@ -268,11 +289,11 @@ export function useMessagesPage(contactRequestId?: string | null) {
 
    return {
       conversations,
+      totalUnread,
       messages,
       selectedConversationId,
       pendingContactRequestId,
       selectConversation,
-      isLoadingConversations,
       isLoadingMessages,
       refetchConversations,
       refetchMessages,
@@ -280,5 +301,6 @@ export function useMessagesPage(contactRequestId?: string | null) {
       isSending,
       startConversation,
       isStartingConversation: createConversationMutation.isPending,
+      markConversationAsRead,
    }
 }

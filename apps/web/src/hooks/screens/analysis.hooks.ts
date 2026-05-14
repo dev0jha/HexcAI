@@ -3,6 +3,7 @@ import type React from "react"
 import { mockAnalysisResult } from "@/data/mock-data"
 import { AnalysisStore } from "@/hooks/scopedstores/analysis.store"
 import { attempt, attemptSync } from "@/utils/attempt"
+import { ErrWith } from "@/lib/err"
 
 /*
  * read usage for analysis repo url
@@ -126,7 +127,7 @@ export function useAnalysisActions() {
             }
          }
 
-         if (!gotResult) throw new Error("incomplete response end")
+         if (!gotResult) throw ErrWith({ message: "incomplete response end" })
          return true
       })
 

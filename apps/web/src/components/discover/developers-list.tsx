@@ -34,10 +34,10 @@ export function DevelopersList({
 
          {/* --- List Section (The Rest) --- */}
          {listDevelopers.length > 0 || topDevelopers.length > 0 ? (
-            <div className="overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/20">
+            <div className="overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900/20">
                {/* Table Header */}
                {listDevelopers.length > 0 && (
-                  <div className="grid grid-cols-12 items-center gap-4 border-b border-zinc-800 bg-zinc-900/50 px-6 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+                  <div className="grid grid-cols-12 items-center gap-4 border-b border-neutral-800 bg-neutral-900/50 px-6 py-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
                      <div className="col-span-1">Rank</div>
                      <div className="col-span-6 md:col-span-4">Developer</div>
                      <div className="col-span-3 hidden md:block">Tech Stack</div>
@@ -47,7 +47,7 @@ export function DevelopersList({
                )}
 
                {/* Table Body */}
-               <div className="divide-y divide-zinc-800/50">
+               <div className="divide-y divide-neutral-800/50">
                   {listDevelopers.length > 0
                      ? listDevelopers.map((dev, index) => (
                           <DeveloperRow
@@ -61,7 +61,7 @@ export function DevelopersList({
                </div>
             </div>
          ) : (
-            <div className="py-16 text-center text-sm text-zinc-500">
+            <div className="py-16 text-center text-sm text-neutral-500">
                No developers found matching your criteria.
             </div>
          )}

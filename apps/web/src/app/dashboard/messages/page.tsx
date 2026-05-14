@@ -24,7 +24,6 @@ export default function CandidateMessagesPage() {
       selectedConversationId,
       pendingContactRequestId,
       selectConversation,
-      isLoadingConversations,
       isLoadingMessages,
       sendMessage,
       isSending,
@@ -37,12 +36,11 @@ export default function CandidateMessagesPage() {
       lastMessageAt: c.lastMessageAt,
       title: c.recruiterName || c.recruiterCompany || "Unknown Recruiter",
       subtitle: c.recruiterCompany || "Connection",
+      unreadCount: c.unreadCount,
    }))
 
    const selectedChat = conversations.find(c => c.id === selectedConversationId)
    const isMobileActive = !!(selectedConversationId || pendingContactRequestId)
-
-   if (isLoadingConversations) return <div>Loading...</div>
 
    return (
       <MessagingLayout>

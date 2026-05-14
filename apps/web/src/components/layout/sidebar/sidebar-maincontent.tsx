@@ -16,6 +16,7 @@ import {
 
 import { SidebarContent } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
+import { useUnreadStream } from "@/hooks/use-unread-stream"
 
 const navGroups = [
    {
@@ -61,6 +62,7 @@ const navGroups = [
 
 export function CandidateSidebarMainContent() {
    const pathname = usePathname()
+   const { totalUnread } = useUnreadStream()
 
    // Default the 'Analysis' folder to be open so user sees main actions immediately
    const [openItems, setOpenItems] = React.useState<string[]>(["Analysis", "Management"])
@@ -138,6 +140,9 @@ export function CandidateSidebarMainContent() {
                                     <div className="flex flex-col gap-1">
                                        {item.items?.map(subItem => {
                                           const isSubActive = pathname === subItem.url
+                                          const showDot =
+                                             subItem.url === "/dashboard/messages" &&
+                                             totalUnread > 0
                                           return (
                                              <Link
                                                 key={subItem.title}
@@ -149,7 +154,12 @@ export function CandidateSidebarMainContent() {
                                                       : "text-zinc-500"
                                                 )}
                                              >
-                                                {subItem.title}
+                                                <span className="flex items-center gap-2">
+                                                   {subItem.title}
+                                                   {showDot && (
+                                                      <span className="bg-blue-500 rounded-full w-2 h-2" />
+                                                   )}
+                                                </span>
                                              </Link>
                                           )
                                        })}

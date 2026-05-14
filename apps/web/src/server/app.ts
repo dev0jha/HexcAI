@@ -97,8 +97,18 @@ export const app = new Elysia({ prefix: "/api" })
    .get("/developers/tech-stacks", DevelopersService.getTechStacks, {})
 
    .get("/conversations", ConversationService.getConversations, { auth: true })
+   .get("/conversations/unread", ConversationService.getConversationsWithUnreadCount, {
+      auth: true,
+   })
+   .get("/conversations/unread/stream", MessageService.streamUnreadUpdates, {
+      auth: true,
+   })
    .post("/conversations", ConversationService.createConversationWithMessage, {
       body: createConversationSchema,
+      auth: true,
+   })
+   .patch("/conversations/:conversationId/read", ConversationService.markConversationAsRead, {
+      params: t.Object({ conversationId: t.String() }),
       auth: true,
    })
    .get("/conversations/:conversationId/messages", MessageService.getMessages, { auth: true })

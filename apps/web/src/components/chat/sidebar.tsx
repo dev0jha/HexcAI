@@ -126,15 +126,36 @@ export function MessagingSidebar({
                            <div className="font-medium text-[14px] text-neutral-200 truncate pr-3">
                               {conversation.title}
                            </div>
-                           <div className="text-[10px] text-neutral-500 shrink-0">
-                              {new Date(conversation.lastMessageAt).toLocaleDateString(undefined, {
-                                 month: "short",
-                                 day: "numeric",
-                              })}
+                           <div className="flex items-center gap-2 shrink-0">
+                              {conversation.unreadCount && conversation.unreadCount > 0 ? (
+                                 <span className="bg-blue-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1.5">
+                                    {conversation.unreadCount > 99
+                                       ? "99+"
+                                       : conversation.unreadCount}
+                                 </span>
+                              ) : (
+                                 <div className="text-[10px] text-neutral-500">
+                                    {new Date(conversation.lastMessageAt).toLocaleDateString(
+                                       undefined,
+                                       {
+                                          month: "short",
+                                          day: "numeric",
+                                       }
+                                    )}
+                                 </div>
+                              )}
                            </div>
                         </div>
-                        <div className="relative z-10 text-[13px] text-neutral-500 truncate">
-                           {conversation.subtitle}
+                        <div className="relative z-10 text-[13px] text-neutral-500 truncate flex justify-between items-center">
+                           <span
+                              className={
+                                 conversation.unreadCount && conversation.unreadCount > 0
+                                    ? "text-neutral-300 font-medium"
+                                    : ""
+                              }
+                           >
+                              {conversation.subtitle}
+                           </span>
                         </div>
                      </button>
                   )
