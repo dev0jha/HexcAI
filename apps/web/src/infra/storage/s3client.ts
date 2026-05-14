@@ -16,9 +16,14 @@ class AssetStorage {
    #initPromise: Promise<void> | null = null
 
    constructor() {
+      const endpoint = process.env.OBJECT_STORAGE_ENDPOINT
+      if (!endpoint) {
+         throw new Error("OBJECT_STORAGE_ENDPOINT environment variable is not set")
+      }
+
       this.#s3 = new S3Client({
          region: "us-east-1",
-         endpoint: process.env.OBJECT_STORAGE_ENDPOINT!!,
+         endpoint,
          forcePathStyle: true,
          credentials: {
             accessKeyId: "rustfsadmin",
