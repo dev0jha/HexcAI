@@ -12,24 +12,27 @@ import { attempt } from "@/utils/attempt"
 const BUCKET = "profile-pics"
 
 class AssetStorage {
-   #s3: S3Client
+   #s3: S3Client | null = null
    #initPromise: Promise<void> | null = null
 
-   constructor() {
-      const endpoint = process.env.OBJECT_STORAGE_ENDPOINT
-      if (!endpoint) {
-         throw new Error("OBJECT_STORAGE_ENDPOINT environment variable is not set")
-      }
+   #getClient(): S3Client {
+      if (!this.#s3) {
+         const endpoint = process.env.OBJECT_STORAGE_ENDPOINT
+         if (!endpoint) {
+            throw new Error("OBJECT_STORAGE_ENDPOINT environment variable is not set")
+         }
 
-      this.#s3 = new S3Client({
-         region: "us-east-1",
-         endpoint,
-         forcePathStyle: true,
-         credentials: {
-            accessKeyId: "rustfsadmin",
-            secretAccessKey: "rustfsadmin",
-         },
-      })
+         this.#s3 = new S3Client({
+            region: "us-east-1",
+            endpoint,
+            forcePathStyle: true,
+            credentials: {
+               accessKeyId: "rustfsadmin",
+               secretAccessKey: "rustfsadmin",
+            },
+         })
+      }
+      return this.#s3
    }
 
    async ensureBucketExists() {
@@ -37,7 +40,7 @@ class AssetStorage {
 
       this.#initPromise = (async () => {
          const creationRes = await attempt<CreateBucketCommandOutput, Error>(() =>
-            this.#s3.send(new CreateBucketCommand({ Bucket: BUCKET }))
+            this.#getClient().send(new CreateBucketCommand({ Bucket: BUCKET }))
          )
 
          if (!creationRes.ok) {
@@ -58,7 +61,7 @@ class AssetStorage {
    public async uploadAsset(key: string, body: Buffer | Uint8Array | string, contentType?: string) {
       await this.ensureBucketExists()
 
-      await this.#s3.send(
+      await this.#getClient().send(
          new PutObjectCommand({
             Bucket: BUCKET,
             Key: key,
@@ -77,7 +80,7 @@ class AssetStorage {
    public async deleteAsset(key: string) {
       await this.ensureBucketExists()
 
-      await this.#s3.send(
+      await this.#getClient().send(
          new DeleteObjectCommand({
             Bucket: BUCKET,
             Key: key,

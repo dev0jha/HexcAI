@@ -2,11 +2,20 @@
    "$schema": "https://turborepo.com/schema.json",
    "ui": "tui",
    "tasks": {
-      "build": {
-         "dependsOn": ["^build"],
-         "inputs": ["$TURBO_DEFAULT$", ".env*"],
-         "outputs": [".next/**", "!.next/cache/**"]
-      },
+   "build": {
+          "dependsOn": ["^build"],
+          "inputs": ["$TURBO_DEFAULT$", ".env*"],
+          "outputs": [".next/**", "!.next/cache/**"],
+          "env": [
+             "DATABASE_URL",
+             "NEXT_PUBLIC_APP_URL",
+             "BETTER_AUTH_URL",
+             "BETTER_AUTH_SECRET",
+             "NODE_ENV",
+             "GROQ_API_KEY",
+             "OBJECT_STORAGE_ENDPOINT"
+          ]
+       },
       "lint": {
          "dependsOn": ["^lint"]
       },
