@@ -37,13 +37,20 @@ export default function LogoutBtn({ className }: LogoutBtnProps) {
    return (
       <Button
          onClick={handleSignoutClick}
-         variant="outline"
+         variant="ghost"
          className={cn(
-            "w-full cursor-pointer ring-2 ring-neutral-500/10 rounded-sm p-2 text-xs text-zinc-50 font-medium dark:text-white/80",
+            "group hidden sm:flex w-full",
+            "rounded-lg",
+            "bg-zinc-900/60",
+            "backdrop-blur-md",
+            "border border-zinc-800",
+            "shadow-[0_4px_14px_rgba(0,0,0,0.35)]",
+            "transition-all duration-200",
+            "text-zinc-50 font-medium",
             className
          )}
       >
-         <LogOut />
+         <LogOut className="mr-2" />
          Sign out
       </Button>
    )
