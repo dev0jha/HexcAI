@@ -263,10 +263,10 @@ export class AnalysisService {
     * **/
    public static async *analyzeRepository({
       body,
-      headers,
+      set,
       user,
    }: AnalyzeRepositoryContext & { body: { repoUrl: string } }) {
-      headers["content-type"] = "text/event-stream"
+      set.headers["content-type"] = "text/event-stream"
 
       yield sse({
          data: JSON.stringify({
