@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { useMessagesPage } from "@/hooks/use-messages"
 import {
@@ -10,7 +11,7 @@ import {
 } from "@/components/chat"
 import { useReactiveSession } from "@/lib/auth-client"
 
-export default function CandidateMessagesPage() {
+function CandidateMessagesPageInner() {
    const searchParams = useSearchParams()
    const contactRequestId = searchParams.get("contactRequestId")
 
@@ -78,5 +79,13 @@ export default function CandidateMessagesPage() {
             <MessagingEmptyState />
          )}
       </MessagingLayout>
+   )
+}
+
+export default function CandidateMessagesPage() {
+   return (
+      <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading messages...</div>}>
+         <CandidateMessagesPageInner />
+      </Suspense>
    )
 }

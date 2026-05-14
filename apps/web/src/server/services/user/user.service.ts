@@ -284,8 +284,8 @@ export abstract class UserService {
                isPublicProfile: profileRes.data[0].isVisible,
                score: profileRes.data[0].score,
                techStack: profileRes.data[0].techStack as string[],
-               profileViews: profileRes.data[0].profileViews,
-               searchAppearances: profileRes.data[0].searchAppearances,
+                profileViews: 0,
+                searchAppearances: 0,
             }
          }
       }

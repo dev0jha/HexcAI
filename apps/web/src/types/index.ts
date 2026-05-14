@@ -16,6 +16,7 @@ export interface Developer extends User {
    website?: string
    techStack: string[]
    score: number
+   isVisible: boolean
    isOpenToRecruiters?: boolean
    analyzedRepos?: AnalyzedRepo[]
 }

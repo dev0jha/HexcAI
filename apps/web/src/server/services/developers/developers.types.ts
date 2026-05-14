@@ -7,7 +7,7 @@ export interface TechStackResponse {
 }
 
 export interface DeveloperByUsernameResponse {
-   developer: Developer
+   developer: Developer | null
 }
 
 export type GetDevelopersResponse = import("@/lib/queries/query.types").DevelopersResponse

@@ -88,11 +88,11 @@ export function CandidateSidebarMainContent() {
                   <div className="flex flex-col gap-0.5">
                      {group.items.map(item => {
                         const isOpen = openItems.includes(item.title)
-                        const hasSubItems = item.items && item.items.length > 0
+                        const hasSubItems = "items" in item && item.items.length > 0
 
                         // Check if main item or any child is active
                         const isMainActive = pathname === item.url
-                        const isChildActive = item.items?.some(sub => pathname === sub.url)
+                        const isChildActive = "items" in item && item.items.some(sub => pathname === sub.url)
 
                         return (
                            <div key={item.title}>
