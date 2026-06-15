@@ -13,12 +13,28 @@ import {
    IconGitBranch,
    IconMessage,
 } from "@tabler/icons-react"
+import type { Icon as IconType } from "@tabler/icons-react"
 
 import { SidebarContent } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 import { useUnreadStream } from "@/hooks/use-unread-stream"
 
-const navGroups = [
+interface NavItem {
+   title: string
+   url: string
+   icon: IconType
+}
+
+interface NavGroupItem extends NavItem {
+   items?: NavItem[]
+}
+
+interface NavGroup {
+   label: string
+   items: NavGroupItem[]
+}
+
+const navGroups: NavGroup[] = [
    {
       label: "Platform",
       items: [
