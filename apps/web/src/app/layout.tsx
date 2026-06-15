@@ -29,17 +29,14 @@ export default function RootLayout({
             <QueryProvider>
                <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
                   {children}
-                  <Toaster
+                   <Toaster
                      theme="dark"
-                     className="toaster group"
+                     position="bottom-right"
                      toastOptions={{
-                        classNames: {
-                           toast: "group toast group-[.toaster]:bg-[#121212] group-[.toaster]:text-zinc-200 group-[.toaster]:border-zinc-800 group-[.toaster]:shadow-lg",
-                           description: "group-[.toaster]:text-zinc-400",
-                           actionButton:
-                              "group-[.toaster]:bg-blue-600 group-[.toaster]:text-white hover:bg-blue-700",
-                           cancelButton:
-                              "group-[.toaster]:bg-zinc-800 group-[.toaster]:text-zinc-200 hover:bg-zinc-700",
+                        style: {
+                           background: "var(--card)",
+                           color: "var(--card-foreground)",
+                           border: "1px solid var(--border)",
                         },
                      }}
                   />
