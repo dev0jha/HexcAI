@@ -18,6 +18,47 @@ import { analysisResponse } from "./analysis.validation"
 import type { AnalysisResponse } from "./analysis.validation.ts"
 import type { AnalyzedRepo } from "@/types"
 
+function extractJsonString(text: string): string {
+   const trimmed = text.trim()
+
+   const parseRes = attemptSync(JSON.parse(trimmed))
+   if (parseRes.ok) {
+      return trimmed
+   }
+
+   /*
+    * Try extracting from markdown code fences:
+    * ```json\n...\n``` or ```\n...\n```
+    * */
+   const codeFenceMatch = trimmed.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/)
+   if (codeFenceMatch) {
+      const candidate = codeFenceMatch[1].trim()
+
+      const parseRes = attemptSync(JSON.parse(candidate))
+      if (parseRes.ok) {
+         return candidate
+      }
+   }
+
+   /*
+    *Try extracting from markdown code fences where the backticks are on the same line as the brace
+    * */
+   const inlineFenceMatch = trimmed.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/)
+   if (inlineFenceMatch) {
+      return inlineFenceMatch[1]
+   }
+
+   /*
+    * Fall back to finding first { and last }
+    * */
+   const braceMatch = trimmed.match(/\{[\s\S]*\}/)
+   if (braceMatch) {
+      return braceMatch[0]
+   }
+
+   return trimmed
+}
+
 export class AnalysisService {
    /*
     * Fetch GitHub repository data using GitHub API
@@ -28,7 +69,11 @@ export class AnalysisService {
       )
 
       if (!responseAttempt.ok) {
-         return err(ErrWith({ message: "Network error while reaching GitHub" }))
+         return err(
+            ErrWith({
+               message: "Network error while reaching GitHub",
+            })
+         )
       }
 
       const res = responseAttempt.data
@@ -227,13 +272,7 @@ export class AnalysisService {
          )
       }
 
-      const jsonMatch = result.text.match(/\{[\s\S]*\}/)
-      let jsonText = jsonMatch ? jsonMatch[0] : result.text
-
-      const lastBraceIndex = jsonText.lastIndexOf("}")
-      if (lastBraceIndex !== -1) {
-         jsonText = jsonText.substring(0, lastBraceIndex + 1)
-      }
+      const jsonText = extractJsonString(result.text)
 
       const analysis = attemptSync(() => JSON.parse(jsonText))
       if (!analysis.ok) {

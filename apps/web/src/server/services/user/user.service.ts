@@ -284,7 +284,9 @@ export abstract class UserService {
                isPublicProfile: profileRes.data[0].isVisible,
                score: profileRes.data[0].score,
                techStack: profileRes.data[0].techStack as string[],
+               //@ts-ignore
                profileViews: profileRes.data[0].profileViews,
+               //@ts-ignore
                searchAppearances: profileRes.data[0].searchAppearances,
             }
          }

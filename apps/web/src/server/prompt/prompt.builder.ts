@@ -36,6 +36,6 @@ export const buildPrompt = (repoData: RepoFetchResult) => {
 	Calculate totalScore as: (codeQuality*0.3 + architecture*0.2 + security*0.2 + gitPractices*0.15 + documentation*0.15)
 
 
-	DONT GIVE ME JSON BLOCK ONLY RETURN THE RAW JSON IN A FORMAT , I CAN PARSE IT DIRECTLY!
+	Return ONLY a raw JSON object. No markdown formatting, no code fences, no backticks, no explanations, no extra text. Just the JSON object.
 	`
 }
