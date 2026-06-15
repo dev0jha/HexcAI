@@ -77,7 +77,7 @@ export default function HeroSection() {
                transition={{ duration: 0.8, delay: 0.3 }}
                className="flex flex-col place-content-center gap-4 py-8 md:flex-row"
             >
-               <Link href="#DiscoverProfile">
+               <Link href="/dashboard/analysis">
                   <Button
                      variant="ghost"
                      className={cn(

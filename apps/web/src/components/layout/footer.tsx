@@ -146,7 +146,8 @@ export default function Footer() {
             <div className="border-border absolute inset-x-0 border-t border-dotted" />
             <div className="flex max-w-4xl flex-col justify-between gap-2 py-4">
                <p className="text-muted-foreground text-center text-sm font-light">
-                  &copy; {new Date().getFullYear()} HireXAI, All rights reserved
+                  &copy; {new Date().getFullYear()} Hexcai, All rights reserved<br />
+                  Powered by <a href="https://agnic.dev" target="_blank" rel="noopener noreferrer" className="hover:underline">Agnic</a>
                </p>
             </div>
          </div>

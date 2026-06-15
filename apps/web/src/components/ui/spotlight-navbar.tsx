@@ -9,7 +9,7 @@ import { Menu, X } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 
 import { PlusIcon } from "@/components/ui/plus-icon"
-import Button from "@/components/pixel-perfect/stripe-button"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import Logo from "@/components/Logo"
 
@@ -76,53 +76,25 @@ export function Navbar({
 
                <div className="flex items-center gap-3">
                   <Link href="/signin">
-                     <Button className="hidden sm:flex uppercase font-bold text-shadow-xl shadow-lg transition-all duration-300">
+                     <Button
+                        variant="ghost"
+                        className={cn(
+                           "group flex",
+                           "rounded-lg",
+                           "bg-zinc-900/60",
+                           "backdrop-blur-md",
+                           "border border-zinc-800",
+                           "shadow-[0_4px_14px_rgba(0,0,0,0.35)]",
+                           "transition-all duration-200"
+                        )}
+                     >
                         Login
                      </Button>
                   </Link>
-
-                  <button
-                     className="p-2 text-zinc-400 transition-colors hover:text-white md:hidden"
-                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  >
-                     {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                  </button>
                </div>
             </div>
 
-            <AnimatePresence>
-               {isMobileMenuOpen && (
-                  <motion.div
-                     initial={{ height: 0, opacity: 0 }}
-                     animate={{ height: "auto", opacity: 1 }}
-                     exit={{ height: 0, opacity: 0 }}
-                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                     className="overflow-hidden border-b border-white/10 md:hidden"
-                  >
-                     <ul className="flex flex-col gap-2 p-4">
-                        {items.map((item, idx) => {
-                           const isActive = pathname === item.href
-                           return (
-                              <li key={idx}>
-                                 <Link
-                                    href={item.href}
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className={cn(
-                                       "block rounded-md px-4 py-3 text-sm font-medium transition-colors",
-                                       isActive
-                                          ? "bg-zinc-800 text-white"
-                                          : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
-                                    )}
-                                 >
-                                    {item.label}
-                                 </Link>
-                              </li>
-                           )
-                        })}
-                     </ul>
-                  </motion.div>
-               )}
-            </AnimatePresence>
+
          </header>
       </div>
    )

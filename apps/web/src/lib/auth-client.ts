@@ -3,33 +3,45 @@ import { createAuthClient } from "better-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef } from "react"
 
+function getBaseURL() {
+   if (typeof window !== "undefined") return window.location.origin
+   if (process.env.BETTER_AUTH_URL) return process.env.BETTER_AUTH_URL
+   if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL
+   throw new Error("BETTER_AUTH_URL or NEXT_PUBLIC_APP_URL must be set")
+}
+
 export const authClient = createAuthClient({
-   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+   baseURL: getBaseURL(),
 })
+
+const MAX_SESSION_RETRIES = 3
 
 function useReactiveSession() {
    const router = useRouter()
    const { data: session, error, refetch, isPending, isRefetching } = authClient.useSession()
-   const initialRetried = useRef<boolean>(false)
+   const retryCount = useRef(0)
 
    const isSessionLoading = isPending || isRefetching
 
    useEffect(() => {
-      if (error && initialRetried.current) {
-         router.refresh()
+      if (error) {
+         if (retryCount.current < MAX_SESSION_RETRIES) {
+            retryCount.current++
+            refetch()
+         }
+         return
       }
 
-      if (!session && !initialRetried.current) {
+      if (!session && !error && retryCount.current === 0) {
+         retryCount.current++
          refetch()
-
-         initialRetried.current = true
       }
-   }, [session])
+   }, [session, error, refetch])
 
    return {
       session,
-      error,
-      isSessionLoading,
+      error: error as Error | null,
+      isSessionLoading: isSessionLoading && retryCount.current <= MAX_SESSION_RETRIES,
    }
 }
 
