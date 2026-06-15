@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 
 interface HistoryListProps {
    analyses: AnalyzedRepo[]
+   isLoading?: boolean
 }
 
 function formatRelativeTime(date: Date): string {
@@ -40,7 +41,8 @@ function getScoreColor(score: number): string {
    return "text-red-400 bg-red-500/10 border-red-500/20"
 }
 
-export function HistoryList({ analyses }: HistoryListProps) {
+export function HistoryList({ analyses, isLoading }: HistoryListProps) {
+   if (isLoading) return <LoadingSkeleton />
    if (analyses.length === 0) return <EmptyState />
 
    return (
@@ -124,6 +126,34 @@ export function HistoryList({ analyses }: HistoryListProps) {
                         </div>
                      </div>
                   </Link>
+               </li>
+            ))}
+         </ul>
+      </div>
+   )
+}
+
+function LoadingSkeleton() {
+   return (
+      <div className="overflow-hidden rounded-xl border border-zinc-800 bg-neutral-800/20 backdrop-blur-sm">
+         <ul className="divide-y divide-zinc-800/50">
+            {Array.from({ length: 5 }).map((_, i) => (
+               <li key={i}>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-6 animate-pulse">
+                     <div className="min-w-0 flex-1 space-y-3">
+                        <div className="h-5 w-48 rounded bg-zinc-800" />
+                        <div className="h-4 w-96 rounded bg-zinc-800/50" />
+                        <div className="flex gap-4">
+                           <div className="h-3 w-32 rounded bg-zinc-800/50" />
+                           <div className="h-3 w-20 rounded bg-zinc-800/50" />
+                           <div className="h-3 w-16 rounded bg-zinc-800/50" />
+                        </div>
+                     </div>
+                     <div className="flex w-full sm:w-auto items-center gap-6 pl-0 sm:pl-4">
+                        <div className="h-6 w-16 rounded-full bg-zinc-800" />
+                        <div className="h-3 w-12 rounded bg-zinc-800/50" />
+                     </div>
+                  </div>
                </li>
             ))}
          </ul>

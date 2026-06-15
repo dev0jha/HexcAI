@@ -1,8 +1,10 @@
 import type React from "react"
+import { useQueryClient } from "@tanstack/react-query"
 
 import { mockAnalysisResult } from "@/data/mock-data"
 import { AnalysisStore } from "@/hooks/scopedstores/analysis.store"
 import { attempt, attemptSync } from "@/utils/attempt"
+import { queryKeys } from "@/lib/queries/queryKeys"
 import { ErrWith } from "@/lib/err"
 
 /*
@@ -52,6 +54,8 @@ export function useAnalysisActions() {
    const { repoUrl, setRepoURL } = useAnalysisInput()
 
    const [, setState] = AnalysisStore.useAtom("state")
+
+   const queryClient = useQueryClient()
 
    async function handleAnalyze(e: React.FormEvent) {
       e.preventDefault()
@@ -116,14 +120,15 @@ export function useAnalysisActions() {
                   })
                }
 
-               if (chunk.result) {
-                  setState({
-                     status: "complete",
-                     result: chunk.result,
-                  })
-                  gotResult = true
-                  return true
-               }
+                if (chunk.result) {
+                   setState({
+                      status: "complete",
+                      result: chunk.result,
+                   })
+                   gotResult = true
+                   queryClient.invalidateQueries({ queryKey: queryKeys.analyses.lists() })
+                   return true
+                }
             }
          }
 

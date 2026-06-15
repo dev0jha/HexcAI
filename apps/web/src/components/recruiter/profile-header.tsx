@@ -1,27 +1,41 @@
+"use client"
+import { useState } from "react"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { getScoreLabel } from "@/types"
-import { IconBrandGithub, IconBrandLinkedin, IconGlobe, IconMapPin } from "@tabler/icons-react"
+import {
+   IconBrandGithub,
+   IconBrandLinkedin,
+   IconGlobe,
+   IconMapPin,
+   IconUser,
+} from "@tabler/icons-react"
 
 import type { Developer } from "@/types"
 
 export function ProfileHeader({ developer }: { developer: Developer }) {
    const scoreLabel = getScoreLabel(developer.score)
+   const [imgError, setImgError] = useState(false)
 
    return (
       <div className="relative overflow-hidden rounded-lg border-2 border-zinc-800/50 bg-neutral-900/40 p-6 shadow-none">
          <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
             {/* Avatar Column */}
             <div className="flex shrink-0 flex-col items-center md:items-start">
-               <div className="relative h-24 w-24 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 shadow-xl shadow-black/40">
-                  <Image
-                     src={developer.avatar || "/placeholder.svg"}
-                     alt={developer.name}
-                     fill
-                     unoptimized
-                     className="object-cover"
-                  />
+               <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 shadow-xl shadow-black/40">
+                  {imgError || !developer.avatar ? (
+                     <IconUser className="h-10 w-10 text-zinc-600" />
+                  ) : (
+                     <Image
+                        src={developer.avatar}
+                        alt={developer.name}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                        onError={() => setImgError(true)}
+                     />
+                  )}
                </div>
 
                {/* "Open to Work" - Redesigned to be subtle & clean */}

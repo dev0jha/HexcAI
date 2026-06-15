@@ -32,7 +32,7 @@ export default function HistoryPage() {
                </div>
             </header>
 
-            <HistoryList analyses={sortedHistory} />
+            <HistoryList analyses={sortedHistory} isLoading={isLoading} />
          </div>
       </div>
    )
